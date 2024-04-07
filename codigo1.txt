@@ -1,0 +1,34 @@
+!!Inicio del programa
+.Start
+
+var1 = int();
+var1 = 4;
+var1_V2 = int(4);
+
+var2 = flag();
+var2 = true;
+var2_V2 = flag(true);
+
+var3 = char();
+var3 = "%";
+var3_V2 = char(%);
+
+var4 = str();
+var4 = "hola";
+var4_V2 = str(hola);
+
+var5 = float();
+var5 = 6.96;
+var5_V2 = float(6.96);
+
+set variable = var1;
+variable2 = false;
+
+!! Proceso de una suma con un numero de entrada y otro existente 
+n = int().input("Primer número: ");
+suma = float();
+suma = n + var5;
+Show("La suma es: " << suma);
+
+!!Fin del programa
+.Exit

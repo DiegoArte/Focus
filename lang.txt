@@ -1,0 +1,87 @@
+ 1-  Palabra para inicio y fin: 
+    .Start
+    .Exit
+
+2- Tipos de datos:
+    int, flag, char, str, float 
+
+3- Reglas para el nombrado de variables:
+    /^(([a-z] | [A-Z])+([0-9])*\_\*([a-z] | [A-Z] | [0-9])*)$/
+
+4- Delimitador:
+    ;
+
+5- Asignar valores:
+    var = int()
+    var = int(98)
+        var = int().input("Dame valor: ")
+
+    var = flag()
+    var = flag(true)
+
+    var = char()
+    var = char(f)
+        var = char().input("Dame caracter: ")
+
+    var = str()
+    var = str(cadena)
+        var = str().input("Dame cadena: ")
+
+    var = float()
+    var = float(0.19)
+        var = float().input("Dane valor: ")
+
+6- Palabras reservadas para mandar a pantalla:
+    Show()
+    Show("Valor: " << var)
+
+7- Palabra reservada para guardar un dato en una variable:
+    set
+    set var = var2 
+
+8- Caracter para comentarios:
+    !! Este es un comentario
+
+9- Definir operaciones aritméticas básicas (+,-,*,/)
+    var + var2
+    var - var2
+    var * var2
+    var / var2
+    
+10- Concatenar mensajes con variables
+    <<
+
+----------------------------------------------------------
+!!Inicio del programa
+.Start
+
+var1 = int();
+var1 = 4;
+var1_V2 = int(4);
+
+var2 = flag();
+var2 = true;
+var2_V2 = flag(true);
+
+var3 = char();
+var3 = "%";
+var3_V2 = char(%);
+
+var4 = str();
+var4 = "hola";
+var4_V2 = str(hola);
+
+var5 = float();
+var5 = 6.96;
+var5_V2 = float(6.96);
+
+
+!! Proceso de una suma con un numero de entrada y otro existente 
+n = int().input("Primer número: ");
+suma = float();
+suma = n + var5;
+Show("La suma es: " << suma);
+
+!!Fin del programa
+.Exit
+----------------------------------------------------------
