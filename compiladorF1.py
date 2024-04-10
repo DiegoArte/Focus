@@ -156,10 +156,91 @@ def process_input(input_text):
 
 #--------------------- FUNCIONES DE LAS FASES DEL COMPILADOR -------------------------
 def f1_Lexico():
-    linea = 1
+    scrollConsole = tk.Scrollbar(ventana, orient=tk.VERTICAL)
+    scrollConsole.place(x=913, y=545, height=150)
+    cajaConsola = tk.Text(ventana, wrap=tk.WORD, yscrollcommand=scrollConsole.set, width=100, height=9,
+                          font=('Source Code Pro', 10), bg="#4B4B4B", foreground="white", bd=None,
+                          insertbackground="white")
+    cajaConsola.place(x=107, y=546)
+    scrollConsole.config(command=cajaConsola.yview)
+
+    # Colocar el texto por defecto
+    cajaConsola.insert("end", "FOCUS-bash> ")
+    # Vincular eventos de teclado
+    cajaConsola.bind("<KeyPress>", handle_key)
+
+    lineaa = 1
     errores = 0
     #Comienza a verificar las palabras en el codigo
-    
+
+    inicio_fin=['.Start', '.Exit']
+
+
+    contenido = []
+    # Obtener el número total de líneas en la caja de texto
+    num_lineas = int(cajaCodigo.index('end').split('.')[0])
+    # Iterar sobre cada línea y obtener su contenido
+    for i in range(1, num_lineas + 1):
+        contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
+
+    for linea in contenido:
+        if len(linea)>0: #comprobar si hay algo en la linea
+            if (linea[0]=="!" and linea[1]=="!") or (linea in inicio_fin): #detectar si es un comentario o si es palabra de inicio o fin
+                errores+=0
+            elif "=" in linea: #sucede cuando es la asignacion de una variable
+                partes = linea.split("=")
+                variable = partes[0].strip()
+                contVariable = partes[1].strip().replace(" ", "")
+
+                #identificar error en identificadores
+                if variable.startswith("set "):
+                    variable = variable[len("set "):]
+                erVariables=r'^[a-zA-Z_][a-zA-Z0-9_]*$'
+                if re.match(erVariables, variable):
+                    errores+=0
+                else:
+                    errores+=1
+                    cajaConsola.insert("end", "Lexical error: Line "+str(lineaa)+" in identifier "+variable, "rojo")
+                    cajaConsola.tag_configure("rojo", foreground="red")
+
+                #identificar error en numeros
+                num=""
+                caracteres=list(contVariable)
+                for i in range(len(caracteres)):
+                    if caracteres[i].isdigit():
+                        num+=caracteres[i]
+                        if i>0:
+                            if caracteres[i - 1] not in ['+', '-', '*', '/', '(', '.'] and not caracteres[i - 1].isdigit() and not re.match(erVariables, caracteres[i - 1]):
+                                num=""
+                                num=caracteres[i - 1]+caracteres[i]
+                                errores += 1
+                                cajaConsola.insert("end",
+                                                   "Lexical error: Line " + str(lineaa) + " in wrong number " + num,
+                                                   "rojo")
+                                cajaConsola.tag_configure("rojo", foreground="red")
+                                break
+                        if i<len(caracteres)-1:
+                            if caracteres[i + 1] not in ['+', '-', '*', '/', ')', '.', ';'] and not caracteres[i + 1].isdigit():
+                                if re.match(erVariables, caracteres[i + 1]) and not re.match(erVariables, caracteres[i - 1]):
+                                    num+=caracteres[i + 1]
+                                    errores += 1
+                                    cajaConsola.insert("end",
+                                                       "Lexical error: Line " + str(lineaa) + " in wrong number " + num,
+                                                       "rojo")
+                                    cajaConsola.tag_configure("rojo", foreground="red")
+                                    break
+                    else:
+                        if caracteres[i]=='.':
+                            num+=caracteres[i]
+                        else:
+                            num=""
+
+        else:
+            errores += 0
+        lineaa += 1
+        if errores > 0:
+            break
+
     if errores == 0:
         generarTabla = False
     else:
