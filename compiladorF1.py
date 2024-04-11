@@ -6,6 +6,8 @@ from PIL import Image,ImageTk
 from tkinter import messagebox
 import re
 import time
+import difflib
+
 
 def abrir_archivo():
     file_path = filedialog.askopenfilename()
@@ -240,6 +242,43 @@ def f1_Lexico():
         lineaa += 1
         if errores > 0:
             break
+    
+    '''
+    for linea in contenido:
+        print(f"Linea {l}: {linea}")
+        l+=1'''
+
+
+    # Lista de palabras reservadas
+    palabras_reservadas = [".Start", ".Exit", "int", "flag", "char", "str", "float", "Show", ".input", "set", "true", "false"]
+
+    # Función para limpiar la palabra de paréntesis y caracteres interiores
+    def limpiar_palabra(palabra):
+        palabra_limpia = palabra.rstrip(';')
+        partes = palabra_limpia.split('(')
+        if len(partes) > 1:
+            return partes[0]
+        else:
+            return palabra_limpia
+
+    l = 1
+    for linea in contenido:
+        palabras_linea = linea.split()  # Separar la línea en palabras
+        for palabra in palabras_linea:
+            palabra_limpia = limpiar_palabra(palabra)
+            sugerencias = difflib.get_close_matches(palabra_limpia, palabras_reservadas, cutoff=0.6)
+            if sugerencias:
+                if sugerencias[0] != palabra_limpia:
+                    #print(f"Error en la palabra reservada '{palabra}' en la línea {l}. ¿Quisiste decir '{sugerencias[0]}'?")
+                    errores += 1
+                    cajaConsola.insert("end",
+                                        "Lexical error: Line " + str(l) + " in wrong reserved word " + palabra + f"  ¿Did you mean '{sugerencias[0]}'?",
+                                        "rojo")
+                    cajaConsola.tag_configure("rojo", foreground="red")
+        l += 1
+
+
+        
 
     if errores == 0:
         generarTabla = False
