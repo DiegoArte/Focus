@@ -256,6 +256,17 @@ def f1_Lexico():
                             cajaConsola.tag_configure("rojo", foreground="red")
                             break
 
+                # identificar error en operadores
+                opsIncorrectos=['**', '&', '^', '++', '//', '--', '***', '+++', '///', '---', '****', '++++', '////', '----', '*****', '+++++', '/////', '-----']
+                for i in range(len(caracteres)):
+                    if caracteres[i] in opsIncorrectos:
+                        errores += 1
+                        cajaConsola.insert("end",
+                                           "Lexical error: Line " + str(lineaa) + " in operator " + caracteres[i],
+                                           "rojo")
+                        cajaConsola.tag_configure("rojo", foreground="red")
+                        break
+
 
         else:
             errores += 0
