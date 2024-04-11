@@ -8,7 +8,6 @@ import re
 import time
 import difflib
 
-
 def abrir_archivo():
     file_path = filedialog.askopenfilename()
     global rutaFile
@@ -192,65 +191,81 @@ def f1_Lexico():
             elif "=" in linea: #sucede cuando es la asignacion de una variable
                 partes = linea.split("=")
                 variable = partes[0].strip()
-                contVariable = partes[1].strip().replace(" ", "")
+                variable=re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', variable)
+                contVariable = partes[1].strip()
+                contVariable=re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', contVariable)
 
                 #identificar error en identificadores
-                if variable.startswith("set "):
-                    variable = variable[len("set "):]
-                erVariables=r'^[a-zA-Z_][a-zA-Z0-9_]*$'
-                if re.match(erVariables, variable):
+                erVariables = r'^[a-zA-Z_][a-zA-Z0-9_]*$'
+                if len(variable)>1:
+                    if variable[0]=="set":
+                        varrr=variable[1]
+                    else:
+                        errores += 1
+                        cajaConsola.insert("end", "Lexical error: Line " + str(lineaa) + " in identifier " + variable[0]+variable[1],
+                                           "rojo")
+                        cajaConsola.tag_configure("rojo", foreground="red")
+                        break
+                else:
+                    varrr=variable[0]
+                if re.match(erVariables, varrr):
                     errores+=0
                 else:
                     errores+=1
-                    cajaConsola.insert("end", "Lexical error: Line "+str(lineaa)+" in identifier "+variable, "rojo")
+                    cajaConsola.insert("end", "Lexical error: Line "+str(lineaa)+" in identifier "+varrr, "rojo")
                     cajaConsola.tag_configure("rojo", foreground="red")
 
                 #identificar error en numeros
-                num=""
-                caracteres=list(contVariable)
+                caracteres=contVariable
+                operadores = ['+', '-', '*', '/', '(', ')']
+                patron = r'^".*"$'
+                patron2 = r"\d"
+                patron3 = r'int\((.*?)\)'
+                patron4 = r'float\((.*?)\)'
                 for i in range(len(caracteres)):
-                    if caracteres[i].isdigit():
-                        num+=caracteres[i]
-                        if i>0:
-                            if caracteres[i - 1] not in ['+', '-', '*', '/', '(', '.'] and not caracteres[i - 1].isdigit() and not re.match(erVariables, caracteres[i - 1]):
-                                num=""
-                                num=caracteres[i - 1]+caracteres[i]
-                                errores += 1
-                                cajaConsola.insert("end",
-                                                   "Lexical error: Line " + str(lineaa) + " in wrong number " + num,
-                                                   "rojo")
-                                cajaConsola.tag_configure("rojo", foreground="red")
-                                break
-                        if i<len(caracteres)-1:
-                            if caracteres[i + 1] not in ['+', '-', '*', '/', ')', '.', ';'] and not caracteres[i + 1].isdigit():
-                                if re.match(erVariables, caracteres[i + 1]) and not re.match(erVariables, caracteres[i - 1]):
-                                    num+=caracteres[i + 1]
-                                    errores += 1
-                                    cajaConsola.insert("end",
-                                                       "Lexical error: Line " + str(lineaa) + " in wrong number " + num,
-                                                       "rojo")
-                                    cajaConsola.tag_configure("rojo", foreground="red")
-                                    break
+                    match = re.search(patron3, caracteres[i])
+                    if match:
+                        caracteres[i] = match.group(1)
+                        if not caracteres[i].isdigit() and caracteres[i]!="":
+                            errores += 1
+                            cajaConsola.insert("end",
+                                               "Lexical error: Line " + str(lineaa) + " in wrong number " + caracteres[
+                                                   i],
+                                               "rojo")
+                            cajaConsola.tag_configure("rojo", foreground="red")
+                            break
+                    match = re.search(patron4, caracteres[i])
+                    if match:
+                        caracteres[i] = match.group(1)
+                    caracteres[i]=caracteres[i].replace(";", "")
+                    if caracteres[i].isdigit() or caracteres[i] in operadores or re.match(erVariables, caracteres[i]) or re.match(patron, caracteres[i]) is not None or re.search(patron2, caracteres[i]) is None:
+                        errores += 0
                     else:
-                        if caracteres[i]=='.':
-                            num+=caracteres[i]
+                        partes = caracteres[i].split('.')
+                        if len(partes) != 2:
+                            decimal=False
+                        elif partes[0].isdigit() and partes[1].isdigit():
+                            decimal=True
                         else:
-                            num=""
+                            decimal=False
+                        if decimal==False:
+                            errores += 1
+                            cajaConsola.insert("end",
+                                               "Lexical error: Line " + str(lineaa) + " in wrong number " + caracteres[i],
+                                               "rojo")
+                            cajaConsola.tag_configure("rojo", foreground="red")
+                            break
+
 
         else:
             errores += 0
         lineaa += 1
         if errores > 0:
             break
-    
-    '''
-    for linea in contenido:
-        print(f"Linea {l}: {linea}")
-        l+=1'''
-
 
     # Lista de palabras reservadas
-    palabras_reservadas = [".Start", ".Exit", "int", "flag", "char", "str", "float", "Show", ".input", "set", "true", "false"]
+    palabras_reservadas = [".Start", ".Exit", "int", "flag", "char", "str", "float", "Show", ".input", "set",
+                           "true", "false"]
 
     # Función para limpiar la palabra de paréntesis y caracteres interiores
     def limpiar_palabra(palabra):
@@ -269,16 +284,14 @@ def f1_Lexico():
             sugerencias = difflib.get_close_matches(palabra_limpia, palabras_reservadas, cutoff=0.6)
             if sugerencias:
                 if sugerencias[0] != palabra_limpia:
-                    #print(f"Error en la palabra reservada '{palabra}' en la línea {l}. ¿Quisiste decir '{sugerencias[0]}'?")
+                    # print(f"Error en la palabra reservada '{palabra}' en la línea {l}. ¿Quisiste decir '{sugerencias[0]}'?")
                     errores += 1
                     cajaConsola.insert("end",
-                                        "Lexical error: Line " + str(l) + " in wrong reserved word " + palabra + f"  ¿Did you mean '{sugerencias[0]}'?",
-                                        "rojo")
+                                       "Lexical error: Line " + str(
+                                           l) + " in wrong reserved word " + palabra + f"  ¿Did you mean '{sugerencias[0]}'?",
+                                       "rojo")
                     cajaConsola.tag_configure("rojo", foreground="red")
         l += 1
-
-
-        
 
     if errores == 0:
         generarTabla = False
