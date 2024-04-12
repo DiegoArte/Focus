@@ -309,6 +309,196 @@ def f1_Lexico():
     else:
         generarTabla = True
         #Continua en el proceso de hacer la tabla de Tokens
+        tokens=[]
+        declares=[]
+        references=[]
+        l=1
+        for linea in contenido:
+            if len(linea) > 0 and (linea[0] == "!" and linea[1] == "!"):
+                linea='!!'
+            if linea.startswith('Show('):
+                if '<<' in linea:
+                    a = ['<<', l]
+                    if not '<<' in tokens:
+                        tokens.append('<<')
+                        declares.append(a)
+                    else:
+                        references.append(a)
+
+                linea='Show()'
+            tok=re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', linea)
+            for t in tok:
+                if t.endswith(';'):
+                    t2=';'
+                    a = [t2, l]
+                    if not t2 in tokens:
+                        tokens.append(t2)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                    t=t[:-1]
+                if t.startswith('"'):
+                    t='"'
+                    a = [t, l]
+                    if not t in tokens:
+                        tokens.append(t)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                elif t.startswith('int().input('):
+                    t = 'int().input()'
+                    a = [t, l]
+                    if not t in tokens:
+                        tokens.append(t)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                    break
+                elif t.startswith('float().input('):
+                    t = 'float().input()'
+                    a = [t, l]
+                    if not t in tokens:
+                        tokens.append(t)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                    break
+                elif t.startswith('char().input('):
+                    t = 'char().input()'
+                    a = [t, l]
+                    if not t in tokens:
+                        tokens.append(t)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                    break
+                elif t.startswith('str().input('):
+                    t = 'str().input()'
+                    a = [t, l]
+                    if not t in tokens:
+                        tokens.append(t)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                    break
+                elif t.startswith('int('):
+                    t2 = 'int()'
+                    a = [t2, l]
+                    if not t2 in tokens:
+                        tokens.append(t2)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                    match = re.search(r'int\((\d+)\);', t)
+                    if match:
+                        t3 = match.group(1)
+                        a = [t3, l]
+                        if not t3 in tokens:
+                            tokens.append(t3)
+                            declares.append(a)
+                        else:
+                            references.append(a)
+                elif t.startswith('float('):
+                    t2 = 'float()'
+                    a = [t2, l]
+                    if not t2 in tokens:
+                        tokens.append(t2)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                    match = re.search(r'float\((\d+)\);', t)
+                    if match:
+                        t3 = match.group(1)
+                        a = [t3, l]
+                        if not t3 in tokens:
+                            tokens.append(t3)
+                            declares.append(a)
+                        else:
+                            references.append(a)
+                elif t.startswith('flag('):
+                    t2 = 'flag()'
+                    a = [t2, l]
+                    if not t2 in tokens:
+                        tokens.append(t2)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                    match = re.search(r'flag\((\d+)\);', t)
+                    if match:
+                        t3 = match.group(1)
+                        a = [t3, l]
+                        if not t3 in tokens:
+                            tokens.append(t3)
+                            declares.append(a)
+                        else:
+                            references.append(a)
+                elif t.startswith('str('):
+                    t2 = 'str()'
+                    a = [t2, l]
+                    if not t2 in tokens:
+                        tokens.append(t2)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                elif t.startswith('char('):
+                    t2 = 'char()'
+                    a = [t2, l]
+                    if not t2 in tokens:
+                        tokens.append(t2)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+
+                else:
+                    a = [t, l]
+                    if not t in tokens:
+                        tokens.append(t)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+
+            l+=1
+
+        datos=[]
+        palabras_reservadas2 = [".Start", ".Exit", "int()", "flag()", "char()", "str()", "float()", "Show()", "int().input()", "set",
+                               "true", "false"]
+        erVariables = r'^[a-zA-Z_][a-zA-Z0-9_]*$'
+        operadores = ['+', '-', '*', '/', '=']
+        contTokens=0
+        for t in tokens:
+            reference=[""]
+            if t in palabras_reservadas2:
+                tipo='Palabra reservada'
+            elif re.match(erVariables, t):
+                tipo='Identificador'
+            elif t in operadores:
+                tipo = 'Operador'
+            else:
+                tipo = 'Carácter'
+            for r in references:
+                if t==r[0]:
+                    reference.append(r[1])
+            if len(reference)>1:
+                reference.pop(0)
+            dato=[t, tipo, declares[contTokens][1], reference]
+            datos.append(dato)
+            contTokens+=1
+
+        ventanaTabla=tk.Toplevel(ventana)
+        ventanaTabla.attributes('-fullscreen', True)
+        columnas = ("Token", "Type", "Declares", "Reference")
+        style = ttk.Style()
+        style.configure("Treeview", font=('Helvetica', 8), rowheight=25, fieldbackground='light gray')
+        style.configure("Treeview.Heading", font=('Helvetica', 9))
+        tabla=ttk.Treeview(ventanaTabla, style="Treeview")
+        tabla["show"] = "headings"
+        tabla.pack(expand=True, fill=tk.BOTH)
+        tabla["columns"] = columnas
+        for col in columnas:
+            tabla.heading(col, text=col)
+
+        for dato in datos:
+            tabla.insert("", tk.END, values=dato)
 
 def f2_sintatico():
     pass
