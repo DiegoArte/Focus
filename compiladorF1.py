@@ -257,9 +257,9 @@ def f1_Lexico():
                             break
 
                 # identificar error en operadores
-                opsIncorrectos=['**', '&', '^', '++', '//', '--', '***', '+++', '///', '---', '****', '++++', '////', '----', '*****', '+++++', '/////', '-----']
+                opsIncorrectos=r'\*{3}|\+\+|--|\*{2}|\+\+|\*\+|/\*|\*/|/[-+]'
                 for i in range(len(caracteres)):
-                    if caracteres[i] in opsIncorrectos:
+                    if re.match(opsIncorrectos, caracteres[i]):
                         errores += 1
                         cajaConsola.insert("end",
                                            "Lexical error: Line " + str(lineaa) + " in operator " + caracteres[i],
