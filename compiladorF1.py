@@ -157,15 +157,6 @@ def process_input(input_text):
 
 #--------------------- FUNCIONES DE LAS FASES DEL COMPILADOR -------------------------
 def f1_Lexico():
-    btnLexico.config(bg="#6DCB5A")
-    btnSintactico.config(bg="#E74747")
-    btnSemant.config(bg="#E74747")
-    btnCodInter.config(bg="#E74747")
-    btnOptimiza.config(bg="#E74747")
-    btnCodObj.config(bg="#E74747")
-    #Color verde de los botones #6DCB5A
-    #Color rojo de los botones #E74747
-    
     scrollConsole = tk.Scrollbar(ventana, orient=tk.VERTICAL)
     scrollConsole.place(x=913, y=545, height=150)
     cajaConsola = tk.Text(ventana, wrap=tk.WORD, yscrollcommand=scrollConsole.set, width=100, height=9,
@@ -494,7 +485,6 @@ def f1_Lexico():
             contTokens+=1
 
         ventanaTabla=tk.Toplevel(ventana)
-        ventanaTabla.attributes('-fullscreen', True)
         columnas = ("Token", "Type", "Declares", "Reference")
         style = ttk.Style()
         style.configure("Treeview", font=('Helvetica', 8), rowheight=25, fieldbackground='light gray')
