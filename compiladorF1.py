@@ -172,17 +172,27 @@ def f1_Lexico():
 
     lineaa = 1
     errores = 0
+
     #Comienza a verificar las palabras en el codigo
-
-    inicio_fin=['.Start', '.Exit']
-
-
     contenido = []
     # Obtener el número total de líneas en la caja de texto
     num_lineas = int(cajaCodigo.index('end').split('.')[0])
     # Iterar sobre cada línea y obtener su contenido
     for i in range(1, num_lineas + 1):
         contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
+
+    
+    #Forma para imprimir en la consola
+    '''
+    cajaConsola.insert("end", "Lexical error: Line " + str(lineaa) + "contenido",
+                                           "rojo")
+                        cajaConsola.tag_configure("rojo", foreground="red")
+    
+    '''
+    
+    
+    '''
+    inicio_fin=['.Start', '.Exit']
 
     for linea in contenido:
         if len(linea)>0: #comprobar si hay algo en la linea
@@ -267,7 +277,8 @@ def f1_Lexico():
                         cajaConsola.tag_configure("rojo", foreground="red")
                         break
 
-
+    
+    
         else:
             errores += 0
         lineaa += 1
@@ -303,8 +314,8 @@ def f1_Lexico():
                                        "rojo")
                     cajaConsola.tag_configure("rojo", foreground="red")
         l += 1
-
-    if errores == 1:
+    '''
+    if errores >= 1:
         generarTabla = False
     else:
         generarTabla = True
