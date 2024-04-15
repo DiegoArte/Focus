@@ -2,11 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import scrolledtext
 from tkinter import filedialog
-from PIL import Image,ImageTk
+from PIL import Image, ImageTk
 from tkinter import messagebox
 import re
 import time
 import difflib
+
 
 def abrir_archivo():
     file_path = filedialog.askopenfilename()
@@ -18,30 +19,30 @@ def abrir_archivo():
             cajaCodigo.delete('1.0', tk.END)
             cajaCodigo.insert(tk.END, text)
             colorear_palabras()
-            
+
+
 def guardar_archivo():
-    #print("Ruta: ",rutaFile)
+    # print("Ruta: ",rutaFile)
     codigo = cajaCodigo.get("1.0", tk.END)
-    #Si no se abrió un archivo y se comenzó a codificar
+    # Si no se abrió un archivo y se comenzó a codificar
     if rutaFile == "":
         # Abrir un cuadro de diálogo para seleccionar la ubicación y el nombre del archivo
-        nombre_archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Archivos de texto", "*.txt")])
+        nombre_archivo = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                      filetypes=[("Archivos de texto", "*.txt")])
         if nombre_archivo:
             with open(nombre_archivo, "w") as archivo:
                 archivo.write(codigo)
-            messagebox.showinfo('Éxito',f'Contenido guardado exitosamente en {nombre_archivo}')
+            messagebox.showinfo('Éxito', f'Contenido guardado exitosamente en {nombre_archivo}')
 
-    #Si hay un archivo abierto en el compilador
+    # Si hay un archivo abierto en el compilador
     else:
         respuesta = messagebox.askyesno("Confirmación", "¿Estás seguro que deseas guardar los cambios?")
         if respuesta:
-            
             with open(rutaFile, "w") as archivo:
                 archivo.write(codigo)
             print("Contenido guardado exitosamente.")
-            messagebox.showinfo('Éxito','Archivo guardado exitosamente')
+            messagebox.showinfo('Éxito', 'Archivo guardado exitosamente')
 
-    
 
 def abrir_lenguaje(ruta):
     try:
@@ -50,7 +51,8 @@ def abrir_lenguaje(ruta):
         return contenido
     except FileNotFoundError:
         return "El archivo no existe."
-    
+
+
 def mostrar_lenguaje(ruta_archivo):
     # Crear ventana secundaria
     ventana_secundaria = tk.Toplevel(ventana)
@@ -65,12 +67,13 @@ def mostrar_lenguaje(ruta_archivo):
 
     # Insertar contenido en la caja de texto
     caja_texto.insert(tk.END, contenido)
-    
+
 
 def limpiar_codigo():
     cajaCodigo.delete(1.0, tk.END)
     global rutaFile
     rutaFile = ""
+
 
 def limpiar_consola():
     cajaConsola.delete(1.0, tk.END)
@@ -79,7 +82,7 @@ def limpiar_consola():
 
 def colorear_palabras():
     text = cajaCodigo.get("1.0", tk.END)
-    #Recorre el codigo buscando palabras del diccionario de colores
+    # Recorre el codigo buscando palabras del diccionario de colores
     for word_list, color in wordColors.items():
         for word in word_list:
             start_index = '1.0'
@@ -90,7 +93,7 @@ def colorear_palabras():
                 end_index = f"{start_index}+{len(word)}c"
                 cajaCodigo.tag_add(color, start_index, end_index)
                 start_index = end_index
-    
+
     # Expresión regular para números enteros y decimales
     number_regex = r'\b\d+(\.\d+)?\b'
     matches = re.finditer(number_regex, text)
@@ -98,7 +101,7 @@ def colorear_palabras():
         start = f'1.0+{match.start()}c'
         end = f'1.0+{match.end()}c'
         cajaCodigo.tag_add('red', start, end)
-    
+
     # Expresión regular para textos entre comillas
     quoted_text_regex = r'"[^"]*"'
     matches = re.finditer(quoted_text_regex, text)
@@ -106,17 +109,18 @@ def colorear_palabras():
         start = f'1.0+{match.start()}c'
         end = f'1.0+{match.end()}c'
         cajaCodigo.tag_add('green', start, end)
-        
+
     # Expresión regular para líneas que comienzan con "!!" que sean comentarios
     lines = text.split("\n")
     for line_number, line in enumerate(lines):
         match = re.search(r'!!.*', line)
         if match:
-            start_index = f"{line_number+1}.0"
-            end_index = f"{line_number+1}.{match.end()}"
+            start_index = f"{line_number + 1}.0"
+            end_index = f"{line_number + 1}.{match.end()}"
             cajaCodigo.tag_add("gray", start_index, end_index)
 
-#Función que se ejecuta si se modifica el codigo
+
+# Función que se ejecuta si se modifica el codigo
 def cambia_texto(event):
     cajaCodigo.tag_remove("red", "1.0", tk.END)
     cajaCodigo.tag_remove("green", "1.0", tk.END)
@@ -125,7 +129,8 @@ def cambia_texto(event):
     cajaCodigo.tag_remove("gray", "1.0", tk.END)
     colorear_palabras()
 
-#Función que se ejecuta al teclear en la consola Enter
+
+# Función que se ejecuta al teclear en la consola Enter
 def handle_key(event):
     if event.keysym == "Return":
         current_text = cajaConsola.get("end-2l linestart", "end-1c")
@@ -134,28 +139,27 @@ def handle_key(event):
         cajaConsola.see("end")  # Hacer que el último texto sea visible
         return 'break'  # Para evitar que el comportamiento predeterminado de Tkinter maneje este evento
 
-#Función para procesar lo escrito en la consola (comandos)
+
+# Función para procesar lo escrito en la consola (comandos)
 def process_input(input_text):
     # Obtener solo la última línea
     lines = input_text.strip().split('\n')
-    last_line = lines[-1]    
-    #print("Última línea ingresada:", last_line)
+    last_line = lines[-1]
+    # print("Última línea ingresada:", last_line)
     patron = r'^FOCUS-bash>\s*(.*)$'
     # Buscar el patrón en cada cadena y extraer lo que sigue después de "FOCUS-bash>"
     resu = re.search(patron, last_line)
     if resu:
         comando = resu.group(1)
         print(comando)
-    
+
         if comando == "clear":
             limpiar_consola()
         elif comando == "exit":
             ventana.destroy()
-            
 
 
-
-#--------------------- FUNCIONES DE LAS FASES DEL COMPILADOR -------------------------
+# --------------------- FUNCIONES DE LAS FASES DEL COMPILADOR -------------------------
 def f1_Lexico():
     scrollConsole = tk.Scrollbar(ventana, orient=tk.VERTICAL)
     scrollConsole.place(x=913, y=545, height=150)
@@ -173,7 +177,7 @@ def f1_Lexico():
     lineaa = 1
     errores = 0
 
-    #Comienza a verificar las palabras en el codigo
+    # Comienza a verificar las palabras en el codigo
     contenido = []
     # Obtener el número total de líneas en la caja de texto
     num_lineas = int(cajaCodigo.index('end').split('.')[0])
@@ -181,16 +185,14 @@ def f1_Lexico():
     for i in range(1, num_lineas + 1):
         contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
 
-    
-    #Forma para imprimir en la consola
+    # Forma para imprimir en la consola
     '''
     cajaConsola.insert("end", "Lexical error: Line " + str(lineaa) + "contenido",
                                            "rojo")
                         cajaConsola.tag_configure("rojo", foreground="red")
-    
+
     '''
-    
-    
+
     '''
     inicio_fin=['.Start', '.Exit']
 
@@ -277,8 +279,8 @@ def f1_Lexico():
                         cajaConsola.tag_configure("rojo", foreground="red")
                         break
 
-    
-    
+
+
         else:
             errores += 0
         lineaa += 1
@@ -319,37 +321,30 @@ def f1_Lexico():
         generarTabla = False
     else:
         generarTabla = True
-        #Continua en el proceso de hacer la tabla de Tokens
-        tokens=[]
-        declares=[]
-        references=[]
-        l=1
+        # Continua en el proceso de hacer la tabla de Tokens
+        tokens = []
+        declares = []
+        references = []
+        l = 1
         for linea in contenido:
             if len(linea) > 0 and (linea[0] == "!" and linea[1] == "!"):
-                linea='!!'
+                linea = '!!'
+            conct=False
             if linea.startswith('Show('):
                 if '<<' in linea:
-                    a = ['<<', l]
-                    if not '<<' in tokens:
-                        tokens.append('<<')
-                        declares.append(a)
-                    else:
-                        references.append(a)
+                    conct=True
 
-                linea='Show()'
-            tok=re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', linea)
+
+                linea = 'Show()'
+            tok = re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', linea)
             for t in tok:
+                aPC=False
                 if t.endswith(';'):
-                    t2=';'
-                    a = [t2, l]
-                    if not t2 in tokens:
-                        tokens.append(t2)
-                        declares.append(a)
-                    else:
-                        references.append(a)
-                    t=t[:-1]
+                    t2 = ';'
+                    aPC = [t2, l]
+                    t = t[:-1]
                 if t.startswith('"'):
-                    t='"'
+                    t = '"'
                     a = [t, l]
                     if not t in tokens:
                         tokens.append(t)
@@ -460,7 +455,7 @@ def f1_Lexico():
                     else:
                         references.append(a)
 
-                else:
+                elif t!='':
                     a = [t, l]
                     if not t in tokens:
                         tokens.append(t)
@@ -468,39 +463,55 @@ def f1_Lexico():
                     else:
                         references.append(a)
 
-            l+=1
+                if aPC:
+                    if not t2 in tokens:
+                        tokens.append(t2)
+                        declares.append(a)
+                    else:
+                        references.append(a)
 
-        datos=[]
-        palabras_reservadas2 = [".Start", ".Exit", "int()", "flag()", "char()", "str()", "float()", "Show()", "int().input()", "set",
-                               "true", "false"]
+            if conct:
+                a = ['<<', l]
+                if not '<<' in tokens:
+                    tokens.append('<<')
+                    declares.append(a)
+                else:
+                    references.append(a)
+            l += 1
+
+
+        datos = []
+        palabras_reservadas2 = [".Start", ".Exit", "int()", "flag()", "char()", "str()", "float()", "Show()",
+                                "int().input()", "set",
+                                "true", "false"]
         erVariables = r'^[a-zA-Z_][a-zA-Z0-9_]*$'
         operadores = ['+', '-', '*', '/', '=']
-        contTokens=0
+        contTokens = 0
         for t in tokens:
-            reference=[""]
+            reference = [""]
             if t in palabras_reservadas2:
-                tipo='Palabra reservada'
+                tipo = 'Palabra reservada'
             elif re.match(erVariables, t):
-                tipo='Identificador'
+                tipo = 'Identificador'
             elif t in operadores:
                 tipo = 'Operador'
             else:
                 tipo = 'Carácter'
             for r in references:
-                if t==r[0]:
+                if t == r[0]:
                     reference.append(r[1])
-            if len(reference)>1:
+            if len(reference) > 1:
                 reference.pop(0)
-            dato=[t, tipo, declares[contTokens][1], reference]
+            dato = [t, tipo, declares[contTokens][1], reference]
             datos.append(dato)
-            contTokens+=1
+            contTokens += 1
 
-        ventanaTabla=tk.Toplevel(ventana)
+        ventanaTabla = tk.Toplevel(ventana)
         columnas = ("Token", "Type", "Declares", "Reference")
         style = ttk.Style()
         style.configure("Treeview", font=('Helvetica', 8), rowheight=25, fieldbackground='light gray')
         style.configure("Treeview.Heading", font=('Helvetica', 9))
-        tabla=ttk.Treeview(ventanaTabla, style="Treeview")
+        tabla = ttk.Treeview(ventanaTabla, style="Treeview")
         tabla["show"] = "headings"
         tabla.pack(expand=True, fill=tk.BOTH)
         tabla["columns"] = columnas
@@ -510,23 +521,25 @@ def f1_Lexico():
         for dato in datos:
             tabla.insert("", tk.END, values=dato)
 
+
 def f2_sintatico():
     pass
+
 
 def f3_semantico():
     pass
 
+
 def f4_codInter():
     pass
+
 
 def f5_Optimiza():
     pass
 
+
 def f6_codObj():
     pass
-
-
-
 
 
 # Crear la ventana principal
@@ -534,27 +547,29 @@ ventana = tk.Tk()
 ventana.title("COMPILADOR FOCUS")
 ventana.geometry("1280x720-100-100")
 ventana.config(bg="#222222")
-ventana.resizable(width=False,height=False)
+ventana.resizable(width=False, height=False)
 
-styleBtn = ("Source Code Pro",10)
+styleBtn = ("Source Code Pro", 10)
 styleBtn2 = ("LED Dot-Matrix", 15)
 
-#Título del compilador
-nombreCompi = tk.Label(ventana,text="Compilador FOCUS",bg="#222222",foreground="white",font=("LED Dot-Matrix", 30))
-nombreCompi.place(x=422,y=21)
+# Título del compilador
+nombreCompi = tk.Label(ventana, text="Compilador FOCUS", bg="#222222", foreground="white", font=("LED Dot-Matrix", 30))
+nombreCompi.place(x=422, y=21)
 
-#Caja de texto para el código
+# Caja de texto para el código
 scrollCodigo = tk.Scrollbar(ventana, orient=tk.VERTICAL)
-scrollCodigo.place(x=913,y=90, height=418)
-cajaCodigo = tk.Text(ventana, wrap=tk.WORD, yscrollcommand=scrollCodigo.set, width=100,height=26, font=('Source Code Pro', 10),bg="#151515",foreground="white",bd=None,insertbackground="white")
-cajaCodigo.place(x=107,y=88)
+scrollCodigo.place(x=913, y=90, height=418)
+cajaCodigo = tk.Text(ventana, wrap=tk.WORD, yscrollcommand=scrollCodigo.set, width=100, height=26,
+                     font=('Source Code Pro', 10), bg="#151515", foreground="white", bd=None, insertbackground="white")
+cajaCodigo.place(x=107, y=88)
 scrollCodigo.config(command=cajaCodigo.yview)
 
-#Caja de texto para la consola
+# Caja de texto para la consola
 scrollConsole = tk.Scrollbar(ventana, orient=tk.VERTICAL)
-scrollConsole.place(x=913,y=545, height=150)
-cajaConsola = tk.Text(ventana, wrap=tk.WORD, yscrollcommand=scrollConsole.set,width=100,height=9, font=('Source Code Pro', 10),bg="#4B4B4B",foreground="white",bd=None,insertbackground="white")
-cajaConsola.place(x=107,y=546)
+scrollConsole.place(x=913, y=545, height=150)
+cajaConsola = tk.Text(ventana, wrap=tk.WORD, yscrollcommand=scrollConsole.set, width=100, height=9,
+                      font=('Source Code Pro', 10), bg="#4B4B4B", foreground="white", bd=None, insertbackground="white")
+cajaConsola.place(x=107, y=546)
 scrollConsole.config(command=cajaConsola.yview)
 
 # Colocar el texto por defecto
@@ -569,85 +584,83 @@ cajaCodigo.bind("<KeyRelease>", cambia_texto)
 # Diccionario de listas de palabras y colores correspondientes
 wordColors = {
     ('.Start', '.Exit'): "#6DC559",
-    ('str', 'flag', 'int', 'char', 'float', '(', ')','.', ';'): "#F1E54A",
-    ('true', 'false','Show', '<<', 'set', 'input'): "#4C90D4",
+    ('str', 'flag', 'int', 'char', 'float', '(', ')', '.', ';'): "#F1E54A",
+    ('true', 'false', 'Show', '<<', 'set', 'input'): "#4C90D4",
     ('=', '+', '-', '*', '/'): "#E56464"
 }
 
 # Crear etiquetas de estilo para resaltar las palabras
 for color in set(wordColors.values()):
     cajaCodigo.tag_configure(color, foreground=color)
-    
+
 cajaCodigo.tag_configure('green', foreground='#6DC559')
 cajaCodigo.tag_configure('blue', foreground='#4C90D4')
 cajaCodigo.tag_configure('yellow', foreground='#F1E54A')
 cajaCodigo.tag_configure('red', foreground='#E56464')
 cajaCodigo.tag_configure('gray', foreground='#B5B5B5')
 
-
-
-
 # Botón para abrir el archivo
 img1 = Image.open('img/open.png')
-img1.thumbnail((31,31),Image.ADAPTIVE)
+img1.thumbnail((31, 31), Image.ADAPTIVE)
 imgOpen = ImageTk.PhotoImage(img1)
-open_button = tk.Button(ventana, image=imgOpen, command=abrir_archivo,bg="#222222",bd=0)
-open_button.place(x=107,y=50)
+open_button = tk.Button(ventana, image=imgOpen, command=abrir_archivo, bg="#222222", bd=0)
+open_button.place(x=107, y=50)
 
-#Aquí se guardará la ruta del archivo que se haya abierto en caso de
+# Aquí se guardará la ruta del archivo que se haya abierto en caso de
 global rutaFile
 rutaFile = ""
 
-#Botón para guardar el archivo
+# Botón para guardar el archivo
 img2 = Image.open('img/save.png')
-img2.thumbnail((31,31),Image.ADAPTIVE)
+img2.thumbnail((31, 31), Image.ADAPTIVE)
 imgSave = ImageTk.PhotoImage(img2)
-open_button = tk.Button(ventana,image=imgSave, command=guardar_archivo,bg="#222222",bd=0)
-open_button.place(x=147,y=50)
+open_button = tk.Button(ventana, image=imgSave, command=guardar_archivo, bg="#222222", bd=0)
+open_button.place(x=147, y=50)
 
-#Botón para abrir el lenguaje
+# Botón para abrir el lenguaje
 img3 = Image.open('img/lang.png')
-img3.thumbnail((31,31),Image.ADAPTIVE)
+img3.thumbnail((31, 31), Image.ADAPTIVE)
 imgCode = ImageTk.PhotoImage(img3)
-botonLenguaje = tk.Button(ventana, image=imgCode, command=lambda:mostrar_lenguaje("lang.txt"),bg="#222222",bd=0)
-botonLenguaje.place(x=197,y=50)
+botonLenguaje = tk.Button(ventana, image=imgCode, command=lambda: mostrar_lenguaje("lang.txt"), bg="#222222", bd=0)
+botonLenguaje.place(x=197, y=50)
 
-#Botón para limpiar el código
-btnClearCodigo = tk.Button(ventana,text="CLEAR",font=styleBtn,bg="#B5B5B5",foreground="#000",command=limpiar_codigo)
-btnClearCodigo.place(x=247,y=55)
+# Botón para limpiar el código
+btnClearCodigo = tk.Button(ventana, text="CLEAR", font=styleBtn, bg="#B5B5B5", foreground="#000",
+                           command=limpiar_codigo)
+btnClearCodigo.place(x=247, y=55)
 
-#Botón para limpiar la consola
-btnClearCodigo = tk.Button(ventana,text="CLEAR",font=styleBtn,bg="#B5B5B5",foreground="#000",command=limpiar_consola)
-btnClearCodigo.place(x=880,y=518)
+# Botón para limpiar la consola
+btnClearCodigo = tk.Button(ventana, text="CLEAR", font=styleBtn, bg="#B5B5B5", foreground="#000",
+                           command=limpiar_consola)
+btnClearCodigo.place(x=880, y=518)
 
+# --------------------------BOTONES DE LAS FASES DEL COMPILADOR ------------------------------------------------------
 
+# Color verde de los botones #6DCB5A
+# Color rojo de los botones #E74747
+btnLexico = tk.Button(ventana, font=styleBtn2, command=f1_Lexico, text="LEXICO", width=12, height=2, bd=0, bg="#B5B5B5",
+                      foreground="white")
+btnLexico.place(x=947, y=88)
 
-#--------------------------BOTONES DE LAS FASES DEL COMPILADOR ------------------------------------------------------
+btnSintactico = tk.Button(ventana, font=styleBtn2, command=f2_sintatico, text="SINTACTICO", width=12, height=2, bd=0,
+                          bg="#B5B5B5", foreground="white")
+btnSintactico.place(x=947, y=149)
 
-#Color verde de los botones #6DCB5A
-#Color rojo de los botones #E74747
-btnLexico = tk.Button(ventana,font=styleBtn2,command=f1_Lexico,text="LEXICO",width=12,height=2,bd=0,bg="#B5B5B5",foreground="white")
-btnLexico.place(x=947,y=88)
+btnSemant = tk.Button(ventana, font=styleBtn2, command=f3_semantico, text="SEMANTICO", width=12, height=2, bd=0,
+                      bg="#B5B5B5", foreground="white")
+btnSemant.place(x=947, y=209)
 
-btnSintactico = tk.Button(ventana,font=styleBtn2,command=f2_sintatico,text="SINTACTICO",width=12,height=2,bd=0,bg="#B5B5B5",foreground="white")
-btnSintactico.place(x=947,y=149)
+btnCodInter = tk.Button(ventana, font=styleBtn2, command=f4_codInter, text="CODIGO\nINTERMEDIO", width=12, height=2,
+                        bd=0, bg="#B5B5B5", foreground="white")
+btnCodInter.place(x=947, y=269)
 
-btnSemant = tk.Button(ventana,font=styleBtn2,command=f3_semantico,text="SEMANTICO",width=12,height=2,bd=0,bg="#B5B5B5",foreground="white")
-btnSemant.place(x=947,y=209)
+btnOptimiza = tk.Button(ventana, font=styleBtn2, command=f5_Optimiza, text="OPTIMIZACION", width=12, height=2, bd=0,
+                        bg="#B5B5B5", foreground="white")
+btnOptimiza.place(x=947, y=329)
 
-btnCodInter = tk.Button(ventana,font=styleBtn2,command=f4_codInter,text="CODIGO\nINTERMEDIO",width=12,height=2,bd=0,bg="#B5B5B5",foreground="white")
-btnCodInter.place(x=947,y=269)
-
-btnOptimiza = tk.Button(ventana,font=styleBtn2,command=f5_Optimiza,text="OPTIMIZACION",width=12,height=2,bd=0,bg="#B5B5B5",foreground="white")
-btnOptimiza.place(x=947,y=329)
-
-btnCodObj = tk.Button(ventana,font=styleBtn2,command=f6_codObj,text="CODIGO\nOBJETO",width=12,height=2,bd=0,bg="#B5B5B5",foreground="white")
-btnCodObj.place(x=947,y=389)
-
-
-
-
-
+btnCodObj = tk.Button(ventana, font=styleBtn2, command=f6_codObj, text="CODIGO\nOBJETO", width=12, height=2, bd=0,
+                      bg="#B5B5B5", foreground="white")
+btnCodObj.place(x=947, y=389)
 
 # Iniciar la aplicación
 ventana.mainloop()
