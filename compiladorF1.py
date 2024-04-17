@@ -340,8 +340,8 @@ def f1_Lexico():
             for t in tok:
                 aPC=False
                 if t.endswith(';'):
-                    t2 = ';'
-                    aPC = [t2, l]
+                    t4 = ';'
+                    aPC = [t4, l]
                     t = t[:-1]
                 if t.startswith('"'):
                     t = '"'
@@ -395,7 +395,7 @@ def f1_Lexico():
                         declares.append(a)
                     else:
                         references.append(a)
-                    match = re.search(r'int\((\d+)\);', t)
+                    match = re.search(r'int\((\d+)\)', t)
                     if match:
                         t3 = match.group(1)
                         a = [t3, l]
@@ -412,7 +412,7 @@ def f1_Lexico():
                         declares.append(a)
                     else:
                         references.append(a)
-                    match = re.search(r'float\((\d+)\);', t)
+                    match = re.search(r'float\(([\d.]+)\)', t)
                     if match:
                         t3 = match.group(1)
                         a = [t3, l]
@@ -429,7 +429,9 @@ def f1_Lexico():
                         declares.append(a)
                     else:
                         references.append(a)
-                    match = re.search(r'flag\((\d+)\);', t)
+                    match = re.search(r'flag\((true|false)\)', t)
+                    print(t)
+                    print(match)
                     if match:
                         t3 = match.group(1)
                         a = [t3, l]
@@ -464,11 +466,11 @@ def f1_Lexico():
                         references.append(a)
 
                 if aPC:
-                    if not t2 in tokens:
-                        tokens.append(t2)
-                        declares.append(a)
+                    if not t4 in tokens:
+                        tokens.append(t4)
+                        declares.append(aPC)
                     else:
-                        references.append(a)
+                        references.append(aPC)
 
             if conct:
                 a = ['<<', l]
