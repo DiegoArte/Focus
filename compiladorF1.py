@@ -161,6 +161,14 @@ def process_input(input_text):
 
 # --------------------- FUNCIONES DE LAS FASES DEL COMPILADOR -------------------------
 def f1_Lexico():
+    btnLexico.config(bg="#6DCB5A")
+    btnSintactico.config(bg="#E74747")
+    btnSemant.config(bg="#E74747")
+    btnCodInter.config(bg="#E74747")
+    btnOptimiza.config(bg="#E74747")
+    btnCodObj.config(bg="#E74747")
+    
+    
     scrollConsole = tk.Scrollbar(ventana, orient=tk.VERTICAL)
     scrollConsole.place(x=913, y=545, height=150)
     cajaConsola = tk.Text(ventana, wrap=tk.WORD, yscrollcommand=scrollConsole.set, width=100, height=9,
@@ -193,7 +201,7 @@ def f1_Lexico():
 
     '''
 
-    '''
+    
     inicio_fin=['.Start', '.Exit']
 
     for linea in contenido:
@@ -316,7 +324,7 @@ def f1_Lexico():
                                        "rojo")
                     cajaConsola.tag_configure("rojo", foreground="red")
         l += 1
-    '''
+    
     if errores >= 1:
         generarTabla = False
     else:
