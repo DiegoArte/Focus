@@ -324,7 +324,34 @@ def f1_Lexico():
                                        "rojo")
                     cajaConsola.tag_configure("rojo", foreground="red")
         l += 1
-    
+        
+    # Función para limpiar la palabra de paréntesis y caracteres interiores
+    def limpiar_palabra2(palabra):
+        palabra_limpia = palabra.rstrip(';')
+        partes = palabra_limpia.split('(')
+        if len(partes) > 1:
+            palabra_sin_parentesis = partes[1].split(')')[0]  # Obtener el contenido dentro de los paréntesis
+            return palabra_sin_parentesis
+        else:
+            return palabra_limpia
+
+    if errores == 0:
+        l = 1
+        for linea in contenido:
+            palabras_linea = linea.split()  # Separar la línea en palabras
+            for palabra in palabras_linea:
+                palabra_limpia = limpiar_palabra2(palabra)
+                sugerencias = difflib.get_close_matches(palabra_limpia, palabras_reservadas, cutoff=0.6)
+                if sugerencias:
+                    if sugerencias[0] != palabra_limpia:
+                        # print(f"Error en la palabra reservada '{palabra}' en la línea {l}. ¿Quisiste decir '{sugerencias[0]}'?")
+                        errores += 1
+                        cajaConsola.insert("end",
+                                        "Lexical error: Line " + str(
+                                            l) + " in wrong reserved word " + palabra + f"  ¿Did you mean '{sugerencias[0]}'?",
+                                        "rojo")
+                        cajaConsola.tag_configure("rojo", foreground="red")
+        
     if errores >= 1:
         generarTabla = False
     else:
