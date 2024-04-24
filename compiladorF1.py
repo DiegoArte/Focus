@@ -327,7 +327,7 @@ def f1_Lexico():
     
     if errores >= 1:
         generarTabla = False
-    else:
+        else:
         generarTabla = True
         # Continua en el proceso de hacer la tabla de Tokens
         tokens = []
@@ -338,12 +338,44 @@ def f1_Lexico():
             if len(linea) > 0 and (linea[0] == "!" and linea[1] == "!"):
                 linea = '!!'
             conct=False
+
             if linea.startswith('Show('):
-                if '<<' in linea:
-                    conct=True
+                tr = ['Show', '(', ')', ';']
+                for t in tr:
+                    a = [t, l]
+                    if not t in tokens:
+                        tokens.append(t)
+                        declares.append(a)
+                    else:
+                        references.append(a)
+                    if t == '(':
+                        patronShow = r'Show\((.*?)\)'
+                        resultado = re.search(patronShow, linea)
+                        if resultado:
+                            contenido_show = resultado.group(1)
+                            if '"' in contenido_show:
+                                tc = '"'
+                                a = [tc, l]
+                                if not tc in tokens:
+                                    tokens.append(tc)
+                                    declares.append(a)
+                                else:
+                                    references.append(a)
+                            if '<<' in contenido_show:
+                                tc=['<<']
+                                partes = contenido_show.split("<< ", 1)
+                                if len(partes) > 1:
+                                    contenido_despues_de_ = partes[1]
+                                    tc.append(contenido_despues_de_)
+                                for tcc in tc:
+                                    a = [tcc, l]
+                                    if not tcc in tokens:
+                                        tokens.append(tcc)
+                                        declares.append(a)
+                                    else:
+                                        references.append(a)
+                linea = ''
 
-
-                linea = 'Show()'
             tok = re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', linea)
             for t in tok:
                 aPC=False
@@ -360,110 +392,121 @@ def f1_Lexico():
                     else:
                         references.append(a)
                 elif t.startswith('int().input('):
-                    t = 'int().input()'
-                    a = [t, l]
-                    if not t in tokens:
-                        tokens.append(t)
-                        declares.append(a)
-                    else:
-                        references.append(a)
+                    tr =['int', '(', ')', '.input', '(', '"', ')', ';']
+                    for t in tr:
+                        a = [t, l]
+                        if not t in tokens:
+                            tokens.append(t)
+                            declares.append(a)
+                        else:
+                            references.append(a)
                     break
                 elif t.startswith('float().input('):
-                    t = 'float().input()'
-                    a = [t, l]
-                    if not t in tokens:
-                        tokens.append(t)
-                        declares.append(a)
-                    else:
-                        references.append(a)
+                    tr = ['float', '(', ')', '.input', '(', '"', ')', ';']
+                    for t in tr:
+                        a = [t, l]
+                        if not t in tokens:
+                            tokens.append(t)
+                            declares.append(a)
+                        else:
+                            references.append(a)
                     break
                 elif t.startswith('char().input('):
-                    t = 'char().input()'
-                    a = [t, l]
-                    if not t in tokens:
-                        tokens.append(t)
-                        declares.append(a)
-                    else:
-                        references.append(a)
+                    tr = ['char', '(', ')', '.input', '(', ')', ';']
+                    for t in tr:
+                        a = [t, l]
+                        if not t in tokens:
+                            tokens.append(t)
+                            declares.append(a)
+                        else:
+                            references.append(a)
                     break
                 elif t.startswith('str().input('):
-                    t = 'str().input()'
-                    a = [t, l]
-                    if not t in tokens:
-                        tokens.append(t)
-                        declares.append(a)
-                    else:
-                        references.append(a)
+                    tr = ['str', '(', ')', '.input', '(', ')', ';']
+                    for t in tr:
+                        a = [t, l]
+                        if not t in tokens:
+                            tokens.append(t)
+                            declares.append(a)
+                        else:
+                            references.append(a)
                     break
                 elif t.startswith('int('):
-                    t2 = 'int()'
-                    a = [t2, l]
-                    if not t2 in tokens:
-                        tokens.append(t2)
-                        declares.append(a)
-                    else:
-                        references.append(a)
-                    match = re.search(r'int\((\d+)\)', t)
-                    if match:
-                        t3 = match.group(1)
-                        a = [t3, l]
-                        if not t3 in tokens:
-                            tokens.append(t3)
+                    tr = ['int', '(', ')']
+                    for t2 in tr:
+                        a = [t2, l]
+                        if not t2 in tokens:
+                            tokens.append(t2)
                             declares.append(a)
                         else:
                             references.append(a)
+                        if t2 == '(':
+                            match = re.search(r'int\((\d+)\)', t)
+                            if match:
+                                t3 = match.group(1)
+                                a = [t3, l]
+                                if not t3 in tokens:
+                                    tokens.append(t3)
+                                    declares.append(a)
+                                else:
+                                    references.append(a)
                 elif t.startswith('float('):
-                    t2 = 'float()'
-                    a = [t2, l]
-                    if not t2 in tokens:
-                        tokens.append(t2)
-                        declares.append(a)
-                    else:
-                        references.append(a)
-                    match = re.search(r'float\(([\d.]+)\)', t)
-                    if match:
-                        t3 = match.group(1)
-                        a = [t3, l]
-                        if not t3 in tokens:
-                            tokens.append(t3)
+                    tr = ['float', '(', ')']
+                    for t2 in tr:
+                        a = [t2, l]
+                        if not t2 in tokens:
+                            tokens.append(t2)
                             declares.append(a)
                         else:
                             references.append(a)
+                        if t2 == '(':
+                            match = re.search(r'float\(([\d.]+)\)', t)
+                            if match:
+                                t3 = match.group(1)
+                                a = [t3, l]
+                                if not t3 in tokens:
+                                    tokens.append(t3)
+                                    declares.append(a)
+                                else:
+                                    references.append(a)
+
                 elif t.startswith('flag('):
-                    t2 = 'flag()'
-                    a = [t2, l]
-                    if not t2 in tokens:
-                        tokens.append(t2)
-                        declares.append(a)
-                    else:
-                        references.append(a)
-                    match = re.search(r'flag\((true|false)\)', t)
-                    print(t)
-                    print(match)
-                    if match:
-                        t3 = match.group(1)
-                        a = [t3, l]
-                        if not t3 in tokens:
-                            tokens.append(t3)
+                    tr = ['flag', '(', ')']
+                    for t2 in tr:
+                        a = [t2, l]
+                        if not t2 in tokens:
+                            tokens.append(t2)
                             declares.append(a)
                         else:
                             references.append(a)
+                        if t2 == '(':
+                            match = re.search(r'flag\((true|false)\)', t)
+                            if match:
+                                t3 = match.group(1)
+                                a = [t3, l]
+                                if not t3 in tokens:
+                                    tokens.append(t3)
+                                    declares.append(a)
+                                else:
+                                    references.append(a)
                 elif t.startswith('str('):
-                    t2 = 'str()'
-                    a = [t2, l]
-                    if not t2 in tokens:
-                        tokens.append(t2)
-                        declares.append(a)
-                    else:
-                        references.append(a)
+                    tr = ['str', '(', ')']
+                    for t2 in tr:
+                        a = [t2, l]
+                        if not t2 in tokens:
+                            tokens.append(t2)
+                            declares.append(a)
+                        else:
+                            references.append(a)
                 elif t.startswith('char('):
-                    t2 = 'char()'
-                    a = [t2, l]
-                    if not t2 in tokens:
-                        tokens.append(t2)
-                        declares.append(a)
-                    else:
-                        references.append(a)
+                    tr = ['char', '(', ')']
+                    for t2 in tr:
+                        a = [t2, l]
+                        if not t2 in tokens:
+                            tokens.append(t2)
+                            declares.append(a)
+                        else:
+                            references.append(a)
 
                 elif t!='':
                     a = [t, l]
@@ -480,19 +523,13 @@ def f1_Lexico():
                     else:
                         references.append(aPC)
 
-            if conct:
-                a = ['<<', l]
-                if not '<<' in tokens:
-                    tokens.append('<<')
-                    declares.append(a)
-                else:
-                    references.append(a)
+
             l += 1
 
 
         datos = []
-        palabras_reservadas2 = [".Start", ".Exit", "int()", "flag()", "char()", "str()", "float()", "Show()",
-                                "int().input()", "set",
+        palabras_reservadas2 = [".Start", ".Exit", "int", "flag", "char", "str", "float", "Show",
+                                ".input", "set",
                                 "true", "false"]
         erVariables = r'^[a-zA-Z_][a-zA-Z0-9_]*$'
         operadores = ['+', '-', '*', '/', '=']
@@ -530,7 +567,6 @@ def f1_Lexico():
 
         for dato in datos:
             tabla.insert("", tk.END, values=dato)
-
 
 def f2_sintatico():
     pass
