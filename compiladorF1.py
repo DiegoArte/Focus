@@ -327,7 +327,7 @@ def f1_Lexico():
     
     if errores >= 1:
         generarTabla = False
-        else:
+    else:
         generarTabla = True
         # Continua en el proceso de hacer la tabla de Tokens
         tokens = []
