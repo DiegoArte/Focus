@@ -1,3 +1,7 @@
+
+*** NOTA: Los tokens deben estar separados por espacios ***
+*** Por ejemplo: "var1 = 2;" y no "var1=2;"
+
  1-  Palabra para inicio y fin: 
     .Start
     .Exit
