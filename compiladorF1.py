@@ -392,7 +392,7 @@ def f1_Lexico():
                     else:
                         references.append(a)
                 elif t.startswith('int().input('):
-                    tr =['int', '(', ')', '.input', '(', '"', ')', ';']
+                    tr =['int', '(', ')', '.input', '"', ';']
                     for t in tr:
                         a = [t, l]
                         if not t in tokens:
@@ -402,7 +402,7 @@ def f1_Lexico():
                             references.append(a)
                     break
                 elif t.startswith('float().input('):
-                    tr = ['float', '(', ')', '.input', '(', '"', ')', ';']
+                    tr = ['float', '(', ')', '.input', '"', ';']
                     for t in tr:
                         a = [t, l]
                         if not t in tokens:
@@ -412,7 +412,7 @@ def f1_Lexico():
                             references.append(a)
                     break
                 elif t.startswith('char().input('):
-                    tr = ['char', '(', ')', '.input', '(', ')', ';']
+                    tr = ['char', '(', ')', '.input', '"', ';']
                     for t in tr:
                         a = [t, l]
                         if not t in tokens:
@@ -422,7 +422,7 @@ def f1_Lexico():
                             references.append(a)
                     break
                 elif t.startswith('str().input('):
-                    tr = ['str', '(', ')', '.input', '(', ')', ';']
+                    tr = ['str', '(', ')', '.input', '"', ';']
                     for t in tr:
                         a = [t, l]
                         if not t in tokens:
