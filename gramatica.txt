@@ -1,0 +1,22 @@
+F-> .Start | .Exit | !! | Linea | F
+Linea-> DeclaraVar | AsignaValor | VariableVariable | IngresarDato | Mostrar | Operacion | Concatenar
+DeclaraVar-> nomVar = tipo;
+tipo-> int(Vint) | str() | char() | flag(Vflag) | float(Vfloat)
+Vint-> num | ''
+Vflag-> true | false | ''
+AsignaValor-> nomVar = Dato; 
+Dato-> num | num.num | true | false | ""
+VariableVariable-> set nomVar = nomVar;
+IngresarDato-> nomVar = tipoDato.input("");
+tipoDato-> int() | float() | char() | str()
+Mostrar-> Show(""); | Show(""<<nomVar);
+Operacion-> nomVar = Ope op Ope (op Ope)*;
+Ope-> nomVar | num | Vfloat
+op-> + | - | * | /
+Concatenar-> Conct << Conct (<< Conct)*;
+Conct-> nomVar | ""
+nomVar-> letra(letra|num)*
+letra-> [a-zA-Z_]
+Vfloat-> num.num | ''
+num-> [0-9]*
+
