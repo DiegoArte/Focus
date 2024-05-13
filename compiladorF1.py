@@ -596,7 +596,134 @@ def f1_Lexico():
             tabla.insert("", tk.END, values=dato)
 
 def f2_sintatico():
-    pass
+    btnLexico.config(bg="#E74747")
+    btnSintactico.config(bg="#6DCB5A")
+    btnSemant.config(bg="#E74747")
+    btnCodInter.config(bg="#E74747")
+    btnOptimiza.config(bg="#E74747")
+    btnCodObj.config(bg="#E74747")
+
+    # Comienza a verificar las palabras en el codigo
+    contenido = []
+    # Obtener el número total de líneas en la caja de texto
+    num_lineas = int(cajaCodigo.index('end').split('.')[0])
+    # Iterar sobre cada línea y obtener su contenido
+    for i in range(1, num_lineas + 1):
+        contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
+
+    lineas=[]
+    for linea in contenido:
+        tokens = []
+        if len(linea) > 0 and (linea[0] == "!" and linea[1] == "!"):
+            linea = '!!'
+        conct = False
+
+        if linea.startswith('Show('):
+            tr = ['Show', '(', ')', ';']
+            for t in tr:
+                tokens.append(t)
+                if t == '(':
+                    patronShow = r'Show\((.*?)\)'
+                    resultado = re.search(patronShow, linea)
+                    if resultado:
+                        contenido_show = resultado.group(1)
+                        if '"' in contenido_show:
+                            tc = '"'
+                            tokens.append(tc)
+                            tokens.append(tc)
+                        if '<<' in contenido_show:
+                            tc = ['<<']
+                            partes = contenido_show.split("<< ", 1)
+                            if len(partes) > 1:
+                                contenido_despues_de_ = partes[1]
+                                tc.append(contenido_despues_de_)
+                            for tcc in tc:
+                                tokens.append(tcc)
+
+            linea = ''
+
+        tok = re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', linea)
+        for t in tok:
+            aPC = False
+            if t.endswith(';'):
+                t4 = ';'
+                aPC = t4
+                t = t[:-1]
+            if t.startswith('"'):
+                t = '"'
+                tokens.append(t)
+                tokens.append(t)
+            elif t.startswith('int().input('):
+                tr = ['int', '(', ')', '.input', '(', '"', '"', ')', ';']
+                for t in tr:
+                    tokens.append(t)
+                break
+            elif t.startswith('float().input('):
+                tr = ['float', '(', ')', '.input', '(', '"', '"', ')', ';']
+                for t in tr:
+                    tokens.append(t)
+                break
+            elif t.startswith('char().input('):
+                tr = ['char', '(', ')', '.input', '(', '"', '"', ')', ';']
+                for t in tr:
+                    tokens.append(t)
+                break
+            elif t.startswith('str().input('):
+                tr = ['str', '(', ')', '.input', '(', '"', '"', ')', ';']
+                for t in tr:
+                    tokens.append(t)
+                break
+            elif t.startswith('int('):
+                tr = ['int', '(', ')']
+                for t2 in tr:
+                    tokens.append(t2)
+                    if t2 == '(':
+                        match = re.search(r'int\((\d+)\)', t)
+                        if match:
+                            t3 = match.group(1)
+                            tokens.append(t3)
+                        else:
+                            tokens.append('')
+            elif t.startswith('float('):
+                tr = ['float', '(', ')']
+                for t2 in tr:
+                    tokens.append(t2)
+                    if t2 == '(':
+                        match = re.search(r'float\(([\d.]+)\)', t)
+                        if match:
+                            t3 = match.group(1)
+                            tokens.append(t3)
+                        else:
+                            tokens.append('')
+
+            elif t.startswith('flag('):
+                tr = ['flag', '(', ')']
+                for t2 in tr:
+                    tokens.append(t2)
+                    if t2 == '(':
+                        match = re.search(r'flag\((true|false)\)', t)
+                        if match:
+                            t3 = match.group(1)
+                            tokens.append(t3)
+                        else:
+                            tokens.append('')
+            elif t.startswith('str('):
+                tr = ['str', '(', ')']
+                for t2 in tr:
+                    tokens.append(t2)
+            elif t.startswith('char('):
+                tr = ['char', '(', ')']
+                for t2 in tr:
+                    tokens.append(t2)
+
+            elif t != '':
+                tokens.append(t)
+
+            if aPC:
+                tokens.append(t4)
+
+        lineas.append(tokens)
+    print(lineas)
 
 
 def f3_semantico():
