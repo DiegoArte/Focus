@@ -603,6 +603,71 @@ def f2_sintatico():
     btnOptimiza.config(bg="#E74747")
     btnCodObj.config(bg="#E74747")
 
+    #------------- Gramática---------------------------------------------------------------------------------------------------------------------
+    gram_F = [".Start", ".Exit", "!!", "Linea", "F"]
+    gram_Linea = ["DeclaraVar","AsignaValor", "VariableVariable", "IngresarDato", "Mostrar", "Operacion", "Concatenar"]
+    gram_DeclaraVar = "nomVar = tipo;"
+    gram_tipo = ["int(Vint)", "str()", "char()", "flag(Vflag)", "float(Vfloat)"]
+    gram_Vint = ["num", None, "''"]
+    gram_Vflag = ["true", "false", None, "''"]
+    gram_AsignaValor = "nomVar = Dato"
+    gram_Dato = ["num" , "num.num" , "true" , "false" , None,  '""']
+    gram_VariableVariable = "set nomVar = nomVar"
+    gram_IngresarDato = 'nomVar = tipoDato.input("");'
+    gram_tipoDato = ["int()", "float()", "char()", "str()"]
+    gram_Mostrar = ['Show("");', 'Show(""<<nomVar);']
+    gram_Operacion = "nomVar = Ope op Ope;"
+    #expresión regular para operaciones
+    gram_ER_oper = re.compile(r'((op Ope)*)')    # Ejemplos de uso
+    '''# Ejemplos de uso
+    ejemplos = [
+        '',                  # Válido: cero repeticiones
+        'op Ope',            # Válido: una secuencia
+        'op Opeop Ope',      # Válido: múltiples secuencias
+        'op1 Ope1op2 Ope2',  # Válido: múltiples secuencias con variación
+        'op Ope op Ope',     # Inválido: contiene espacios adicionales
+        'op',                # Inválido: incompleto
+        'Ope',               # Inválido: incompleto
+    ]
+
+    for ejemplo in ejemplos:
+        if gram_ER_oper.fullmatch(ejemplo):
+            print(f"'{ejemplo}' es válido.")
+        else:
+            print(f"'{ejemplo}' no es válido.")
+    '''
+    gram_Ope = ["nomVar", "num", "Vfloat"]
+    gram_op = ["+", "-" "*", "/"]
+    gram_Concatenar = "Conct << Conct;"
+    #expresión regular para concatenaciones
+    gram_ER_Conct = re.compile(r'(<< Conct)*')
+    '''
+    # Ejemplos de uso
+    ejemplos = [
+        '',                   # Válido: cero repeticiones
+        '<< Conct',           # Válido: una secuencia
+        '<< Conct<< Conct',   # Válido: múltiples secuencias
+        '<<Conct',            # Inválido: falta el espacio después de <<
+        '<< Conct << Conct',  # Inválido: contiene espacios adicionales
+        '<< ',                # Inválido: incompleto
+        'Conct',              # Inválido: falta el operador inicial <<
+    ]
+
+    for ejemplo in ejemplos:
+        if gram_ER_Conct.fullmatch(ejemplo):
+            print(f"'{ejemplo}' es válido.")
+        else:
+            print(f"'{ejemplo}' no es válido.")
+    '''
+    gram_Conct = ["nomVar", None, '""']
+    gram_NomVar = ["letra"]
+    gram_ER_nomVar = re.compile(r'([a-zA-Z0-9])*')
+    gram_ER_letra = re.compile(r'([a-zA-Z_])+')
+    gram_Vfloat = ["num.num", "None", "''"]
+    gram_ER_num = re.compile(r'[0-9]+')
+    
+    #----------------------------------------------------------------------------------
+
     # Comienza a verificar las palabras en el codigo
     contenido = []
     # Obtener el número total de líneas en la caja de texto
