@@ -1,6 +1,7 @@
 
 *** NOTA: Los tokens deben estar separados por espacios ***
 *** Por ejemplo: "var1 = 2;" y no "var1=2;"
+*** No se pueden concatenar mas de dos datos a la vez
 
  1-  Palabra para inicio y fin: 
     .Start
