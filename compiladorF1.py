@@ -617,6 +617,8 @@ def f2_sintatico():
                               foreground="#FFA500", font=("Helvetica", 10, "bold"))  # Fondo amarillo claro, texto dorado
     cajaConsola.tag_configure("rojo", background="white", foreground="#FF4500", font=("Helvetica", 10, "bold"))  # Fondo rojo claro, texto rojo oscuro
     cajaConsola.tag_configure("verde", background="white", foreground="#008000", font=("Helvetica", 10, "bold"))  # Fondo verde claro, texto verde
+    cajaConsola.tag_configure("blanco", foreground="white")
+
 
     # ------------- Gramática---------------------------------------------------------------------------------------------------------------------
     num = [[RegexMatcher(r"^-?\d+$")]]
@@ -799,10 +801,6 @@ def f2_sintatico():
         else:
             return str(elemento)
 
-    est=['n', 1, [], ['#']]
-    for i in range(len(contenido)-1):
-        if contenido[i]!='':
-            est[3].insert(0, F)
     nombres_variables = {
         'F': F,
         'Linea': Linea,
@@ -826,6 +824,13 @@ def f2_sintatico():
         'num': num,
         'dec': dec
     }
+    est=['n', 1, [], [F, '#']]
+    est_strs = [lista_a_str(elem, nombres_variables) for elem in est]
+    cajaConsola.insert("end", "\n" + ",".join(est_strs), "blanco")
+    est = ['n', 1, [], ['#']]
+    for i in range(len(contenido)-1):
+        if contenido[i]!='':
+            est[3].insert(0, F)
 
     terminales = list(nombres_variables.keys())
 
@@ -837,7 +842,6 @@ def f2_sintatico():
 
     est_strs = [lista_a_str(elem, nombres_variables) for elem in est]
     cajaConsola.insert("end", "\n" + ",".join(est_strs), "blanco")
-    cajaConsola.tag_configure("blanco", foreground="white")
 
     def proceso(est, exp):
         if exp==1:
