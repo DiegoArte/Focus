@@ -8,6 +8,12 @@ import re
 import time
 import difflib
 
+class RegexMatcher:
+    def __init__(self, pattern):
+        self.pattern = pattern
+
+    def __eq__(self, other):
+        return re.match(self.pattern, other) is not None
 
 def abrir_archivo():
     file_path = filedialog.askopenfilename()
@@ -167,8 +173,7 @@ def f1_Lexico():
     btnCodInter.config(bg="#E74747")
     btnOptimiza.config(bg="#E74747")
     btnCodObj.config(bg="#E74747")
-    
-    
+
     scrollConsole = tk.Scrollbar(ventana, orient=tk.VERTICAL)
     scrollConsole.place(x=913, y=545, height=150)
     cajaConsola = tk.Text(ventana, wrap=tk.WORD, yscrollcommand=scrollConsole.set, width=100, height=9,
@@ -201,42 +206,44 @@ def f1_Lexico():
 
     '''
 
-    
-    inicio_fin=['.Start', '.Exit']
+    inicio_fin = ['.Start', '.Exit']
 
     for linea in contenido:
-        if len(linea)>0: #comprobar si hay algo en la linea
-            if (linea[0]=="!" and linea[1]=="!") or (linea in inicio_fin): #detectar si es un comentario o si es palabra de inicio o fin
-                errores+=0
-            elif "=" in linea: #sucede cuando es la asignacion de una variable
+        if len(linea) > 0:  # comprobar si hay algo en la linea
+            if (linea[0] == "!" and linea[1] == "!") or (
+                    linea in inicio_fin):  # detectar si es un comentario o si es palabra de inicio o fin
+                errores += 0
+            elif "=" in linea:  # sucede cuando es la asignacion de una variable
                 partes = linea.split("=")
                 variable = partes[0].strip()
-                variable=re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', variable)
+                variable = re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', variable)
                 contVariable = partes[1].strip()
-                contVariable=re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', contVariable)
+                contVariable = re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', contVariable)
 
-                #identificar error en identificadores
+                # identificar error en identificadores
                 erVariables = r'^[a-zA-Z_][a-zA-Z0-9_]*$'
-                if len(variable)>1:
-                    if variable[0]=="set":
-                        varrr=variable[1]
+                if len(variable) > 1:
+                    if variable[0] == "set":
+                        varrr = variable[1]
                     else:
                         errores += 1
-                        cajaConsola.insert("end", "Lexical error: Line " + str(lineaa) + " in identifier " + variable[0]+variable[1],
+                        cajaConsola.insert("end",
+                                           "Lexical error: Line " + str(lineaa) + " in identifier " + variable[0] +
+                                           variable[1],
                                            "rojo")
                         cajaConsola.tag_configure("rojo", foreground="red")
                         break
                 else:
-                    varrr=variable[0]
+                    varrr = variable[0]
                 if re.match(erVariables, varrr):
-                    errores+=0
+                    errores += 0
                 else:
-                    errores+=1
-                    cajaConsola.insert("end", "Lexical error: Line "+str(lineaa)+" in identifier "+varrr, "rojo")
+                    errores += 1
+                    cajaConsola.insert("end", "Lexical error: Line " + str(lineaa) + " in identifier " + varrr, "rojo")
                     cajaConsola.tag_configure("rojo", foreground="red")
 
-                #identificar error en numeros
-                caracteres=contVariable
+                # identificar error en numeros
+                caracteres = contVariable
                 operadores = ['+', '-', '*', '/', '(', ')']
                 patron = r'^".*"$'
                 patron2 = r"\d"
@@ -246,7 +253,7 @@ def f1_Lexico():
                     match = re.search(patron3, caracteres[i])
                     if match:
                         caracteres[i] = match.group(1)
-                        if not caracteres[i].isdigit() and caracteres[i]!="":
+                        if not caracteres[i].isdigit() and caracteres[i] != "":
                             errores += 1
                             cajaConsola.insert("end",
                                                "Lexical error: Line " + str(lineaa) + " in wrong number " + caracteres[
@@ -257,27 +264,30 @@ def f1_Lexico():
                     match = re.search(patron4, caracteres[i])
                     if match:
                         caracteres[i] = match.group(1)
-                    caracteres[i]=caracteres[i].replace(";", "")
-                    if caracteres[i].isdigit() or caracteres[i] in operadores or re.match(erVariables, caracteres[i]) or re.match(patron, caracteres[i]) is not None or re.search(patron2, caracteres[i]) is None:
+                    caracteres[i] = caracteres[i].replace(";", "")
+                    if caracteres[i].isdigit() or caracteres[i] in operadores or re.match(erVariables,
+                                                                                          caracteres[i]) or re.match(
+                            patron, caracteres[i]) is not None or re.search(patron2, caracteres[i]) is None:
                         errores += 0
                     else:
                         partes = caracteres[i].split('.')
                         if len(partes) != 2:
-                            decimal=False
+                            decimal = False
                         elif partes[0].isdigit() and partes[1].isdigit():
-                            decimal=True
+                            decimal = True
                         else:
-                            decimal=False
-                        if decimal==False:
+                            decimal = False
+                        if decimal == False:
                             errores += 1
                             cajaConsola.insert("end",
-                                               "Lexical error: Line " + str(lineaa) + " in wrong number " + caracteres[i],
+                                               "Lexical error: Line " + str(lineaa) + " in wrong number " + caracteres[
+                                                   i],
                                                "rojo")
                             cajaConsola.tag_configure("rojo", foreground="red")
                             break
 
                 # identificar error en operadores
-                opsIncorrectos=r'\*{3}|\+\+|--|\*{2}|\+\+|\*\+|/\*|\*/|/[-+]'
+                opsIncorrectos = r'\*{3}|\+\+|--|\*{2}|\+\+|\*\+|/\*|\*/|/[-+]'
                 for i in range(len(caracteres)):
                     if re.match(opsIncorrectos, caracteres[i]):
                         errores += 1
@@ -324,7 +334,7 @@ def f1_Lexico():
                                        "rojo")
                     cajaConsola.tag_configure("rojo", foreground="red")
         l += 1
-        
+
     # Función para limpiar la palabra de paréntesis y caracteres interiores
     def limpiar_palabra2(palabra):
         palabra_limpia = palabra.rstrip(';')
@@ -347,11 +357,11 @@ def f1_Lexico():
                         # print(f"Error en la palabra reservada '{palabra}' en la línea {l}. ¿Quisiste decir '{sugerencias[0]}'?")
                         errores += 1
                         cajaConsola.insert("end",
-                                        "Lexical error: Line " + str(
-                                            l) + " in wrong reserved word " + palabra + f"  ¿Did you mean '{sugerencias[0]}'?",
-                                        "rojo")
+                                           "Lexical error: Line " + str(
+                                               l) + " in wrong reserved word " + palabra + f"  ¿Did you mean '{sugerencias[0]}'?",
+                                           "rojo")
                         cajaConsola.tag_configure("rojo", foreground="red")
-        
+
     if errores >= 1:
         generarTabla = False
     else:
@@ -364,7 +374,7 @@ def f1_Lexico():
         for linea in contenido:
             if len(linea) > 0 and (linea[0] == "!" and linea[1] == "!"):
                 linea = '!!'
-            conct=False
+            conct = False
 
             if linea.startswith('Show('):
                 tr = ['Show', '(', ')', ';']
@@ -389,7 +399,7 @@ def f1_Lexico():
                                 else:
                                     references.append(a)
                             if '<<' in contenido_show:
-                                tc=['<<']
+                                tc = ['<<']
                                 partes = contenido_show.split("<< ", 1)
                                 if len(partes) > 1:
                                     contenido_despues_de_ = partes[1]
@@ -405,7 +415,7 @@ def f1_Lexico():
 
             tok = re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', linea)
             for t in tok:
-                aPC=False
+                aPC = False
                 if t.endswith(';'):
                     t4 = ';'
                     aPC = [t4, l]
@@ -419,7 +429,7 @@ def f1_Lexico():
                     else:
                         references.append(a)
                 elif t.startswith('int().input('):
-                    tr =['int', '(', ')', '.input', '"', ';']
+                    tr = ['int', '(', ')', '.input', '"', ';']
                     for t in tr:
                         a = [t, l]
                         if not t in tokens:
@@ -535,7 +545,7 @@ def f1_Lexico():
                         else:
                             references.append(a)
 
-                elif t!='':
+                elif t != '':
                     a = [t, l]
                     if not t in tokens:
                         tokens.append(t)
@@ -550,9 +560,7 @@ def f1_Lexico():
                     else:
                         references.append(aPC)
 
-
             l += 1
-
 
         datos = []
         palabras_reservadas2 = [".Start", ".Exit", "int", "flag", "char", "str", "float", "Show",
@@ -595,6 +603,7 @@ def f1_Lexico():
         for dato in datos:
             tabla.insert("", tk.END, values=dato)
 
+
 def f2_sintatico():
     btnLexico.config(bg="#E74747")
     btnSintactico.config(bg="#6DCB5A")
@@ -603,70 +612,37 @@ def f2_sintatico():
     btnOptimiza.config(bg="#E74747")
     btnCodObj.config(bg="#E74747")
 
-    #------------- Gramática---------------------------------------------------------------------------------------------------------------------
-    gram_F = [".Start", ".Exit", "!!", "Linea", "F"]
-    gram_Linea = ["DeclaraVar","AsignaValor", "VariableVariable", "IngresarDato", "Mostrar", "Operacion", "Concatenar"]
-    gram_DeclaraVar = "nomVar = tipo;"
-    gram_tipo = ["int(Vint)", "str()", "char()", "flag(Vflag)", "float(Vfloat)"]
-    gram_Vint = ["num", None, "''"]
-    gram_Vflag = ["true", "false", None, "''"]
-    gram_AsignaValor = "nomVar = Dato"
-    gram_Dato = ["num" , "num.num" , "true" , "false" , None,  '""']
-    gram_VariableVariable = "set nomVar = nomVar"
-    gram_IngresarDato = 'nomVar = tipoDato.input("");'
-    gram_tipoDato = ["int()", "float()", "char()", "str()"]
-    gram_Mostrar = ['Show("");', 'Show(""<<nomVar);']
-    gram_Operacion = "nomVar = Ope op Ope;"
-    #expresión regular para operaciones
-    gram_ER_oper = re.compile(r'((op Ope)*)')    # Ejemplos de uso
-    '''# Ejemplos de uso
-    ejemplos = [
-        '',                  # Válido: cero repeticiones
-        'op Ope',            # Válido: una secuencia
-        'op Opeop Ope',      # Válido: múltiples secuencias
-        'op1 Ope1op2 Ope2',  # Válido: múltiples secuencias con variación
-        'op Ope op Ope',     # Inválido: contiene espacios adicionales
-        'op',                # Inválido: incompleto
-        'Ope',               # Inválido: incompleto
-    ]
+    cajaConsola.tag_configure("azul", background="white", foreground="#0000FF", font=("Helvetica", 10, "bold"))  # Fondo azul claro, texto azul
+    cajaConsola.tag_configure("amarillo", background="white",
+                              foreground="#FFA500", font=("Helvetica", 10, "bold"))  # Fondo amarillo claro, texto dorado
+    cajaConsola.tag_configure("rojo", background="white", foreground="#FF4500", font=("Helvetica", 10, "bold"))  # Fondo rojo claro, texto rojo oscuro
+    cajaConsola.tag_configure("verde", background="white", foreground="#008000", font=("Helvetica", 10, "bold"))  # Fondo verde claro, texto verde
 
-    for ejemplo in ejemplos:
-        if gram_ER_oper.fullmatch(ejemplo):
-            print(f"'{ejemplo}' es válido.")
-        else:
-            print(f"'{ejemplo}' no es válido.")
-    '''
-    gram_Ope = ["nomVar", "num", "Vfloat"]
-    gram_op = ["+", "-" "*", "/"]
-    gram_Concatenar = "Conct << Conct;"
-    #expresión regular para concatenaciones
-    gram_ER_Conct = re.compile(r'(<< Conct)*')
-    '''
-    # Ejemplos de uso
-    ejemplos = [
-        '',                   # Válido: cero repeticiones
-        '<< Conct',           # Válido: una secuencia
-        '<< Conct<< Conct',   # Válido: múltiples secuencias
-        '<<Conct',            # Inválido: falta el espacio después de <<
-        '<< Conct << Conct',  # Inválido: contiene espacios adicionales
-        '<< ',                # Inválido: incompleto
-        'Conct',              # Inválido: falta el operador inicial <<
-    ]
+    # ------------- Gramática---------------------------------------------------------------------------------------------------------------------
+    num = [[RegexMatcher(r"^-?\d+$")]]
+    dec = [[RegexMatcher(r"^-?\d+(\.\d+)?$")]]
+    Vfloat = [[dec], ['']]
+    nomVar = [[RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$")]]
+    Conct = [[nomVar], ['"', '"'], [num], [dec]]
+    Concatenar = [[nomVar, '=', Conct, '<<', Conct, ';']]
+    op = [[RegexMatcher(r'([+\-*/]\s*(\d+|\d+\.\d+|[a-zA-Z_][a-zA-Z0-9_]*))+')]]
+    Ope = [[nomVar], [num], [dec]]
+    Operacion = [[nomVar, '=', Ope, op, ';']]
+    Mostrar = [['Show', '(', '"', '"', ')', ';'], ['Show', '(', '"', '"', '<<', Conct, ')', ';']]
+    tipoDato = [['int', '(', ')'], ['float', '(', ')'], ['char', '(', ')'], ['str', '(', ')']]
+    IngresarDato = [[nomVar, '=', tipoDato, '.input', '(', '"', '"', ')', ';']]
+    VariableVariable = [['set', nomVar, '=', nomVar, ';']]
+    Dato = [[num], [dec], ['true'], ['false'], ['"', '"']]
+    AsignaValor = [[nomVar, '=', Dato, ';']]
+    Vflag = [['true'], ['false'], ['']]
+    Vint = [[num], ['']]
+    tipo = [['int', '(', Vint, ')'], ['str', '(', ')'], ['char', '(', ')'], ['flag', '(', Vflag, ')'],
+            ['float', '(', Vfloat, ')']]
+    DeclaraVar = [[nomVar, '=', tipo, ';']]
+    Linea = [[DeclaraVar], [AsignaValor], [VariableVariable], [IngresarDato], [Mostrar], [Operacion], [Concatenar]]
+    F = [[".Start"], [".Exit"], ["!!"], [Linea]]
 
-    for ejemplo in ejemplos:
-        if gram_ER_Conct.fullmatch(ejemplo):
-            print(f"'{ejemplo}' es válido.")
-        else:
-            print(f"'{ejemplo}' no es válido.")
-    '''
-    gram_Conct = ["nomVar", None, '""']
-    gram_NomVar = ["letra"]
-    gram_ER_nomVar = re.compile(r'([a-zA-Z0-9])*')
-    gram_ER_letra = re.compile(r'([a-zA-Z_])+')
-    gram_Vfloat = ["num.num", "None", "''"]
-    gram_ER_num = re.compile(r'[0-9]+')
-    
-    #----------------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
 
     # Comienza a verificar las palabras en el codigo
     contenido = []
@@ -676,9 +652,11 @@ def f2_sintatico():
     for i in range(1, num_lineas + 1):
         contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
 
-    lineas=[]
+    tokens = []
+    operadores = ['+', '-', '*', '/']
+    opecad=""
     for linea in contenido:
-        tokens = []
+
         if len(linea) > 0 and (linea[0] == "!" and linea[1] == "!"):
             linea = '!!'
         conct = False
@@ -782,13 +760,190 @@ def f2_sintatico():
                     tokens.append(t2)
 
             elif t != '':
-                tokens.append(t)
+                if opecad == "":
+                    if len(tokens)>0:
+                        if tokens[-1].isdigit() and t in operadores:
+                            opecad=opecad+t
+                        else:
+                            tokens.append(t)
+                    else:
+                        tokens.append(t)
+                else:
+                    opecad = opecad + t
 
             if aPC:
+                if opecad!="":
+                    tokens.append(opecad)
+                    opecad=""
                 tokens.append(t4)
 
-        lineas.append(tokens)
-    print(lineas)
+    tokens.append('#')
+    print(tokens)
+    def lista_a_str(elemento, nombres_variables):
+        if isinstance(elemento, list):
+            for nombre, valor in nombres_variables.items():
+                if valor is elemento:
+                    return nombre
+            return "[" + ", ".join(lista_a_str(sub_elem, nombres_variables) for sub_elem in elemento) + "]"
+        elif isinstance(elemento, RegexMatcher):
+            if elemento.pattern == r"^-?\d+$":
+                return 'ER Enteros'
+            elif elemento.pattern == r"^-?\d+(\.\d+)?$":
+                return 'ER Decimales'
+            elif elemento.pattern == r"^[a-zA-Z_][a-zA-Z0-9_]*$":
+                return 'ER Variables'
+            elif elemento.pattern == r'([+\-*/]\s*(\d+|\d+\.\d+|[a-zA-Z_][a-zA-Z0-9_]*))+':
+                return 'ER Operaciones'
+            else:
+                return 'Expresión Regular'
+        else:
+            return str(elemento)
+
+    est=['n', 1, [], ['#']]
+    for i in range(len(contenido)-1):
+        if contenido[i]!='':
+            est[3].insert(0, F)
+    nombres_variables = {
+        'F': F,
+        'Linea': Linea,
+        'DeclaraVar': DeclaraVar,
+        'tipo': tipo,
+        'Vint': Vint,
+        'Vflag': Vflag,
+        'AsignaValor': AsignaValor,
+        'Dato': Dato,
+        'VariableVariable': VariableVariable,
+        'IngresarDato': IngresarDato,
+        'tipoDato': tipoDato,
+        'Mostrar': Mostrar,
+        'Operacion': Operacion,
+        'Ope': Ope,
+        'op': op,
+        'Concatenar': Concatenar,
+        'Conct': Conct,
+        'nomVar': nomVar,
+        'Vfloat': Vfloat,
+        'num': num,
+        'dec': dec
+    }
+
+    terminales = list(nombres_variables.keys())
+
+    def obtener_nombre(valor, nombres_variables):
+        for nombre, variable in nombres_variables.items():
+            if variable is valor:
+                return nombre
+        return None
+
+    est_strs = [lista_a_str(elem, nombres_variables) for elem in est]
+    cajaConsola.insert("end", "\n" + ",".join(est_strs), "blanco")
+    cajaConsola.tag_configure("blanco", foreground="white")
+
+    def proceso(est, exp):
+        if exp==1:
+            est[0]='n'
+            est[1]=est[1]
+            est[2].append([est[3][0], 0])
+            NT=est[3][0][0]
+            est[3].pop(0)
+            for i in reversed(NT):
+                est[3].insert(0, i)
+            cajaConsola.insert("end", "\n" + "Expansión del arbol" + "\n", "blanco")
+
+        elif exp==2:
+            est[0] = 'n'
+            est[1] = est[1]+1
+            est[2].append(est[3][0])
+            est[3].pop(0)
+            cajaConsola.insert("end", "\n" + "Concordancia de un simbolo" + "\n", "blanco")
+
+        elif exp==3:
+            est[0] = 't'
+            est[1] = est[1]+1
+            est[2]=est[2]
+            est[3]=''
+            cajaConsola.insert("end", "\n" + "Terminación con exito" + "\n", "blanco")
+
+        elif exp==4:
+            est[0] = 'r'
+            est[1] = est[1]
+            est[2]=est[2]
+            est[3]=est[3]
+            cajaConsola.insert("end", "\n" + "No concordancia de un simbolo" + "\n", "blanco")
+
+        elif exp==5:
+            est[0] = 'r'
+            est[1] = est[1]-1
+            est[3].insert(0, est[2][-1])
+            est[2].pop()
+            cajaConsola.insert("end", "\n" + "Retroceso a la entrada" + "\n", "blanco")
+
+        elif exp==60:
+            est[0] = 'n'
+            est[1] = est[1]
+            for i in est[2][-1][0][est[2][-1][1]]:
+                est[3].pop(0)
+            est[2][-1][1] = est[2][-1][1]+1
+            for i in reversed(est[2][-1][0][est[2][-1][1]]):
+                est[3].insert(0, i)
+            cajaConsola.insert("end", "\n" + "Siguiente alternativa A" + "\n", "blanco")
+
+        elif exp==61:
+            est[0] = 'e'
+            cajaConsola.insert("end", "\n" + "Siguiente alternativa B" + "\n", "blanco")
+
+        elif exp==62:
+            est[0] = 'r'
+            est[1] = est[1]
+            for i in est[2][-1][0][est[2][-1][1]]:
+                est[3].pop(0)
+            est[3].insert(0, est[2][-1][0])
+            est[2].pop()
+            cajaConsola.insert("end", "\n" + "Siguiente alternativa C" + "\n", "blanco")
+
+        est_strs = [lista_a_str(elem, nombres_variables) for elem in est]
+        colores = ["azul", "amarillo", "rojo", "verde"]
+        for i, est_str in enumerate(est_strs):
+            color_tag = colores[i % len(colores)]
+            cajaConsola.insert("end", est_str, color_tag)
+            if i < len(est_strs) - 1:
+                cajaConsola.insert("end", ",", "blanco")
+
+
+        if est[0] == 'n':
+            if tokens[est[1]-1]==est[3][0]:
+                if est[3][0]=='#':
+                    proceso(est, 3)
+                else:
+                    proceso(est, 2)
+            elif isinstance(est[3][0], list):
+                nombre_terminal = obtener_nombre(est[3][0], nombres_variables)
+                if nombre_terminal in terminales:
+                    proceso(est, 1)
+            else:
+                proceso(est, 4)
+        elif est[0] == 'r':
+            if len(est[2])==0:
+                proceso(est, 61)
+            else:
+                if isinstance(est[2][-1], list):
+                    if len(est[2][-1][0])>1:
+                        if est[2][-1][1]+1==len(est[2][-1][0]):
+                            proceso(est, 62)
+                        else:
+                            proceso(est, 60)
+                    else:
+                        proceso(est, 62)
+                else:
+                    proceso(est, 5)
+        elif est[0]=='t':
+            print("Terminación con exito")
+        elif est[0]=='e':
+            print("Error")
+
+    proceso(est, 1)
+
+
 
 
 def f3_semantico():
