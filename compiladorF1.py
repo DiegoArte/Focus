@@ -8,6 +8,9 @@ import re
 import time
 import difflib
 
+import sys
+sys.setrecursionlimit(2000)
+
 class RegexMatcher:
     def __init__(self, pattern):
         self.pattern = pattern
@@ -213,7 +216,7 @@ def f1_Lexico():
             if (linea[0] == "!" and linea[1] == "!") or (
                     linea in inicio_fin):  # detectar si es un comentario o si es palabra de inicio o fin
                 errores += 0
-            elif "=" in linea:  # sucede cuando es la asignacion de una variable
+            elif "=" in linea and not linea.startswith('Show('):  # sucede cuando es la asignacion de una variable
                 partes = linea.split("=")
                 variable = partes[0].strip()
                 variable = re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', variable)
@@ -612,6 +615,19 @@ def f2_sintatico():
     btnOptimiza.config(bg="#E74747")
     btnCodObj.config(bg="#E74747")
 
+    scrollConsole = tk.Scrollbar(ventana, orient=tk.VERTICAL)
+    scrollConsole.place(x=913, y=545, height=150)
+    cajaConsola = tk.Text(ventana, wrap=tk.WORD, yscrollcommand=scrollConsole.set, width=100, height=9,
+                          font=('Source Code Pro', 10), bg="#4B4B4B", foreground="white", bd=None,
+                          insertbackground="white")
+    cajaConsola.place(x=107, y=546)
+    scrollConsole.config(command=cajaConsola.yview)
+
+    # Colocar el texto por defecto
+    cajaConsola.insert("end", "FOCUS-bash> ")
+    # Vincular eventos de teclado
+    cajaConsola.bind("<KeyPress>", handle_key)
+
     cajaConsola.tag_configure("azul", background="white", foreground="#0000FF", font=("Helvetica", 10, "bold"))  # Fondo azul claro, texto azul
     cajaConsola.tag_configure("amarillo", background="white",
                               foreground="#FFA500", font=("Helvetica", 10, "bold"))  # Fondo amarillo claro, texto dorado
@@ -627,9 +643,8 @@ def f2_sintatico():
     nomVar = [[RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$")]]
     Conct = [[nomVar], ['"', '"'], [num], [dec]]
     Concatenar = [[nomVar, '=', Conct, '<<', Conct, ';']]
-    op = [[RegexMatcher(r'([+\-*/]\s*(\d+|\d+\.\d+|[a-zA-Z_][a-zA-Z0-9_]*))+')]]
-    Ope = [[nomVar], [num], [dec]]
-    Operacion = [[nomVar, '=', Ope, op, ';']]
+    Ope = [[RegexMatcher(r'^\s*(?:[+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*)\s*(?:[+\-*/]\s*([+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*))*\s*$')]]
+    Operacion = [[nomVar, '=', Ope, ';']]
     Mostrar = [['Show', '(', '"', '"', ')', ';'], ['Show', '(', '"', '"', '<<', Conct, ')', ';']]
     tipoDato = [['int', '(', ')'], ['float', '(', ')'], ['char', '(', ')'], ['str', '(', ')']]
     IngresarDato = [[nomVar, '=', tipoDato, '.input', '(', '"', '"', ')', ';']]
@@ -641,8 +656,8 @@ def f2_sintatico():
     tipo = [['int', '(', Vint, ')'], ['str', '(', ')'], ['char', '(', ')'], ['flag', '(', Vflag, ')'],
             ['float', '(', Vfloat, ')']]
     DeclaraVar = [[nomVar, '=', tipo, ';']]
-    Linea = [[DeclaraVar], [AsignaValor], [VariableVariable], [IngresarDato], [Mostrar], [Operacion], [Concatenar]]
-    F = [[".Start"], [".Exit"], ["!!"], [Linea]]
+    Linea = [["!!"], [VariableVariable], [Mostrar], [Operacion], [IngresarDato], [DeclaraVar], [AsignaValor], [Concatenar]]
+    F = [[".Start", Linea, ".Exit"]]
 
     # ----------------------------------------------------------------------------------
 
@@ -663,7 +678,7 @@ def f2_sintatico():
             linea = '!!'
         conct = False
 
-        if linea.startswith('Show('):
+        if linea.startswith('Show("') and linea.endswith(');'):
             tr = ['Show', '(', ')', ';']
             for t in tr:
                 tokens.append(t)
@@ -681,7 +696,11 @@ def f2_sintatico():
                             partes = contenido_show.split("<< ", 1)
                             if len(partes) > 1:
                                 contenido_despues_de_ = partes[1]
-                                tc.append(contenido_despues_de_)
+                                if contenido_despues_de_.startswith('"'):
+                                    tc.append('"')
+                                    tc.append('"')
+                                else:
+                                    tc.append(contenido_despues_de_)
                             for tcc in tc:
                                 tokens.append(tcc)
 
@@ -689,8 +708,9 @@ def f2_sintatico():
 
         tok = re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', linea)
         for t in tok:
+            print(t)
             aPC = False
-            if t.endswith(';'):
+            if t.endswith(';') and not t.startswith('int().') and not t.startswith('float().') and not t.startswith('char().') and not t.startswith('str().'):
                 t4 = ';'
                 aPC = t4
                 t = t[:-1]
@@ -698,65 +718,65 @@ def f2_sintatico():
                 t = '"'
                 tokens.append(t)
                 tokens.append(t)
-            elif t.startswith('int().input('):
+            elif t.startswith('int().input("') and t.endswith('");'):
                 tr = ['int', '(', ')', '.input', '(', '"', '"', ')', ';']
                 for t in tr:
                     tokens.append(t)
                 break
-            elif t.startswith('float().input('):
+            elif t.startswith('float().input("') and t.endswith('");'):
                 tr = ['float', '(', ')', '.input', '(', '"', '"', ')', ';']
                 for t in tr:
                     tokens.append(t)
                 break
-            elif t.startswith('char().input('):
+            elif t.startswith('char().input("') and t.endswith('");'):
                 tr = ['char', '(', ')', '.input', '(', '"', '"', ')', ';']
                 for t in tr:
                     tokens.append(t)
                 break
-            elif t.startswith('str().input('):
+            elif t.startswith('str().input("') and t.endswith('");'):
                 tr = ['str', '(', ')', '.input', '(', '"', '"', ')', ';']
                 for t in tr:
                     tokens.append(t)
                 break
-            elif t.startswith('int('):
+            elif t.startswith('int(') and t.endswith(')') and not t.startswith('int()i'):
                 tr = ['int', '(', ')']
                 for t2 in tr:
                     tokens.append(t2)
                     if t2 == '(':
-                        match = re.search(r'int\((\d+)\)', t)
+                        match = re.search(r'int\((.*?)\)', t)
                         if match:
                             t3 = match.group(1)
                             tokens.append(t3)
                         else:
                             tokens.append('')
-            elif t.startswith('float('):
+            elif t.startswith('float(') and t.endswith(')') and not t.startswith('float()i'):
                 tr = ['float', '(', ')']
                 for t2 in tr:
                     tokens.append(t2)
                     if t2 == '(':
-                        match = re.search(r'float\(([\d.]+)\)', t)
+                        match = re.search(r'float\((.*?)\)', t)
                         if match:
                             t3 = match.group(1)
                             tokens.append(t3)
                         else:
                             tokens.append('')
 
-            elif t.startswith('flag('):
+            elif t.startswith('flag(') and t.endswith(')') and not t.startswith('flag()i'):
                 tr = ['flag', '(', ')']
                 for t2 in tr:
                     tokens.append(t2)
                     if t2 == '(':
-                        match = re.search(r'flag\((true|false)\)', t)
+                        match = re.search(r'flag\((.*?)\)', t)
                         if match:
                             t3 = match.group(1)
                             tokens.append(t3)
                         else:
                             tokens.append('')
-            elif t.startswith('str('):
+            elif t.startswith('str(') and t.endswith(')') and not t.startswith('str()i'):
                 tr = ['str', '(', ')']
                 for t2 in tr:
                     tokens.append(t2)
-            elif t.startswith('char('):
+            elif t.startswith('char(') and t.endswith(')') and not t.startswith('char()i'):
                 tr = ['char', '(', ')']
                 for t2 in tr:
                     tokens.append(t2)
@@ -764,8 +784,9 @@ def f2_sintatico():
             elif t != '':
                 if opecad == "":
                     if len(tokens)>0:
-                        if tokens[-1].isdigit() and t in operadores:
-                            opecad=opecad+t
+                        if t in operadores:
+                            opecad=opecad+tokens[-1]+t
+                            tokens.pop()
                         else:
                             tokens.append(t)
                     else:
@@ -794,7 +815,7 @@ def f2_sintatico():
                 return 'ER Decimales'
             elif elemento.pattern == r"^[a-zA-Z_][a-zA-Z0-9_]*$":
                 return 'ER Variables'
-            elif elemento.pattern == r'([+\-*/]\s*(\d+|\d+\.\d+|[a-zA-Z_][a-zA-Z0-9_]*))+':
+            elif elemento.pattern == r'^\s*(?:[+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*)\s*(?:[+\-*/]\s*([+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*))*\s*$':
                 return 'ER Operaciones'
             else:
                 return 'Expresión Regular'
@@ -816,7 +837,6 @@ def f2_sintatico():
         'Mostrar': Mostrar,
         'Operacion': Operacion,
         'Ope': Ope,
-        'op': op,
         'Concatenar': Concatenar,
         'Conct': Conct,
         'nomVar': nomVar,
@@ -827,10 +847,12 @@ def f2_sintatico():
     est=['n', 1, [], [F, '#']]
     est_strs = [lista_a_str(elem, nombres_variables) for elem in est]
     cajaConsola.insert("end", "\n" + ",".join(est_strs), "blanco")
-    est = ['n', 1, [], ['#']]
+    cajaConsola.insert("end", "\n" + "Expansión del arbol", "blanco")
+    est = ['n', 1, [[F]], ['.Exit', '#']]
     for i in range(len(contenido)-1):
-        if contenido[i]!='':
-            est[3].insert(0, F)
+        if contenido[i]!='' and contenido[i]!='.Start' and contenido[i]!='.Exit':
+            est[3].insert(0, Linea)
+    est[3].insert(0, '.Start')
 
     terminales = list(nombres_variables.keys())
 
@@ -927,25 +949,30 @@ def f2_sintatico():
             else:
                 proceso(est, 4)
         elif est[0] == 'r':
-            if len(est[2])==0:
-                proceso(est, 61)
-            else:
-                if isinstance(est[2][-1], list):
-                    if len(est[2][-1][0])>1:
-                        if est[2][-1][1]+1==len(est[2][-1][0]):
-                            proceso(est, 62)
-                        else:
-                            proceso(est, 60)
-                    else:
+            if isinstance(est[2][-1], list):
+                if est[2][-1][0] == F:
+                    proceso(est, 61)
+                elif len(est[2][-1][0])>1:
+                    if est[2][-1][1]+1==len(est[2][-1][0]):
                         proceso(est, 62)
+                    else:
+                        proceso(est, 60)
                 else:
-                    proceso(est, 5)
+                    proceso(est, 62)
+            else:
+                proceso(est, 5)
         elif est[0]=='t':
             print("Terminación con exito")
         elif est[0]=='e':
             print("Error")
 
-    proceso(est, 1)
+    if tokens[est[1] - 1] == est[3][0]:
+        if est[3][0] == '#':
+            proceso(est, 3)
+        else:
+            proceso(est, 2)
+    else:
+        proceso(est, 4)
 
 
 
