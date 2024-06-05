@@ -645,11 +645,11 @@ def f2_sintatico():
     Concatenar = [[nomVar, '=', Conct, '<<', Conct, ';']]
     Ope = [[RegexMatcher(r'^\s*(?:[+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*)\s*(?:[+\-*/]\s*([+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*))*\s*$')]]
     Operacion = [[nomVar, '=', Ope, ';']]
-    Mostrar = [['Show', '(', '"', '"', ')', ';'], ['Show', '(', '"', '"', '<<', Conct, ')', ';']]
+    Dato = [[num], [dec], ['true'], ['false'], ['"', '"']]
+    Mostrar = [['Show', '(', Conct, ')', ';'], ['Show', '(', Conct, '<<', Conct, ')', ';']]
     tipoDato = [['int', '(', ')'], ['float', '(', ')'], ['char', '(', ')'], ['str', '(', ')']]
     IngresarDato = [[nomVar, '=', tipoDato, '.input', '(', '"', '"', ')', ';']]
     VariableVariable = [['set', nomVar, '=', nomVar, ';']]
-    Dato = [[num], [dec], ['true'], ['false'], ['"', '"']]
     AsignaValor = [[nomVar, '=', Dato, ';']]
     Vflag = [['true'], ['false'], ['']]
     Vint = [[num], ['']]
@@ -678,7 +678,7 @@ def f2_sintatico():
             linea = '!!'
         conct = False
 
-        if linea.startswith('Show("') and linea.endswith(');'):
+        if linea.startswith('Show(') and linea.endswith(');'):
             tr = ['Show', '(', ')', ';']
             for t in tr:
                 tokens.append(t)
@@ -687,34 +687,25 @@ def f2_sintatico():
                     resultado = re.search(patronShow, linea)
                     if resultado:
                         contenido_show = resultado.group(1)
-                        if '"' in contenido_show:
-                            tc = '"'
-                            tokens.append(tc)
-                            tokens.append(tc)
-                        if '<<' in contenido_show:
-                            tc = ['<<']
-                            partes = contenido_show.split("<< ", 1)
-                            if len(partes) > 1:
-                                contenido_despues_de_ = partes[1]
-                                if contenido_despues_de_.startswith('"'):
-                                    tc.append('"')
-                                    tc.append('"')
-                                else:
-                                    tc.append(contenido_despues_de_)
-                            for tcc in tc:
-                                tokens.append(tcc)
+                        tok = re.findall(r'"[^"]*"|\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', contenido_show)
+                        for t in tok:
+                            if t.startswith('"') and t.endswith('"'):
+                                t = '"'
+                                tokens.append(t)
+                                tokens.append(t)
+                            elif t != '':
+                                tokens.append(t)
 
             linea = ''
 
-        tok = re.findall(r'\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', linea)
+        tok = re.findall(r'"[^"]*"|\b(?:\d+\.\d+|\d+|\+\+|--|\+|\-|\*|\/|\(|\))\b|\S+', linea)
         for t in tok:
-            print(t)
             aPC = False
             if t.endswith(';') and not t.startswith('int().') and not t.startswith('float().') and not t.startswith('char().') and not t.startswith('str().'):
                 t4 = ';'
                 aPC = t4
                 t = t[:-1]
-            if t.startswith('"'):
+            if t.startswith('"') and t.endswith('"'):
                 t = '"'
                 tokens.append(t)
                 tokens.append(t)
