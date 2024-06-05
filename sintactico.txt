@@ -1,0 +1,21 @@
+.Start
+
+e1 = int();
+e2 = int();
+
+d = float();
+
+c = str();
+
+e1 = int().input("Valor:");
+e2 = int().input("Valor:");
+
+suma = e1 * 70 + 80 - 45.3 / 7 * 2;
+
+Show("Suma=" << suma);
+
+.Exit
+
+
+
+
