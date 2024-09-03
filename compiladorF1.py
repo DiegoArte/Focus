@@ -969,7 +969,57 @@ def f2_sintatico():
 
 
 def f3_semantico():
-    pass
+    
+    # ------------- Gramática---------------------------------------------------------------------------------------------------------------------
+    num = [[RegexMatcher(r"^-?\d+$")]]
+    dec = [[RegexMatcher(r"^-?\d+(\.\d+)?$")]]
+    Vfloat = [[dec], ['']]
+    nomVar = [[RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$")]]
+    Conct = [[nomVar], ['"', '"'], [num], [dec]]
+    Concatenar = [[nomVar, '=', Conct, '<<', Conct, ';']]
+    Ope = [[RegexMatcher(r'^\s*(?:[+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*)\s*(?:[+\-*/]\s*([+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*))*\s*$')]]
+    Operacion = [[nomVar, '=', Ope, ';']]
+    Dato = [[num], [dec], ['true'], ['false'], ['"', '"']]
+    Mostrar = [['Show', '(', Conct, ')', ';'], ['Show', '(', Conct, '<<', Conct, ')', ';']]
+    tipoDato = [['int', '(', ')'], ['float', '(', ')'], ['char', '(', ')'], ['str', '(', ')']]
+    IngresarDato = [[nomVar, '=', tipoDato, '.input', '(', '"', '"', ')', ';']]
+    VariableVariable = [['set', nomVar, '=', nomVar, ';']]
+    AsignaValor = [[nomVar, '=', Dato, ';']]
+    Vflag = [['true'], ['false'], ['']]
+    Vint = [[num], ['']]
+    tipo = [['int', '(', Vint, ')'], ['str', '(', ')'], ['char', '(', ')'], ['flag', '(', Vflag, ')'],
+            ['float', '(', Vfloat, ')']]
+    DeclaraVar = [[nomVar, '=', tipo, ';']]
+    Linea = [["!!"], [VariableVariable], [Mostrar], [Operacion], [IngresarDato], [DeclaraVar], [AsignaValor], [Concatenar]]
+    F = [[".Start", Linea, ".Exit"]]
+
+    # ----------------------------------------------------------------------------------
+    
+    '''
+    IDENTIFICADORES NO DEFINIDOS
+    OPERANDOS INCOMPATIBLES
+    VARIABLES DUPLICADAS
+    
+    - Si no hay errores mostrar TABLA SEMÁNTICA con atributo VALOR
+    - Mostrar árbol semántico con atributo valor evaluado en cada nivel
+      y por prioridad de operadores
+    - Mostrar que tipo de error es y la linea donde se presentó (Opcional: Podría agregarse el fragmento de código ERROR)
+    '''
+    # Comienza a verificar las palabras en el codigo
+    contenido = []
+    # Obtener el número total de líneas en la caja de texto
+    num_lineas = int(cajaCodigo.index('end').split('.')[0])
+    # Iterar sobre cada línea y obtener su contenido
+    for i in range(1, num_lineas + 1):
+        contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
+
+    tokens = []
+    operadores = ['+', '-', '*', '/']
+    opecad=""
+    
+    
+    
+    
 
 
 def f4_codInter():
