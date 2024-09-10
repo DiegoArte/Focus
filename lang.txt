@@ -4,6 +4,7 @@
 *** No se pueden concatenar mas de dos datos a la vez
 *** No se pueden usar nombres de métodos en variables o mensajes
 *** No se pueden escribir mensajes en la misma linea donde hay código
+*** No se pueden poner comentarios fuera el programa (.Start .End)
 
  1-  Palabra para inicio y fin: 
     .Start
@@ -92,3 +93,6 @@ Show("La suma es: " << suma);
 !!Fin del programa
 .Exit
 ----------------------------------------------------------
+
+
+

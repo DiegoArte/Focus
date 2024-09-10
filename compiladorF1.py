@@ -1089,7 +1089,7 @@ def f3_semantico():
     expresion_variable_valida = r"\b[a-zA-Z_][a-zA-Z0-9_]*\b"
     
     # Palabras reservadas del lenguaje que deben ser excluidas de la detección de variables no definidas
-    palabras_reservadas = {"int", "flag", "char", "str", "float", "set", "Show", "input", "true", "false"}
+    palabras_reservadas = {"int", "flag", "char", "str", "float", "set", "Show(", "input", "true", "false"}
 
     
     # Función auxiliar para obtener el tipo de variable de las guardadas antes
@@ -1103,7 +1103,7 @@ def f3_semantico():
     # Identificadores no definidos y operaciones incompatibles
     for linea_num, linea in enumerate(contenido, start=1):
         # Ignorar líneas de comentarios y secciones de inicio/fin
-        if linea.strip().startswith("!!") or linea.strip().startswith(".Start") or linea.strip().startswith(".Exit"):
+        if linea.strip().startswith("!!") or linea.strip().startswith(".Start") or linea.strip().startswith(".Exit") or linea.strip().startswith("Show("):
             continue  
 
         # Detectar errores en el uso del método 'set'

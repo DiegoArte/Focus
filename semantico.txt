@@ -1,0 +1,41 @@
+
+.Start
+!! Inicio del programa
+
+!! Declaraciones correctas de variables
+num1 = int();
+num2 = int(10);
+
+band1 = flag();
+band2 = flag(true);
+
+letra1 = char();
+letra2 = char(b);	
+
+texto1 = str();
+texto2 = str("Hola");
+
+decimal1 = float();
+decimal2 = float(3.14);
+
+!! Declaraciones duplicadas (error)
+num1 = int(5);  
+
+!! Uso de identificadores no definidos (error)
+suma = num3 + num2;  
+resta = num1 - var_no_def;  
+
+
+!! Operadores incompatibles (error)
+resultado = band1 + num1;  
+multiplicacion = texto1 * letra1;  
+
+!! Uso incorrecto del método 'set' (error)
+set letra1 = texto2;  
+set band1 = decimal2;  
+set num1 = band2;  
+
+
+set letra1 = letra2;  
+set num2 = num1;  
+.Exit

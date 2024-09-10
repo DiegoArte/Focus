@@ -1,6 +1,6 @@
-!!Inicio del programa
-.Start
 
+.Start
+!!Inicio del programa
 var1 = int();
 var1 = 4;
 var1_V2 = int(4);
@@ -25,7 +25,7 @@ set variable = var1;
 variable2 = false;
 
 !! Proceso de una suma con un numero de entrada y otro existente 
-n = int().input("Primer número: ");
+n = int().input("número:");
 suma = float();
 suma = n + var5;
 Show("La suma es: " << suma);
