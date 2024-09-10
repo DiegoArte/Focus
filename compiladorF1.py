@@ -970,6 +970,21 @@ def f2_sintatico():
 
 def f3_semantico():
     
+    
+    btnLexico.config(bg="#6DCB5A")
+    btnSintactico.config(bg="#6DCB5A")
+    btnSemant.config(bg="#6DCB5A")
+    btnCodInter.config(bg="#E74747")
+    btnOptimiza.config(bg="#E74747")
+    btnCodObj.config(bg="#E74747")
+    
+    # Colocar el texto por defecto
+    cajaConsola.insert("end", "FOCUS-bash> ")
+    # Vincular eventos de teclado
+    cajaConsola.bind("<KeyPress>", handle_key)
+    
+    
+    
     # ------------- Gramática---------------------------------------------------------------------------------------------------------------------
     num = [[RegexMatcher(r"^-?\d+$")]]
     dec = [[RegexMatcher(r"^-?\d+(\.\d+)?$")]]
@@ -1005,6 +1020,9 @@ def f3_semantico():
       y por prioridad de operadores
     - Mostrar que tipo de error es y la linea donde se presentó (Opcional: Podría agregarse el fragmento de código ERROR)
     '''
+    
+    erros = 0
+    
     # Comienza a verificar las palabras en el codigo
     contenido = []
     # Obtener el número total de líneas en la caja de texto
@@ -1012,14 +1030,204 @@ def f3_semantico():
     # Iterar sobre cada línea y obtener su contenido
     for i in range(1, num_lineas + 1):
         contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
+    
+    
+    
+    #Patrones para identificar variables declaradas en el código extraído
+    patrones = {
+        "int": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*int\s*\((.*?)\)\s*;",
+        "flag": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*flag\s*\((.*?)\)\s*;",
+        "char": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*char\s*\((.*?)\)\s*;",
+        "str": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*str\s*\((.*?)\)\s*;",
+        "float": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*float\s*\((.*?)\)\s*;",
+    }
+    
+    # Diccionario para almacenar las variables encontradas
+    variables = {}
+    #Lista para guardar los errores encontrados
+    errores = []
+   
+    # Recorre las lineas de código para sacar las variables y sus datos
+    for linea_num, linea in enumerate(contenido, start=1):
+        # Ignora líneas con comentarios
+        if linea.strip().startswith("!!") or linea.strip().startswith(".Start") or linea.strip().startswith(".Exit"):
+            continue
+        
+        # Verificar si la línea es una declaración de variable
+        for tipo, patron in patrones.items():
+            coincidencia = re.match(patron, linea)
+            if coincidencia:
+                nombre_variable = coincidencia.group(1)
+                if nombre_variable in variables:
+                    errores.append(f"Error in line {linea_num}: Duplicate variable '{nombre_variable}' has already been declared before.")
+                break
+        
+        for tipo, patron in patrones.items():
+            coincidencia = re.match(patron, linea)
+            if coincidencia:
+                valor = coincidencia.group(2).strip()
+                valor = None if valor == "" else valor
+                nombre_variable = coincidencia.group(1)
 
-    tokens = []
-    operadores = ['+', '-', '*', '/']
-    opecad=""
+                # Guardar la variable en el diccionario
+                if nombre_variable not in variables:
+                    variables[nombre_variable] = {
+                        "tipo": tipo,
+                        "linea": linea_num,
+                        "valor": valor
+                    }
+                break
+    
+    v=0
+    for var,info in variables.items():
+        v+=1
+        print(f"Variable {v}: {var}, Linea {info['linea']} Tipo {info['tipo']} Valor {info['valor']} ")
+
+    print("\n")
+    
+    #Esta es la expresión definida en las reglas del lenguaje para nombrar variables
+    expresion_variable_valida = r"\b[a-zA-Z_][a-zA-Z0-9_]*\b"
+    
+    # Palabras reservadas del lenguaje que deben ser excluidas de la detección de variables no definidas
+    palabras_reservadas = {"int", "flag", "char", "str", "float", "set", "Show", "input", "true", "false"}
+
+    
+    # Función auxiliar para obtener el tipo de variable de las guardadas antes
+    def obtener_tipo_variable(nombre, variables):
+        if nombre in variables:
+            return variables[nombre]["tipo"]
+        return "No definido"
     
     
     
+    # Identificadores no definidos y operaciones incompatibles
+    for linea_num, linea in enumerate(contenido, start=1):
+        # Ignorar líneas de comentarios y secciones de inicio/fin
+        if linea.strip().startswith("!!") or linea.strip().startswith(".Start") or linea.strip().startswith(".Exit"):
+            continue  
+
+        # Detectar errores en el uso del método 'set'
+        if "set" in linea:
+            coincidencia_set = re.match(r"^\s*set\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*;", linea)
+            if coincidencia_set:
+                var_destino = coincidencia_set.group(1)
+                var_origen = coincidencia_set.group(2)
+
+                # Verificar si ambas variables están definidas
+                if var_destino not in variables:
+                    errores.append(f"Error in line {linea_num}: The destination variable '{var_destino}' is not defined. 111")
+                if var_origen not in variables:
+                    errores.append(f"Error in line {linea_num}: The origin variable '{var_origen}' is not defined. 222")
+
+                # Si ambas variables están definidas, verificar el tipo
+                if var_destino in variables and var_origen in variables:
+                    tipo_destino = variables[var_destino]["tipo"]
+                    tipo_origen = variables[var_origen]["tipo"]
+                    
+                    if not tipo_destino == "bool" and tipo_origen == "bool" or not tipo_destino == "int" and tipo_origen == "int" or not tipo_destino == "float" and tipo_origen == "float" or not tipo_destino == "float" and tipo_origen == "int" or not tipo_destino == "char" and tipo_origen == "char" or not tipo_destino == "str" and tipo_origen == "str" or not tipo_destino == "str" and tipo_origen == "char":
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")
+                    else:
+                        if tipo_destino != tipo_origen:
+                            errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")
+   
+        
+        # Detectar operadores incompatibles y operandos incompatibles
+        if re.search(r"[+\-*/]", linea):
+            # Dividir la línea en la variable de destino y la expresión
+            partes_linea = linea.split("=")
+            
+            if len(partes_linea) == 2:
+                var_resultado = partes_linea[0].strip()  # Variable que recibe el resultado
+                expresion = partes_linea[1].strip()  # Expresión a la derecha del '='
+                
+                # Verificar si la variable de resultado está definida
+                tipo_var_resultado = obtener_tipo_variable(var_resultado, variables)
+                if tipo_var_resultado == "No definido":
+                    errores.append(f"Error in line {linea_num}: The variable '{var_resultado}' is not defined.")
+                else:
+                    # Extraer todas las variables y operadores utilizando expresiones regulares
+                    tokens = re.findall(expresion_variable_valida, expresion)
+
+                    # Filtrar las variables de la lista de tokens
+                    variables_encontradas = [var for var in tokens if var not in palabras_reservadas and not var.isnumeric()]
+
+                    # Comprobar si cada variable encontrada está definida
+                    tipos_variables = []
+                    for var in variables_encontradas:
+                        tipo_var = obtener_tipo_variable(var, variables)
+                        if tipo_var == "No definido":
+                            errores.append(f"Error in line {linea_num}: The variable '{var}' is not defined.")
+                        else:
+                            tipos_variables.append(tipo_var)
+
+                    # Verificar tipos no permitidos en operaciones matemáticas
+                    for tipo in tipos_variables:
+                        if tipo not in ["int", "float"]:
+                            errores.append(f"Error in line {linea_num} Incompatible operands: Mathematical operation not allowed with type '{tipo}' in the expression '{linea.strip()}'.")
+                            break
+
+                    # Comprobar tipos incompatibles entre los operandos
+                    if len(set(tipos_variables)) > 1 and "int" in tipos_variables and "float" in tipos_variables:
+                        # Si hay una mezcla de 'int' y 'float', es válido solo si el resultado es 'float'
+                        if tipo_var_resultado != "float":
+                            errores.append(f"Error in line {linea_num} Incompatible operands: The variable '{var_resultado}' of type '{tipo_var_resultado}' cannot store the result of an operation with 'int' & 'float'.")
+                    elif len(set(tipos_variables)) > 1:
+                        # Si hay mezcla of types distintos a 'int' y 'float', es un error
+                        errores.append(f"Error in line {linea_num} Incompatible operands:  In the expression '{linea.strip()}' with types {', '.join(set(tipos_variables))}.")
+
+                    # Verificar si el tipo de la variable de resultado es compatible con los operandos
+                    if "float" in tipos_variables and tipo_var_resultado == "int":
+                        errores.append(f"Error in line {linea_num} Incompatible operands: The variable '{var_resultado}' of type 'int' cannot store the result of an operation that includes 'float'.")
+                    elif tipo_var_resultado not in ["int", "float"] and len(tipos_variables) > 0:
+                        errores.append(f"Error in line {linea_num} Incompatible operands: The variable '{var_resultado}' of type '{tipo_var_resultado}' cannot store the result of a mathematical operation.")
+
+        # Detectar concatenaciones inválidas
+        if "<<" in linea:
+            # Dividir la línea en la variable de destino y la expresión
+            partes_linea = linea.split("=")
+            
+            if len(partes_linea) == 2:
+                var_resultado = partes_linea[0].strip()
+                expresion = partes_linea[1].strip()
+
+                # Verificar si la variable de resultado está definida
+                tipo_var_resultado = obtener_tipo_variable(var_resultado, variables)
+                if tipo_var_resultado == "No definido":
+                    errores.append(f"Error in line {linea_num}: The variable '{var_resultado}' is not defined.")
+                else:
+                    # Extraer todas las variables y operadores utilizando expresiones regulares
+                    tokens = re.findall(expresion_variable_valida, expresion)
+
+                    # Filtrar las variables de la lista de tokens
+                    variables_encontradas = [var for var in tokens if var not in palabras_reservadas and not var.isnumeric()]
+
+                    # Verificar si las variables usadas en la concatenación son válidas
+                    tipos_concatenacion = []
+                    for var in variables_encontradas:
+                        tipo_var = obtener_tipo_variable(var, variables)
+                        if tipo_var not in ["char", "str"]:
+                            if tipo_var =="No definido":
+                                errores.append(f"Error in line {linea_num}: The variable '{var}' is not defined.")
+                            else:
+                                errores.append(f"Error in line {linea_num} Incompatible operands: Concatenation not allowed with type '{tipo_var}' in the expression '{linea.strip()}'.")
+                                break
+                        tipos_concatenacion.append(tipo_var)
+
+                    # Verificar si el tipo de la variable de resultado es compatible para almacenar concatenaciones
+                    if tipo_var_resultado == "char":
+                        errores.append(f"Error in line {linea_num} Incompatible operands: The variable '{var_resultado}' of type 'char' cannot store a concatenation.")
+                    elif tipo_var_resultado == "str" and any(tipo not in ["char", "str"] for tipo in tipos_concatenacion):
+                        errores.append(f"Error in line {linea_num} Incompatible operands: The variable '{var_resultado}' of type 'str' cannot store concatenations that include invalid or undefined types.")
+                    elif tipo_var_resultado not in ["str"]:
+                        errores.append(f"Error in line {linea_num} Incompatible operands: The variable '{var_resultado}' of type '{tipo_var_resultado}' cannot store the result of a concatenation.")
+
+    #return errores
     
+    for error in errores:
+        print(error)
+        cajaConsola.insert("end", f"\nFOCUS-bash> {error}")
+    print("\n")    
+
 
 
 def f4_codInter():
