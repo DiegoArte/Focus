@@ -1124,12 +1124,56 @@ def f3_semantico():
                     tipo_destino = variables[var_destino]["tipo"]
                     tipo_origen = variables[var_origen]["tipo"]
                     
-                    if not tipo_destino == "bool" and tipo_origen == "bool" or not tipo_destino == "int" and tipo_origen == "int" or not tipo_destino == "float" and tipo_origen == "float" or not tipo_destino == "float" and tipo_origen == "int" or not tipo_destino == "char" and tipo_origen == "char" or not tipo_destino == "str" and tipo_origen == "str" or not tipo_destino == "str" and tipo_origen == "char":
+                    # Condiciones aplicables cuando la variable para asignación es bool
+                    if (tipo_destino == "bool" and tipo_origen == "int"): 
                         errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")
+                    elif (tipo_destino == "bool" and tipo_origen == "float"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                   
+                    elif (tipo_destino == "bool" and tipo_origen == "char"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "bool" and tipo_origen == "str"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                     
+                    
+                    # Condiciones aplicables cuando la variable para asignación es int
+                    elif (tipo_destino == "int" and tipo_origen == "bool"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "int" and tipo_origen == "float"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "int" and tipo_origen == "char"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "int" and tipo_origen == "str"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    
+                    # Condiciones aplicables cuando la variable para asignación es float
+                    elif (tipo_destino == "float" and tipo_origen == "bool"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "float" and tipo_origen == "char"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "float" and tipo_origen == "str"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    
+                    # Condiciones aplicables cuando la variable para asignación es char
+                    elif (tipo_destino == "char" and tipo_origen == "bool"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "char" and tipo_origen == "int"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "char" and tipo_origen == "float"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "char" and tipo_origen == "str"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    
+                    # Condiciones aplicables cuando la variable para asignación es str
+                    elif (tipo_destino == "str" and tipo_origen == "bool"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "str" and tipo_origen == "int"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    elif (tipo_destino == "str" and tipo_origen == "float"): 
+                        errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")                    
+                    
                     else:
                         if tipo_destino != tipo_origen:
-                            errores.append(f"Error in line {linea_num} Incompatible operands: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")
-   
+                            errores.append(f"Error in line {linea_num} Incompatible operands 222: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")
+                    
         
         # Detectar operadores incompatibles y operandos incompatibles
         if re.search(r"[+\-*/]", linea):
