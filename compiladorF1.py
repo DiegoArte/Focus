@@ -1110,7 +1110,7 @@ def f3_semantico():
         # Ignora líneas con comentarios
         if linea.strip().startswith("!!") or linea.strip().startswith(".Start") or linea.strip().startswith(".Exit"):
             continue
-
+        
         # Verificar si la línea es una declaración de variable
         for tipo, patron in patrones.items():
             coincidencia = re.match(patron, linea)
@@ -1125,7 +1125,7 @@ def f3_semantico():
             coincidencia = re.match(patron, linea)
             if coincidencia:
                 valor = coincidencia.group(2).strip()
-                valor = None if valor == "" else valor
+                valor = None if valor == "" or re.match(r".*\.input\(?", valor) else valor
                 nombre_variable = coincidencia.group(1)
 
                 # Guardar la variable en el diccionario
@@ -1595,7 +1595,7 @@ def f3_semantico():
                             declaradas.append(var)
             nivel+=1
         generar_arbol(arbol)
-
+    
     if len(errores)==0:
         generar_tabla()
         gen_arbol()
