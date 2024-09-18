@@ -1110,7 +1110,7 @@ def f3_semantico():
         # Ignora líneas con comentarios
         if linea.strip().startswith("!!") or linea.strip().startswith(".Start") or linea.strip().startswith(".Exit"):
             continue
-        
+
         # Verificar si la línea es una declaración de variable
         for tipo, patron in patrones.items():
             coincidencia = re.match(patron, linea)
@@ -1400,7 +1400,7 @@ def f3_semantico():
 
     def gen_arbol():
         def generar_arbol(arbol):
-            dot = graphviz.Digraph(comment='Arbol')
+            dot = graphviz.Digraph(comment='Arbol', format='png')
             dot.node('1', 'F'+"\n"+"valor", style='filled', fillcolor='#333333', fontcolor='white')
             for nivel in arbol[1:]:
                 for nodo in nivel:
@@ -1445,12 +1445,16 @@ def f3_semantico():
         del nodos[0]
         a=[]
         lineas=[]
+        codigoss = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+                    'k', 'l', 'm', 'n', 'o', 'p']
         cn=1
         for i in nodos:
             aa = []
             if i=='.Start' or i=='.Exit':
-                aa.append(i)
-                aa.append('1'+str(cn))
+                if cn>9:
+                    aa = [i, '1' + codigoss[cn]]
+                else:
+                    aa=[i, '1'+str(cn)]
                 cn+=1
                 if i=='.Start':
                     l = []
@@ -1460,8 +1464,10 @@ def f3_semantico():
                 if len(l)>0:
                     lineas.append(l)
                 l=[]
-                aa.append(i)
-                aa.append('1' + str(cn))
+                if cn > 9:
+                    aa = [i, '1' + codigoss[cn]]
+                else:
+                    aa = [i, '1' + str(cn)]
                 cn += 1
             else:
                 l.append(i)
@@ -1469,8 +1475,6 @@ def f3_semantico():
                 a.append(aa)
         arbol.append(a)
 
-        print(arbol)
-        print(lineas)
 
         global tokensl
 
@@ -1493,18 +1497,23 @@ def f3_semantico():
                 if (re.match(erEnteros, n) or re.match(erDecimales, n) or re.match(erVariables, n) or re.match(erOperaciones, n)) and (n not in noVariables):
                     lineas[cntl].append(n)
             cntl+=1
-        print(lineas)
+        print("lineas", lineas)
+        max_iterations = 1000  # Un número límite de iteraciones
+        iteration_count = 0
         tamLineas=True
-        while tamLineas:
+        while tamLineas and iteration_count < max_iterations:
+            iteration_count += 1
             a=[]
             for i in arbol[-1]:
-                if isinstance(i[0], list):
+                if i[0]=='.Start':
+                    varInutil=0
+                elif isinstance(i[0], list):
                     pos =varsC.index(i[0][0])
                     elements=vars[pos][i[0][1]]
                     hijos=[]
                     for e in elements:
 
-                        for y in lineas[int(i[1][1])-2]:
+                        for y in lineas[codigoss.index(i[1][1])-2]:
                             yy=y
                             if isinstance(y, list):
                                 yy=y[0]
@@ -1512,49 +1521,50 @@ def f3_semantico():
                                 hijos.append(y)
                                 break
                     for elemento in hijos:
-                        if elemento in lineas[int(i[1][1])-2]:
-                            lineas[int(i[1][1])-2].remove(elemento)
-                    cn=1
+                        if elemento in lineas[codigoss.index(i[1][1])-2]:
+                            lineas[codigoss.index(i[1][1])-2].remove(elemento)
+                    cno=1
+
                     for h in hijos:
-                        aa=[h, i[1]+str(cn)]
-                        cn+=1
+                        aa=[h, i[1]+str(cno)]
+                        cno+=1
                         a.append(aa)
                 elif i[0]=='ER Enteros':
-                    for y in lineas[int(i[1][1])-2]:
+                    for y in lineas[codigoss.index(i[1][1])-2]:
                         if not isinstance(y, list):
                             if re.match(erEnteros, y):
                                 a.append([y, i[1]+'1'])
-                                lineas[int(i[1][1]) - 2].remove(y)
+                                lineas[codigoss.index(i[1][1])-2].remove(y)
                                 break
                 elif i[0]=='ER Decimales':
-                    for y in lineas[int(i[1][1])-2]:
+                    for y in lineas[codigoss.index(i[1][1])-2]:
                         if not isinstance(y, list):
                             if re.match(erDecimales, y):
                                 a.append([y, i[1]+'1'])
-                                lineas[int(i[1][1]) - 2].remove(y)
+                                lineas[codigoss.index(i[1][1])-2].remove(y)
                                 break
                 elif i[0]=='ER Variables':
-                    for y in lineas[int(i[1][1])-2]:
+                    for y in lineas[codigoss.index(i[1][1])-2]:
                         if not isinstance(y, list) and y!='true' and y!='false':
                             if re.match(erVariables, y):
                                 a.append([y, i[1]+'1'])
-                                lineas[int(i[1][1]) - 2].remove(y)
+                                lineas[codigoss.index(i[1][1])-2].remove(y)
                                 break
                 elif i[0]=='ER Operaciones':
-                    for y in lineas[int(i[1][1])-2]:
+                    for y in lineas[codigoss.index(i[1][1])-2]:
                         if not isinstance(y, list):
                             if re.match(erOperaciones, y):
                                 ops=re.split(r'([+\-*/])', y)
                                 ops=[o.strip() for o in ops if o.strip()]
-                                cn=1
-                                codigos=['','','','','','','','','','','a','b','c','d','e','f','g','h','i','j''k']
+                                cnn=1
+                                codigos=['','','','','','','','','','','a','b','c','d','e','f','g','h','i','j', 'k']
                                 for o in ops:
-                                    if cn>9:
-                                        a.append([o, i[1] + codigos[cn]])
+                                    if cnn>9:
+                                        a.append([o, i[1]+codigos[cnn]])
                                     else:
-                                        a.append([o, i[1]+str(cn)])
-                                    cn+=1
-                                lineas[int(i[1][1]) - 2].remove(y)
+                                        a.append([o, i[1]+str(cnn)])
+                                    cnn+=1
+                                lineas[codigoss.index(i[1][1])-2].remove(y)
                                 break
             arbol.append(a)
             tamLineas=False
@@ -1589,13 +1599,12 @@ def f3_semantico():
                     if var==ar[0]:
                         if var in declaradas:
                             a=[str(info['valor']), ar[1]+'1']
-                            print(a)
                             arbol[nivel+1].append(a)
                         else:
                             declaradas.append(var)
             nivel+=1
         generar_arbol(arbol)
-    
+
     if len(errores)==0:
         generar_tabla()
         gen_arbol()
