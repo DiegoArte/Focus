@@ -1,0 +1,36 @@
+.Start
+
+n1 = int(5);
+n2 = int(4);
+n3 = int();
+
+a = float();
+b = float();
+c = float();
+
+x = str();
+y = str();
+z = str();
+
+c1 = char();
+c2 = char();
+c3 = char();
+
+bande = flag();
+
+num1 = int().input("Numero");
+set n1 = num1;
+
+num2 = int().input("Numero");
+set n2 = num2;
+
+cad = str().input("Cadena");
+set x = cad;
+
+c = n1 * n2 + 15.7 * 20 - 45 / 2.5 ;
+b = n1 * n2 * n2 / 2 + 45 * 2.5 + n1;
+
+Show(c);
+
+.Exit
+
