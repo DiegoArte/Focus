@@ -1071,7 +1071,7 @@ def f3_semantico():
 
     '''
     IDENTIFICADORES NO DEFINIDOS
-    Incompatible operands
+    OPERANDOS INCOMPATIBLES
     VARIABLES DUPLICADAS
 
     - Si no hay errores mostrar TABLA SEMÁNTICA con atributo VALOR
@@ -1104,7 +1104,6 @@ def f3_semantico():
     variables = {}
     # Lista para guardar los errores encontrados
     errores = []
-    
 
     # Recorre las lineas de código para sacar las variables y sus datos
     for linea_num, linea in enumerate(contenido, start=1):
@@ -1126,12 +1125,12 @@ def f3_semantico():
             coincidencia = re.match(patron, linea)
             if coincidencia:
                 valor = coincidencia.group(2).strip()
-                
-                valor = "0" if  valor == "" or (re.match(r".*\.input\(?", valor) and tipo == "int") else valor
-                valor = "0" if  valor == "" and tipo == "int" or re.match(r".*\.input\(?", valor) else valor
-                valor = "0.0" if  valor == "" and tipo == "float" or re.match(r".*\.input\(?", valor) else valor
+
+                valor = "0" if valor == "" or (re.match(r".*\.input\(?", valor) and tipo == "int") else valor
+                valor = "0" if valor == "" and tipo == "int" or re.match(r".*\.input\(?", valor) else valor
+                valor = "0.0" if valor == "" and tipo == "float" or re.match(r".*\.input\(?", valor) else valor
                 valor = "None" if valor == "" or re.match(r".*\.input\(?", valor) else valor
-                
+
                 nombre_variable = coincidencia.group(1)
 
                 # Guardar la variable en el diccionario
@@ -1153,7 +1152,6 @@ def f3_semantico():
     # Esta es la expresión definida en las reglas del lenguaje para nombrar variables
     expresion_variable_valida = r'\b[a-zA-Z_][a-zA-Z0-9_]*\b(?=(?:[^"]*"[^"]*")*[^"]*$)'
 
-
     # Palabras reservadas del lenguaje que deben ser excluidas de la detección de variables no definidas
     palabras_reservadas = {"int", "flag", "char", "str", "float", "set", "Show(", "input", "true", "false"}
 
@@ -1167,10 +1165,10 @@ def f3_semantico():
         if nombre in variables:
             return variables[nombre]["valor"]
         return "No definido"
-    
+
     # Diccionario con las variables que guardan los resultados de las operaciones válidas creadas en el código
     resultados_operaciones = {}
-    
+
     # Identificadores no definidos y operaciones incompatibles
     for linea_num, linea in enumerate(contenido, start=1):
         # Ignorar líneas de comentarios y secciones de inicio/fin
@@ -1266,10 +1264,6 @@ def f3_semantico():
                             errores.append(
                                 f"Error in line {linea_num} Incompatible operands 222: in assignment 'set {var_destino} = {var_origen};' ({tipo_destino} != {tipo_origen}).")
 
-        
-
-
-
         # Detectar operadores incompatibles y Incompatible operands
         if re.search(r"[+\-*/]", linea):
             # Dividir la línea en la variable de destino y la expresión
@@ -1284,13 +1278,14 @@ def f3_semantico():
                 if tipo_var_resultado == "No definido":
                     errores.append(f"Error in line {linea_num}: The variable '{var_resultado}' is not defined.")
                 else:
-                    
+
                     # Inicializa un diccionario para los valores de las variables
                     valores_variables = {}
                     # Extraer todas las variables y operadores utilizando expresiones regulares
                     tokens = re.findall(expresion_variable_valida, expresion)
                     # Filtrar las variables de la lista de tokens
-                    variables_encontradas = [var for var in tokens if var not in palabras_reservadas and not var.isnumeric()]
+                    variables_encontradas = [var for var in tokens if
+                                             var not in palabras_reservadas and not var.isnumeric()]
 
                     # Comprobar si cada variable encontrada está definida
                     tipos_variables = []
@@ -1300,7 +1295,6 @@ def f3_semantico():
                             errores.append(f"Error in line {linea_num}: The variable '{var}' is not defined.")
                         else:
                             tipos_variables.append(tipo_var)
-                            
 
                     # Verificar tipos no permitidos en operaciones matemáticas
                     for tipo in tipos_variables:
@@ -1308,7 +1302,7 @@ def f3_semantico():
                             errores.append(
                                 f"Error in line {linea_num} Incompatible operands: Mathematical operation not allowed with type '{tipo}' in the expression '{linea.strip()}'.")
                             break
-                    
+
                     # Comprobar si cada variable encontrada está definida y añadir sus valores
                     for var in variables_encontradas:
                         tipo_var = obtener_tipo_variable(var, variables)
@@ -1333,7 +1327,8 @@ def f3_semantico():
 
                     # Comprobar si hay cadenas in the expression
                     if re.search(r'"[^"]*"', expresion):
-                        errores.append(f"Error in line {linea_num} Incompatible operands: Cannot perform math operations on strings in expression '{linea.strip()}'")
+                        errores.append(
+                            f"Error in line {linea_num} Incompatible operands: Cannot perform math operations on strings in expression '{linea.strip()}'")
 
                     # Comprobar tipos incompatibles entre los operandos
                     if len(set(tipos_variables)) > 1 and "int" in tipos_variables and "float" in tipos_variables:
@@ -1360,14 +1355,15 @@ def f3_semantico():
                             # Reemplazar las variables in the expression por sus valores reales
                             for var, valor in valores_variables.items():
                                 expresion = expresion.replace(var, str(valor))
-                            expresion = expresion[:len(expresion)-1]
+                            expresion = expresion[:len(expresion) - 1]
                             # Evaluar la expresión con los valores de las variables
                             resultado = eval(expresion)
-                            resultados_operaciones[var_resultado] = {"operacion": expresion, "tipo": tipo_var_resultado, "valor": resultado, "linea": linea_num}
+                            resultados_operaciones[var_resultado] = {"operacion": expresion, "tipo": tipo_var_resultado,
+                                                                     "valor": resultado, "linea": linea_num}
                         except Exception as e:
-                            errores.append(f"Error in line {linea_num}: The expression could not be evaluated '{expresion}' - {str(e)}")
-                
-                    
+                            errores.append(
+                                f"Error in line {linea_num}: The expression could not be evaluated '{expresion}' - {str(e)}")
+
         # Detectar concatenaciones inválidas
         if "<<" in linea:
             # Dividir la línea en la variable de destino y la expresión
@@ -1388,17 +1384,18 @@ def f3_semantico():
                     # Filtrar las variables y literales de la lista de tokens
                     variables_encontradas = [var for var in tokens if var not in palabras_reservadas and var != "<<"]
 
-                    
                     # Verificar si las variables y literales usadas en la concatenación son válidas
                     tipos_concatenacion = []
                     for var in variables_encontradas:
                         if "true" in linea or "false" in linea:  # Detectar booleanos
-                            errores.append(f"Error in line {linea_num}: Cannot concatenate a boolean in the expression '{linea.strip()}'.")
+                            errores.append(
+                                f"Error in line {linea_num}: Cannot concatenate a boolean in the expression '{linea.strip()}'.")
                             break
                         elif var.startswith('"') or var.startswith("'"):  # Es un literal de tipo str o char
                             tipos_concatenacion.append("str" if len(var) > 3 else "char")
                         elif var.isdigit():  # Detectar números enteros (no válidos para concatenación)
-                            errores.append(f"Error in line {linea_num}: Cannot concatenate a number in the expression '{linea.strip()}'.")
+                            errores.append(
+                                f"Error in line {linea_num}: Cannot concatenate a number in the expression '{linea.strip()}'.")
                             break
                         else:
                             tipo_var = obtener_tipo_variable(var, variables)
@@ -1439,20 +1436,19 @@ def f3_semantico():
                             resultados_operaciones[var_resultado] = resultado_concatenacion
 
                         except Exception as e:
-                            errores.append(f"Error in line {linea_num}: Could not concatenate values ​​in '{linea.strip()}' - {str(e)}")
-
+                            errores.append(
+                                f"Error in line {linea_num}: Could not concatenate values ​​in '{linea.strip()}' - {str(e)}")
 
     # return errores
 
-    #print(len(resultados_operaciones))
+    # print(len(resultados_operaciones))
     for var, resultado in resultados_operaciones.items():
         print(f"Resultado de la operación en '{var}': {resultado}")
-    
+
     for error in errores:
         print(error)
         cajaConsola.insert("end", f"\nFOCUS-bash> {error}")
     print("\n")
-
 
 
 
@@ -1682,20 +1678,34 @@ def f3_semantico():
 
         arbol = simplify_tree_data(arbol)
         print("arbol simplificado:", arbol)
-
         arbol.append([])
         nivel=0
         declaradas=[]
+        operaciones=[]
+        codOperaciones=[]
         for arb in arbol:
             for ar in arb:
-                for var, info in variables.items():
-                    if var==ar[0]:
-                        if var in declaradas:
-                            a=[str(info['valor']), ar[1]+'1']
-                            arbol[nivel+1].append(a)
-                        else:
-                            declaradas.append(var)
+                if ar[0]=='Operacion':
+                    codOperaciones.append(ar[1])
+                if ar[0] in operaciones:
+                    for var, resultado in resultados_operaciones.items():
+                        if var==ar[0]:
+                            a = [str(resultado['valor']), ar[1] + '1']
+                            arbol[nivel + 1].append(a)
+                else:
+                    for var, info in variables.items():
+                        if var==ar[0]:
+                            if var in declaradas:
+                                a=[str(info['valor']), ar[1]+'1']
+                                arbol[nivel+1].append(a)
+                            else:
+                                declaradas.append(var)
+                if nivel!=2:
+                    if ar[1][:3] in codOperaciones and ar[0] in resultados_operaciones:
+                        operaciones.append(ar[0])
             nivel+=1
+
+
         generar_arbol(arbol)
 
     if len(errores)==0:
