@@ -71,9 +71,12 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n" [label="Linea
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1 -> "1n"
-	"1o" [label=".Exit
+	"1o" [label="Linea
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1 -> "1o"
+	"1p" [label=".Exit
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1 -> "1p"
 	121 [label="DeclaraVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	12 -> 121
@@ -137,9 +140,12 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m1" [label="Operacion
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m" -> "1m1"
-	"1n1" [label="Mostrar
+	"1n1" [label="Concatenar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n" -> "1n1"
+	"1o1" [label="Mostrar
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o" -> "1o1"
 	1211 [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	121 -> 1211
@@ -446,21 +452,39 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m14" [label=";
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m1" -> "1m14"
-	"1n11" [label="Show
+	"1n11" [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n1" -> "1n11"
-	"1n12" [label="(
+	"1n12" [label="=
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n1" -> "1n12"
 	"1n13" [label="Conct
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n1" -> "1n13"
-	"1n14" [label=")
+	"1n14" [label="<<
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n1" -> "1n14"
-	"1n15" [label=";
+	"1n15" [label="Conct
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n1" -> "1n15"
+	"1n16" [label=";
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1n1" -> "1n16"
+	"1o11" [label="Show
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o1" -> "1o11"
+	"1o12" [label="(
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o1" -> "1o12"
+	"1o13" [label="Conct
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o1" -> "1o13"
+	"1o14" [label=")
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o1" -> "1o14"
+	"1o15" [label=";
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o1" -> "1o15"
 	12111 [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1211 -> 12111
@@ -704,9 +728,15 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m131" [label="ER Operaciones
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m13" -> "1m131"
+	"1n111" [label="ER Variables
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1n11" -> "1n111"
 	"1n131" [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n13" -> "1n131"
+	"1o131" [label="nomVar
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o13" -> "1o131"
 	121111 [label="n1
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	12111 -> 121111
@@ -857,18 +887,27 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m131d" [label="n1
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m131" -> "1m131d"
+	"1n1111" [label="x
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1n111" -> "1n1111"
 	"1n1311" [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n131" -> "1n1311"
+	"1o1311" [label="ER Variables
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o131" -> "1o1311"
 	1213311 [label="ER Enteros
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	121331 -> 1213311
 	1313311 [label="ER Enteros
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	131331 -> 1313311
-	"1n13111" [label="c
+	"1n13111" [label="y
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n1311" -> "1n13111"
+	"1o13111" [label="c
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o1311" -> "1o13111"
 	"1g12111" [label="5
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1g1211" -> "1g12111"
@@ -881,7 +920,7 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1i14111" [label="0
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1i1411" -> "1i14111"
-	"1k12111" [label="0
+	"1k12111" [label="0aaa
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1k1211" -> "1k12111"
 	"1k14111" [label="0
@@ -911,6 +950,9 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m131d1" [label="5
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1m131d" -> "1m131d1"
+	"1n11111" [label="0aaa
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1n1111" -> "1n11111"
 	12133111 [label="5
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1213311 -> 12133111
@@ -920,4 +962,7 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n131111" [label="0
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1n13111" -> "1n131111"
+	"1o131111" [label="0
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1o13111" -> "1o131111"
 }

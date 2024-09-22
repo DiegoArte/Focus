@@ -1071,7 +1071,7 @@ def f3_semantico():
 
     '''
     IDENTIFICADORES NO DEFINIDOS
-    OPERANDOS INCOMPATIBLES
+    Incompatible operands
     VARIABLES DUPLICADAS
 
     - Si no hay errores mostrar TABLA SEMÁNTICA con atributo VALOR
@@ -1268,7 +1268,9 @@ def f3_semantico():
 
         
 
-        # Detectar operadores incompatibles y operandos incompatibles
+
+
+        # Detectar operadores incompatibles y Incompatible operands
         if re.search(r"[+\-*/]", linea):
             # Dividir la línea en la variable de destino y la expresión
             partes_linea = linea.split("=")
@@ -1280,12 +1282,14 @@ def f3_semantico():
                 # Verificar si la variable de resultado está definida
                 tipo_var_resultado = obtener_tipo_variable(var_resultado, variables)
                 if tipo_var_resultado == "No definido":
-                    errores.append(f"Error en línea {linea_num}: La variable '{var_resultado}' no está definida.")
+                    errores.append(f"Error in line {linea_num}: The variable '{var_resultado}' is not defined.")
                 else:
+                    
+                    # Inicializa un diccionario para los valores de las variables
+                    valores_variables = {}
                     # Extraer todas las variables y operadores utilizando expresiones regulares
                     tokens = re.findall(expresion_variable_valida, expresion)
-
-                    # Filtrar las variables de la lista de tokens (sin números)
+                    # Filtrar las variables de la lista de tokens
                     variables_encontradas = [var for var in tokens if var not in palabras_reservadas and not var.isnumeric()]
 
                     # Comprobar si cada variable encontrada está definida
@@ -1293,7 +1297,7 @@ def f3_semantico():
                     for var in variables_encontradas:
                         tipo_var = obtener_tipo_variable(var, variables)
                         if tipo_var == "No definido":
-                            errores.append(f"Error en línea {linea_num}: La variable '{var}' no está definida.")
+                            errores.append(f"Error in line {linea_num}: The variable '{var}' is not defined.")
                         else:
                             tipos_variables.append(tipo_var)
                             
@@ -1302,95 +1306,67 @@ def f3_semantico():
                     for tipo in tipos_variables:
                         if tipo not in ["int", "float"]:
                             errores.append(
-                                f"Error en línea {linea_num}: Operación matemática no permitida con el tipo '{tipo}' en la expresión '{linea.strip()}'.")
+                                f"Error in line {linea_num} Incompatible operands: Mathematical operation not allowed with type '{tipo}' in the expression '{linea.strip()}'.")
+                            break
+                    
+                    # Comprobar si cada variable encontrada está definida y añadir sus valores
+                    for var in variables_encontradas:
+                        tipo_var = obtener_tipo_variable(var, variables)
+                        if tipo_var == "No definido":
+                            errores.append(f"Error in line {linea_num}: The variable '{var}' is not defined.")
+                        else:
+                            # Almacenar el valor de la variable en el diccionario `valores_variables`
+                            valor_var = variables[var]["valor"]
+                            if tipo_var == "int":
+                                valores_variables[var] = int(valor_var)
+                            elif tipo_var == "float":
+                                valores_variables[var] = float(valor_var)
+                            else:
+                                valores_variables[var] = valor_var  # Otros tipos se almacenan como están
+
+                    # Verificar tipos no permitidos en operaciones matemáticas
+                    for tipo in tipos_variables:
+                        if tipo not in ["int", "float"]:
+                            errores.append(
+                                f"Error in line {linea_num} Incompatible operands: mathematical operation with type is not allowed '{tipo}' in the expression '{linea.strip()}'.")
                             break
 
-                    # Detectar operadores incompatibles y operandos incompatibles
-                    if re.search(r"[+\-*/]", linea):
-                        # Dividir la línea en la variable de destino y la expresión
-                        partes_linea = linea.split("=")
+                    # Comprobar si hay cadenas in the expression
+                    if re.search(r'"[^"]*"', expresion):
+                        errores.append(f"Error in line {linea_num} Incompatible operands: Cannot perform math operations on strings in expression '{linea.strip()}'")
 
-                        if len(partes_linea) == 2:
-                            var_resultado = partes_linea[0].strip()  # Variable que recibe el resultado
-                            expresion = partes_linea[1].strip()  # Expresión a la derecha del '='
+                    # Comprobar tipos incompatibles entre los operandos
+                    if len(set(tipos_variables)) > 1 and "int" in tipos_variables and "float" in tipos_variables:
+                        # Si hay una mezcla de 'int' y 'float', es válido solo si el resultado es 'float'
+                        if tipo_var_resultado != "float":
+                            errores.append(
+                                f"Error in line {linea_num}: Incompatible operands: the variable '{var_resultado}' of type '{tipo_var_resultado}' cannot store the result of an operation with 'int' & 'float'.")
+                    elif len(set(tipos_variables)) > 1:
+                        # Si hay mezcla de tipos distintos a 'int' y 'float', es un error
+                        errores.append(
+                            f"Error in line {linea_num} Incompatible operands: in the expression '{linea.strip()}' with types {', '.join(set(tipos_variables))}.")
 
-                            # Verificar si la variable de resultado está definida
-                            tipo_var_resultado = obtener_tipo_variable(var_resultado, variables)
-                            if tipo_var_resultado == "No definido":
-                                errores.append(f"Error en línea {linea_num}: La variable '{var_resultado}' no está definida.")
-                            else:
-                                
-                                # Inicializa un diccionario para los valores de las variables
-                                valores_variables = {}
-                                # Extraer todas las variables y operadores utilizando expresiones regulares
-                                tokens = re.findall(expresion_variable_valida, expresion)
-                                # Filtrar las variables de la lista de tokens
-                                variables_encontradas = [var for var in tokens if var not in palabras_reservadas and not var.isnumeric()]
+                    # Verificar si el tipo de la variable de resultado es compatible con los operandos
+                    if "float" in tipos_variables and tipo_var_resultado == "int":
+                        errores.append(
+                            f"Error in line {linea_num}: Incompatible operands: the variable '{var_resultado}' of type 'int' cannot store the result of an operation that includes 'float'.")
+                    elif tipo_var_resultado not in ["int", "float"] and len(tipos_variables) > 0:
+                        errores.append(
+                            f"Error in line {linea_num}: Incompatible operands: the variable '{var_resultado}' of type '{tipo_var_resultado}' cannot store the result of a mathematical operation.")
 
-                                # Comprobar si cada variable encontrada está definida y añadir sus valores
-                                for var in variables_encontradas:
-                                    tipo_var = obtener_tipo_variable(var, variables)
-                                    if tipo_var == "No definido":
-                                        errores.append(f"Error en línea {linea_num}: La variable '{var}' no está definida.")
-                                    else:
-                                        # Almacenar el valor de la variable en el diccionario `valores_variables`
-                                        valor_var = variables[var]["valor"]
-                                        if tipo_var == "int":
-                                            valores_variables[var] = int(valor_var)
-                                        elif tipo_var == "float":
-                                            valores_variables[var] = float(valor_var)
-                                        else:
-                                            valores_variables[var] = valor_var  # Otros tipos se almacenan como están
-
-                                # Verificar tipos no permitidos en operaciones matemáticas
-                                for tipo in tipos_variables:
-                                    if tipo not in ["int", "float"]:
-                                        errores.append(
-                                            f"Error en línea {linea_num}: Operandos incompatibles: no se permite la operación matemática con el tipo '{tipo}' en la expresión '{linea.strip()}'.")
-                                        break
-
-                                # Comprobar si hay cadenas en la expresión
-                                if re.search(r'"[^"]*"', expresion):
-                                    errores.append(f"Error en línea {linea_num}: No se pueden realizar operaciones matemáticas con cadenas en la expresión '{linea.strip()}'.")
-
-                                # Comprobar tipos incompatibles entre los operandos
-                                if len(set(tipos_variables)) > 1 and "int" in tipos_variables and "float" in tipos_variables:
-                                    # Si hay una mezcla de 'int' y 'float', es válido solo si el resultado es 'float'
-                                    if tipo_var_resultado != "float":
-                                        errores.append(
-                                            f"Error en línea {linea_num}: Operandos incompatibles: la variable '{var_resultado}' de tipo '{tipo_var_resultado}' no puede almacenar el resultado de una operación con 'int' y 'float'.")
-                                elif len(set(tipos_variables)) > 1:
-                                    # Si hay mezcla de tipos distintos a 'int' y 'float', es un error
-                                    errores.append(
-                                        f"Error en línea {linea_num}: Operandos incompatibles en la expresión '{linea.strip()}' con tipos {', '.join(set(tipos_variables))}.")
-
-                                # Verificar si el tipo de la variable de resultado es compatible con los operandos
-                                if "float" in tipos_variables and tipo_var_resultado == "int":
-                                    errores.append(
-                                        f"Error en línea {linea_num}: Operandos incompatibles: la variable '{var_resultado}' de tipo 'int' no puede almacenar el resultado de una operación que incluye 'float'.")
-                                elif tipo_var_resultado not in ["int", "float"] and len(tipos_variables) > 0:
-                                    errores.append(
-                                        f"Error en línea {linea_num}: Operandos incompatibles: la variable '{var_resultado}' de tipo '{tipo_var_resultado}' no puede almacenar el resultado de una operación matemática.")
-
-                                # Si no hay errores, proceder a reemplazar las variables por sus valores
-                                if len(errores) == 0:
-                                    try:
-                                        # Reemplazar las variables en la expresión por sus valores reales
-                                        for var, valor in valores_variables.items():
-                                            expresion = expresion.replace(var, str(valor))
-                                        expresion = expresion[:len(expresion)-1]
-                                        # Evaluar la expresión con los valores de las variables
-                                        resultado = eval(expresion)
-                                        resultados_operaciones[var_resultado] = {"operacion": expresion, "tipo": tipo_var_resultado, "valor": resultado, "linea": linea_num}
-                                    except Exception as e:
-                                        errores.append(f"Error en línea {linea_num}: No se pudo evaluar la expresión '{expresion}' - {str(e)}")
-
-
-                                
-                                
-
-                                
-                    
+                    # Si no hay errores, proceder a reemplazar las variables por sus valores
+                    if len(errores) == 0:
+                        try:
+                            # Reemplazar las variables in the expression por sus valores reales
+                            for var, valor in valores_variables.items():
+                                expresion = expresion.replace(var, str(valor))
+                            expresion = expresion[:len(expresion)-1]
+                            # Evaluar la expresión con los valores de las variables
+                            resultado = eval(expresion)
+                            resultados_operaciones[var_resultado] = {"operacion": expresion, "tipo": tipo_var_resultado, "valor": resultado, "linea": linea_num}
+                        except Exception as e:
+                            errores.append(f"Error in line {linea_num}: The expression could not be evaluated '{expresion}' - {str(e)}")
+                
                     
         # Detectar concatenaciones inválidas
         if "<<" in linea:
@@ -1406,25 +1382,34 @@ def f3_semantico():
                 if tipo_var_resultado == "No definido":
                     errores.append(f"Error in line {linea_num}: The variable '{var_resultado}' is not defined.")
                 else:
-                    # Extraer todas las variables y operadores utilizando expresiones regulares
-                    tokens = re.findall(expresion_variable_valida, expresion)
+                    # Extraer todas las variables, literales y operadores utilizando expresiones regulares
+                    tokens = re.findall(r'\".*?\"|\'.*?\'|\b[a-zA-Z_][a-zA-Z0-9_]*\b|\d+|true|false|<<', expresion)
 
-                    # Filtrar las variables de la lista de tokens
-                    variables_encontradas = [var for var in tokens if
-                                             var not in palabras_reservadas and not var.isnumeric()]
+                    # Filtrar las variables y literales de la lista de tokens
+                    variables_encontradas = [var for var in tokens if var not in palabras_reservadas and var != "<<"]
 
-                    # Verificar si las variables usadas en la concatenación son válidas
+                    
+                    # Verificar si las variables y literales usadas en la concatenación son válidas
                     tipos_concatenacion = []
                     for var in variables_encontradas:
-                        tipo_var = obtener_tipo_variable(var, variables)
-                        if tipo_var not in ["char", "str"]:
-                            if tipo_var == "No definido":
-                                errores.append(f"Error in line {linea_num}: The variable '{var}' is not defined.")
-                            else:
-                                errores.append(
-                                    f"Error in line {linea_num} Incompatible operands: Concatenation not allowed with type '{tipo_var}' in the expression '{linea.strip()}'.")
-                                break
-                        tipos_concatenacion.append(tipo_var)
+                        if "true" in linea or "false" in linea:  # Detectar booleanos
+                            errores.append(f"Error in line {linea_num}: Cannot concatenate a boolean in the expression '{linea.strip()}'.")
+                            break
+                        elif var.startswith('"') or var.startswith("'"):  # Es un literal de tipo str o char
+                            tipos_concatenacion.append("str" if len(var) > 3 else "char")
+                        elif var.isdigit():  # Detectar números enteros (no válidos para concatenación)
+                            errores.append(f"Error in line {linea_num}: Cannot concatenate a number in the expression '{linea.strip()}'.")
+                            break
+                        else:
+                            tipo_var = obtener_tipo_variable(var, variables)
+                            if tipo_var not in ["char", "str"]:
+                                if tipo_var == "No definido":
+                                    errores.append(f"Error in line {linea_num}: The variable '{var}' is not defined.")
+                                else:
+                                    errores.append(
+                                        f"Error in line {linea_num} Incompatible operands: Concatenation not allowed with type '{tipo_var}' in the expression '{linea.strip()}'.")
+                                    break
+                            tipos_concatenacion.append(tipo_var)
 
                     # Verificar si el tipo de la variable de resultado es compatible para almacenar concatenaciones
                     if tipo_var_resultado == "char":
@@ -1438,9 +1423,28 @@ def f3_semantico():
                         errores.append(
                             f"Error in line {linea_num} Incompatible operands: The variable '{var_resultado}' of type '{tipo_var_resultado}' cannot store the result of a concatenation.")
 
+                    # Si no hay errores, realizar la concatenación
+                    if len(errores) == 0:
+                        try:
+                            # Concatenar las variables y literales
+                            resultado_concatenacion = ""
+                            for var in variables_encontradas:
+                                if var.startswith('"') or var.startswith("'"):  # Literal
+                                    resultado_concatenacion += var.strip('"\'')  # Eliminar comillas
+                                else:  # Variable
+                                    resultado_concatenacion += str(variables[var]["valor"])
+                                    resultado_concatenacion = resultado_concatenacion.strip('"\'')
+                            # Guardar el resultado de la concatenación en el diccionario de resultados
+                            variables[var_resultado]["valor"] = resultado_concatenacion
+                            resultados_operaciones[var_resultado] = resultado_concatenacion
+
+                        except Exception as e:
+                            errores.append(f"Error in line {linea_num}: Could not concatenate values ​​in '{linea.strip()}' - {str(e)}")
+
+
     # return errores
 
-    print(len(resultados_operaciones))
+    #print(len(resultados_operaciones))
     for var, resultado in resultados_operaciones.items():
         print(f"Resultado de la operación en '{var}': {resultado}")
     
