@@ -65,18 +65,9 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1l" [label="Linea
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1 -> "1l"
-	"1m" [label="Linea
+	"1m" [label=".Exit
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1 -> "1m"
-	"1n" [label="Linea
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	1 -> "1n"
-	"1o" [label="Linea
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	1 -> "1o"
-	"1p" [label=".Exit
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	1 -> "1p"
 	121 [label="DeclaraVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	12 -> 121
@@ -128,24 +119,15 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1i1" [label="VariableVariable
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1i" -> "1i1"
-	"1j1" [label="IngresarDato
+	"1j1" [label="Concatenar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j" -> "1j1"
-	"1k1" [label="VariableVariable
+	"1k1" [label="Operacion
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1k" -> "1k1"
-	"1l1" [label="Operacion
+	"1l1" [label="Mostrar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1l" -> "1l1"
-	"1m1" [label="Operacion
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m" -> "1m1"
-	"1n1" [label="Concatenar
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n" -> "1n1"
-	"1o1" [label="Mostrar
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o" -> "1o1"
 	1211 [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	121 -> 1211
@@ -392,99 +374,45 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j12" [label="=
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j1" -> "1j12"
-	"1j13" [label="tipoDato
+	"1j13" [label="Conct
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j1" -> "1j13"
-	"1j14" [label=".input
+	"1j14" [label="<<
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j1" -> "1j14"
-	"1j15" [label="(
+	"1j15" [label="Conct
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j1" -> "1j15"
-	"1j16" [label="\"
+	"1j16" [label=";
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j1" -> "1j16"
-	"1j17" [label="\"
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1j1" -> "1j17"
-	"1j18" [label=")
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1j1" -> "1j18"
-	"1j19" [label=";
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1j1" -> "1j19"
-	"1k11" [label="set
+	"1k11" [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1k1" -> "1k11"
-	"1k12" [label="nomVar
+	"1k12" [label="=
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1k1" -> "1k12"
-	"1k13" [label="=
+	"1k13" [label="Ope
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1k1" -> "1k13"
-	"1k14" [label="nomVar
+	"1k14" [label=";
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1k1" -> "1k14"
-	"1k15" [label=";
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1k1" -> "1k15"
-	"1l11" [label="nomVar
+	"1l11" [label="Show
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1l1" -> "1l11"
-	"1l12" [label="=
+	"1l12" [label="(
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1l1" -> "1l12"
-	"1l13" [label="Ope
+	"1l13" [label="Conct
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1l1" -> "1l13"
-	"1l14" [label=";
+	"1l14" [label=")
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1l1" -> "1l14"
-	"1m11" [label="nomVar
+	"1l15" [label=";
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m1" -> "1m11"
-	"1m12" [label="=
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m1" -> "1m12"
-	"1m13" [label="Ope
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m1" -> "1m13"
-	"1m14" [label=";
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m1" -> "1m14"
-	"1n11" [label="nomVar
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n1" -> "1n11"
-	"1n12" [label="=
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n1" -> "1n12"
-	"1n13" [label="Conct
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n1" -> "1n13"
-	"1n14" [label="<<
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n1" -> "1n14"
-	"1n15" [label="Conct
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n1" -> "1n15"
-	"1n16" [label=";
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n1" -> "1n16"
-	"1o11" [label="Show
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o1" -> "1o11"
-	"1o12" [label="(
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o1" -> "1o12"
-	"1o13" [label="Conct
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o1" -> "1o13"
-	"1o14" [label=")
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o1" -> "1o14"
-	"1o15" [label=";
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o1" -> "1o15"
+	"1l1" -> "1l15"
 	12111 [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1211 -> 12111
@@ -701,55 +629,34 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j111" [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j11" -> "1j111"
-	"1j131" [label="str
+	"1j131" [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j13" -> "1j131"
-	"1j132" [label="(
+	"1j151" [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1j13" -> "1j132"
-	"1j133" [label=")
+	"1j15" -> "1j151"
+	"1k111" [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1j13" -> "1j133"
-	"1k121" [label="ER Variables
+	"1k11" -> "1k111"
+	"1k131" [label="ER Operaciones
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1k12" -> "1k121"
-	"1k141" [label="ER Variables
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1k14" -> "1k141"
-	"1l111" [label="ER Variables
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l11" -> "1l111"
-	"1l131" [label="ER Operaciones
+	"1k13" -> "1k131"
+	"1l131" [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1l13" -> "1l131"
-	"1m111" [label="ER Variables
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m11" -> "1m111"
-	"1m131" [label="ER Operaciones
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m13" -> "1m131"
-	"1n111" [label="ER Variables
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n11" -> "1n111"
-	"1n131" [label="nomVar
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n13" -> "1n131"
-	"1o131" [label="nomVar
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o13" -> "1o131"
-	121111 [label="n1
+	121111 [label="x
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	12111 -> 121111
 	121331 [label="num
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	12133 -> 121331
-	131111 [label="n2
+	131111 [label="y
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	13111 -> 131111
 	131331 [label="num
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	13133 -> 131331
-	141111 [label="n3
+	141111 [label="z
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	14111 -> 141111
 	151111 [label="a
@@ -761,13 +668,13 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	171111 [label="c
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	17111 -> 171111
-	181111 [label="x
+	181111 [label="n1
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	18111 -> 181111
-	191111 [label="y
+	191111 [label="n2
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	19111 -> 191111
-	"1a1111" [label="z
+	"1a1111" [label="n3
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1a111" -> "1a1111"
 	"1b1111" [label="c1
@@ -779,13 +686,13 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1d1111" [label="c3
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1d111" -> "1d1111"
-	"1e1111" [label="bande
+	"1e1111" [label="band
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1e111" -> "1e1111"
 	"1f1111" [label="num1
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1f111" -> "1f1111"
-	"1g1211" [label="n1
+	"1g1211" [label="x
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1g121" -> "1g1211"
 	"1g1411" [label="num1
@@ -794,175 +701,112 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1h1111" [label="num2
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1h111" -> "1h1111"
-	"1i1211" [label="n2
+	"1i1211" [label="y
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1i121" -> "1i1211"
 	"1i1411" [label="num2
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1i141" -> "1i1411"
-	"1j1111" [label="cad
+	"1j1111" [label="n3
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1j111" -> "1j1111"
-	"1k1211" [label="x
+	"1j1311" [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1k121" -> "1k1211"
-	"1k1411" [label="cad
+	"1j131" -> "1j1311"
+	"1j1511" [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1k141" -> "1k1411"
-	"1l1111" [label="c
+	"1j151" -> "1j1511"
+	"1k1111" [label="z
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l111" -> "1l1111"
-	"1l1311" [label="n1
+	"1k111" -> "1k1111"
+	"1k1311" [label="x
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k1311"
+	"1k1312" [label="*
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k1312"
+	"1k1313" [label="y
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k1313"
+	"1k1314" [label="+
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k1314"
+	"1k1315" [label="25.3
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k1315"
+	"1k1316" [label="-
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k1316"
+	"1k1317" [label="14
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k1317"
+	"1k1318" [label="/
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k1318"
+	"1k1319" [label="2
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k1319"
+	"1k131a" [label="*
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k131a"
+	"1k131b" [label="3.2
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1k131" -> "1k131b"
+	"1l1311" [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1l131" -> "1l1311"
-	"1l1312" [label="*
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l1312"
-	"1l1313" [label="n2
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l1313"
-	"1l1314" [label="+
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l1314"
-	"1l1315" [label="15.7
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l1315"
-	"1l1316" [label="*
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l1316"
-	"1l1317" [label="20
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l1317"
-	"1l1318" [label="-
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l1318"
-	"1l1319" [label="45
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l1319"
-	"1l131a" [label="/
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l131a"
-	"1l131b" [label="2.5
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l131" -> "1l131b"
-	"1m1111" [label="b
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m111" -> "1m1111"
-	"1m1311" [label="n1
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m1311"
-	"1m1312" [label="*
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m1312"
-	"1m1313" [label="n2
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m1313"
-	"1m1314" [label="*
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m1314"
-	"1m1315" [label="n2
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m1315"
-	"1m1316" [label="/
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m1316"
-	"1m1317" [label="2
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m1317"
-	"1m1318" [label="+
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m1318"
-	"1m1319" [label="45
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m1319"
-	"1m131a" [label="*
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m131a"
-	"1m131b" [label="2.5
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m131b"
-	"1m131c" [label="+
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m131c"
-	"1m131d" [label="n1
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131" -> "1m131d"
-	"1n1111" [label="x
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n111" -> "1n1111"
-	"1n1311" [label="ER Variables
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n131" -> "1n1311"
-	"1o1311" [label="ER Variables
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o131" -> "1o1311"
 	1213311 [label="ER Enteros
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	121331 -> 1213311
 	1313311 [label="ER Enteros
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	131331 -> 1313311
-	"1n13111" [label="y
+	"1j13111" [label="n1
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n1311" -> "1n13111"
-	"1o13111" [label="c
+	"1j1311" -> "1j13111"
+	"1j15111" [label="n2
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o1311" -> "1o13111"
-	"1g12111" [label="5
+	"1j1511" -> "1j15111"
+	"1l13111" [label="z
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1l1311" -> "1l13111"
+	"1g12111" [label="2
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1g1211" -> "1g12111"
-	"1g14111" [label="0
+	"1g14111" [label="None
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1g1411" -> "1g14111"
 	"1i12111" [label="4
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1i1211" -> "1i12111"
-	"1i14111" [label="0
+	"1i14111" [label="None
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	"1i1411" -> "1i14111"
-	"1k12111" [label="0aaa
+	"1j11111" [label="holaadios
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1k1211" -> "1k12111"
-	"1k14111" [label="0
+	"1j1111" -> "1j11111"
+	"1k11111" [label="None
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1k1411" -> "1k14111"
-	"1l11111" [label="0
+	"1k1111" -> "1k11111"
+	"1k13111" [label="2
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l1111" -> "1l11111"
-	"1l13111" [label="5
+	"1k1311" -> "1k13111"
+	"1k13131" [label="4
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l1311" -> "1l13111"
-	"1l13131" [label="4
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1l1313" -> "1l13131"
-	"1m11111" [label="0
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m1111" -> "1m11111"
-	"1m13111" [label="5
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m1311" -> "1m13111"
-	"1m13131" [label="4
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m1313" -> "1m13131"
-	"1m13151" [label="4
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m1315" -> "1m13151"
-	"1m131d1" [label="5
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1m131d" -> "1m131d1"
-	"1n11111" [label="0aaa
-valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n1111" -> "1n11111"
-	12133111 [label="5
+	"1k1313" -> "1k13131"
+	12133111 [label="2
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1213311 -> 12133111
 	13133111 [label="4
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1313311 -> 13133111
-	"1n131111" [label="0
+	"1j131111" [label="\"hola\"
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1n13111" -> "1n131111"
-	"1o131111" [label="0
+	"1j13111" -> "1j131111"
+	"1j151111" [label="\"adios\"
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	"1o13111" -> "1o131111"
+	"1j15111" -> "1j151111"
+	"1l131111" [label="10.899999999999995
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1l13111" -> "1l131111"
 }
