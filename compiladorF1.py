@@ -652,23 +652,21 @@ def f2_sintatico():
     Conct = [[nomVar], ['"', '"'], [num], [dec]]
     Concatenar = [[nomVar, '=', Conct, '<<', Conct, ';']]
     Ope = [[RegexMatcher(
-        r'^\s*(?:[+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*)\s*(?:[+\-*/]\s*([+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*))*\s*$')]]
+        r'^([a-zA-Z0-9]+|\d+(\.\d+)?)([\+\-\*\/]([a-zA-Z0-9]+|\d+(\.\d+)?|\([^\(\)]+\)))*$')]]
     Operacion = [[nomVar, '=', Ope, ';']]
-    Dato = [[num], [dec], ['true'], ['false'], ['"', '"']]
+    Dato = [[num], [dec], ['true'], ['false'], [nomVar], ['"', '"']]
     Mostrar = [['Show', '(', Conct, ')', ';'], ['Show', '(', Conct, '<<', Conct, ')', ';']]
     tipoDato = [['int', '(', ')'], ['float', '(', ')'], ['char', '(', ')'], ['str', '(', ')']]
     IngresarDato = [[nomVar, '=', tipoDato, '.input', '(', '"', '"', ')', ';']]
-    VariableVariable = [['set', nomVar, '=', nomVar, ';']]
-    AsignaValor = [[nomVar, '=', Dato, ';']]
+    AsignaValor = [['set', nomVar, '=', Dato, ';']]
     Vflag = [['true'], ['false'], ['']]
     Vint = [[num], ['']]
     tipo = [['int', '(', Vint, ')'], ['str', '(', ')'], ['char', '(', ')'], ['flag', '(', Vflag, ')'],
             ['float', '(', Vfloat, ')']]
     DeclaraVar = [[nomVar, '=', tipo, ';']]
-    Linea = [["!!"], [VariableVariable], [Mostrar], [AsignaValor], [Operacion], [IngresarDato], [DeclaraVar],
+    Linea = [["!!"], [Mostrar], [AsignaValor], [Operacion], [IngresarDato], [DeclaraVar],
              [Concatenar]]
     F = [[".Start", Linea, ".Exit"]]
-
     # ----------------------------------------------------------------------------------
 
     # Comienza a verificar las palabras en el codigo
@@ -833,7 +831,7 @@ def f2_sintatico():
     tokens.append('#')
     print(tokens)
 
-    def lista_a_str(elemento, nombres_variables):
+        def lista_a_str(elemento, nombres_variables):
         if isinstance(elemento, list):
             for nombre, valor in nombres_variables.items():
                 if valor is elemento:
@@ -846,7 +844,7 @@ def f2_sintatico():
                 return 'ER Decimales'
             elif elemento.pattern == r"^[a-zA-Z_][a-zA-Z0-9_]*$":
                 return 'ER Variables'
-            elif elemento.pattern == r'^\s*(?:[+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*)\s*(?:[+\-*/]\s*([+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*))*\s*$':
+            elif elemento.pattern == r'^([a-zA-Z0-9]+|\d+(\.\d+)?)([\+\-\*\/]([a-zA-Z0-9]+|\d+(\.\d+)?|\([^\(\)]+\)))*$':
                 return 'ER Operaciones'
             else:
                 return 'Expresión Regular'
@@ -862,7 +860,6 @@ def f2_sintatico():
         'Vflag': Vflag,
         'AsignaValor': AsignaValor,
         'Dato': Dato,
-        'VariableVariable': VariableVariable,
         'IngresarDato': IngresarDato,
         'tipoDato': tipoDato,
         'Mostrar': Mostrar,
@@ -1047,24 +1044,23 @@ def f3_semantico():
     Concatenar = [['nomVar', '=', 'Conct', '<<', 'Conct', ';']]
     Ope = [['ER Operaciones']]
     Operacion = [['nomVar', '=', 'Ope', ';']]
-    Dato = [['num'], ['dec'], ['true'], ['false'], ['"', '"']]
+    Dato = [['num'], ['dec'], ['true'], ['false'], ['nomvar'], ['"', '"']]
     Mostrar = [['Show', '(', 'Conct', ')', ';'], ['Show', '(', 'Conct', '<<', 'Conct', ')', ';']]
     tipoDato = [['int', '(', ')'], ['float', '(', ')'], ['char', '(', ')'], ['str', '(', ')']]
     IngresarDato = [['nomVar', '=', 'tipoDato', '.input', '(', '"', '"', ')', ';']]
-    VariableVariable = [['set', 'nomVar', '=', 'nomVar', ';']]
-    AsignaValor = [['nomVar', '=', 'Dato', ';']]
+    AsignaValor = [['set', 'nomVar', '=', 'Dato', ';']]
     Vflag = [['true'], ['false'], ['']]
     Vint = [['num'], ['']]
     tipo = [['int', '(', 'Vint', ')'], ['str', '(', ')'], ['char', '(', ')'], ['flag', '(', 'Vflag', ')'],
             ['float', '(', 'Vfloat', ')']]
     DeclaraVar = [["nomVar", '=', "tipo", ';']]
-    Linea = [["!!"], ["VariableVariable"], ["Mostrar"],
+    Linea = [["!!"], ["Mostrar"],
              ["AsignaValor"], ["Operacion"], ["IngresarDato"], ["DeclaraVar"],
              ['Concatenar']]
     F = [[".Start", "Linea", ".Exit"]]
-    vars = [F, Linea, DeclaraVar, tipo, Vint, Vflag, AsignaValor, VariableVariable, IngresarDato, tipoDato, Mostrar,
+    vars = [F, Linea, DeclaraVar, tipo, Vint, Vflag, AsignaValor, IngresarDato, tipoDato, Mostrar,
             Dato, Operacion, Ope, Concatenar, Conct, nomVar, Vfloat, dec, num]
-    varsC = ['F', 'Linea', 'DeclaraVar', 'tipo', 'Vint', 'Vflag', 'AsignaValor', 'VariableVariable', 'IngresarDato',
+    varsC = ['F', 'Linea', 'DeclaraVar', 'tipo', 'Vint', 'Vflag', 'AsignaValor', 'IngresarDato',
              'tipoDato', 'Mostrar', 'Dato', 'Operacion', 'Ope', 'Concatenar', 'Conct', 'nomVar', 'Vfloat', 'dec', 'num']
 
     # ----------------------------------------------------------------------------------
@@ -1522,14 +1518,18 @@ def f3_semantico():
 
 
         def convert_to_list(input_string):
-            keywords = ['F', 'Linea', 'DeclaraVar', 'tipo', 'Vint', 'Vflag', 'AsignaValor', 'VariableVariable', 'IngresarDato', 'tipoDato', 'Mostrar', 'Dato', 'Operacion',
-                        'Ope', 'Concatenar', 'Conct', 'nomVar', 'Vfloat', 'dec', 'num', 'int', 'str', 'char', 'flag', 'float',
+            keywords = ['F', 'Linea', 'DeclaraVar', 'tipo', 'Vint', 'Vflag', 'AsignaValor', 'IngresarDato', 'tipoDato', 'Mostrar', 'Dato', 'Operacion',
+                        'Ope', 'Concatenar', 'Conct', 'nomVar', 'Vfloat', 'dec', 'num', 'int', 'str', 'char', 'flag',
+                        'float',
                         'true', 'false', 'set', 'Show', 'ER Operaciones', 'ER Variables', 'ER Decimales', 'ER Enteros']
 
             for word in keywords:
                 input_string = re.sub(fr"\b{word}\b(?!')", f"'{word}'", input_string)
 
-            input_string = input_string.replace("(", "'('").replace(")", "')'").replace(".Start", "'.Start'").replace(".Exit", "'.Exit'").replace("=", "'='").replace(";", "';'").replace("!!", "'!!'").replace(', ,', ',').replace('"', "'\"'").replace(".input", "'.input'").replace("<<", "'<<'")
+            input_string = input_string.replace("(", "'('").replace(")", "')'").replace(".Start", "'.Start'").replace(
+                ".Exit", "'.Exit'").replace("=", "'='").replace(";", "';'").replace("!!", "'!!'").replace(', ,',
+                                                                                                          ',').replace(
+                '"', "'\"'").replace(".input", "'.input'").replace("<<", "'<<'")
 
             def process_sublists(match):
                 sublist = match.group(0)
@@ -1600,7 +1600,7 @@ def f3_semantico():
         erEnteros=r"^-?\d+$"
         erDecimales=r"^-?\d+(\.\d+)?$"
         erVariables=r"^[a-zA-Z_][a-zA-Z0-9_]*$"
-        erOperaciones=r'^\s*(?:[+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*)\s*(?:[+\-*/]\s*([+-]?\d+(\.\d+)?|[a-zA-Z][a-zA-Z0-9]*))*\s*$'
+        erOperaciones = r'^([a-zA-Z0-9]+|\d+(\.\d+)?)([\+\-\*\/]([a-zA-Z0-9]+|\d+(\.\d+)?|\([^\(\)]+\)))*$'
         noVariables=['int', 'str', 'char', 'flag', 'float', 'true', 'false', 'set', 'Show']
         for ntl in newtokensl:
             for n in ntl:
@@ -1611,6 +1611,9 @@ def f3_semantico():
         max_iterations = 1000  # Un número límite de iteraciones
         iteration_count = 0
         tamLineas=True
+
+        global operaciones_cod
+        operaciones_cod = []
         while tamLineas and iteration_count < max_iterations:
             iteration_count += 1
             a=[]
@@ -1660,21 +1663,31 @@ def f3_semantico():
                                 a.append([y, i[1]+'1'])
                                 lineas[codigoss.index(i[1][1])-2].remove(y)
                                 break
-                elif i[0]=='ER Operaciones':
-                    for y in lineas[codigoss.index(i[1][1])-2]:
+                elif i[0] == 'ER Operaciones':
+                    for y in lineas[codigoss.index(i[1][1]) - 2]:
                         if not isinstance(y, list):
                             if re.match(erOperaciones, y):
-                                ops=re.split(r'([+\-*/])', y)
-                                ops=[o.strip() for o in ops if o.strip()]
-                                cnn=1
-                                codigos=['','','','','','','','','','','a','b','c','d','e','f','g','h','i','j', 'k']
+                                ops = re.split(r'([+\-*/()])', y)
+                                ops = [o.strip() for o in ops if o.strip()]
+                                cnn = 1
+                                codigos = ['', '', '', '', '', '', '', '', '', '', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+                                           'h', 'i', 'j', 'k']
+                                op_cod=[]
+                                cod = i[1] + '1'
+                                cod = cod[:3] + "1" + cod[4:]
                                 for o in ops:
-                                    if cnn>9:
-                                        a.append([o, i[1]+codigos[cnn]])
+                                    op_cod.append(o)
+                                    if cnn > 9:
+                                        a.append([o, i[1] + codigos[cnn]])
                                     else:
-                                        a.append([o, i[1]+str(cnn)])
-                                    cnn+=1
-                                lineas[codigoss.index(i[1][1])-2].remove(y)
+                                        a.append([o, i[1] + str(cnn)])
+                                    cnn += 1
+                                lineas[codigoss.index(i[1][1]) - 2].remove(y)
+                                for ky in a:
+                                    if ky[1]==cod:
+                                        op_cod.insert(0, '=')
+                                        op_cod.insert(0, ky[0])
+                                operaciones_cod.append(op_cod)
                                 break
             arbol.append(a)
             tamLineas=False
@@ -1735,8 +1748,147 @@ def f3_semantico():
 
 
 
+
+
 def f4_codInter():
-    pass
+    global operaciones_cod
+    print(operaciones_cod)
+
+    for operacion in operaciones_cod:
+        #Funcion para crear la jerarquia
+        def agregar_parentesis(operacion):
+            jerarquias=[['*', '/'], ['+', '-']]
+            for x in range(2):
+                i = 0
+                while i < len(operacion):
+                    if operacion[i] in jerarquias[x]:
+                        j = i - 1
+                        if operacion[j]==')':
+                            cerrar=True
+                            paren=1
+                            while j >= 0 and operacion[j] and cerrar:
+                                j -= 1
+                                if operacion[j]==')':
+                                    paren+=1
+                                elif operacion[j]=='(':
+                                    paren-=1
+                                if paren==0:
+                                    cerrar=False
+                        else:
+                            while j >= 0 and operacion[j] not in ['+', '-', '=', '(', ')', '*', '/']:
+                                j -= 1
+                        operacion.insert(j + 1, '(')
+
+                        k = i + 2
+                        if operacion[k]=='(':
+                            cerrar = True
+                            paren = 1
+                            while k < len(operacion) and operacion[k] and cerrar:
+                                k += 1
+                                if operacion[k]=='(':
+                                    paren+=1
+                                elif operacion[k]==')':
+                                    paren-=1
+                                if paren==0:
+                                    cerrar=False
+                        else:
+                            while k < len(operacion) and operacion[k] not in ['+', '-', '=', '(', ')', '*', '/']:
+                                k += 1
+                        operacion.insert(k, ')')
+
+                        i = k
+                    else:
+                        i += 1
+            return operacion
+
+
+        # Funcion para notacion polaca
+        def notacion_polaca(operacion):
+            pila1=[]
+            pila2=[]
+            pilaf=[]
+            operadores=['=', '(', ')', '+', '-', '*', '/']
+            oper=['+', '-', '*', '/']
+            posOpe=[]
+
+            c=0
+            for i in operacion:
+                if i in operadores:
+                    pila2.append(i)
+                    if i in oper:
+                        posOpe.append(c)
+                else:
+                    pila1.append(i)
+
+                if i==')':
+                    if operacion[posOpe[-1]+1] in pila1:
+                        pilaf.append(pila1[-1])
+                        pila1.pop()
+                    if operacion[posOpe[-1]-1] in pila1:
+                        pilaf.append(pila1[-1])
+                        pila1.pop()
+                    pilaf.append(pila2[-2])
+                    pila2 = pila2[:-3]
+                    posOpe.pop()
+                c+=1
+
+            global pilaP
+            pilaP=pilaf
+            pilaf.append(operacion[0])
+            pilaf.append(operacion[1])
+            print("Notacion polaca:", pilaf)
+
+
+        # Funcion para codigo p
+        def codigo_P(operacion):
+            global pilaP
+            operadores = ['+', '-', '*', '/']
+            codigoP=['lda '+operacion[0]+';']
+            variables=r"^[a-zA-Z_][a-zA-Z0-9_]*$"
+
+            randos=[]
+            for i in pilaP:
+                if i in operadores:
+                    for r in reversed(randos):
+                        if re.match(variables,r):
+                            cod='lod '
+                        else:
+                            cod='ldc '
+                        codigoP.append(cod+r+';')
+                    randos=[]
+                    if i=='+':
+                        codigoP.append('adi;')
+                    elif i=='-':
+                        codigoP.append('sbi;')
+                    elif i=='*':
+                        codigoP.append('mpi;')
+                    elif i=='/':
+                        codigoP.append('div;')
+                else:
+                    randos.append(i)
+            codigoP.append('sto;')
+            print("Codigo P:", codigoP)
+
+
+        operacion = agregar_parentesis(operacion)
+        print("Operacion con parentesis:", operacion)
+        nueva_ventana = tk.Toplevel()
+        nueva_ventana.title(f"Operación: {''.join(operacion)}")
+
+        lbl_operacion = tk.Label(nueva_ventana, text=f"Operación: {''.join(operacion)}", font=("Arial", 14))
+        lbl_operacion.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+
+        btn_notacion_polaca = tk.Button(nueva_ventana, text="Notación Polaca",
+                                        command=lambda: notacion_polaca(operacion))
+        btn_codigo_p = tk.Button(nueva_ventana, text="Código P", command=lambda: codigo_P(operacion))
+        #btn_triplos = tk.Button(nueva_ventana, text="Triplos", command=lambda: triplos(operacion))
+        #btn_cuadruplos = tk.Button(nueva_ventana, text="Cuádruplos", command=lambda: cuadruplos(operacion))
+        btn_notacion_polaca.grid(row=1, column=0, padx=10, pady=10)
+        btn_codigo_p.grid(row=1, column=1, padx=10, pady=10)
+        #btn_triplos.grid(row=2, column=0, padx=10, pady=10)
+        #btn_cuadruplos.grid(row=2, column=1, padx=10, pady=10)
+
+        nueva_ventana.wait_window()
 
 
 def f5_Optimiza():
