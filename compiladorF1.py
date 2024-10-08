@@ -1267,13 +1267,14 @@ def f3_semantico():
             partes_linea = linea.split("=")
 
             if len(partes_linea) == 2:
+                global var_resultado
                 var_resultado = partes_linea[0].strip()  # Variable que recibe el resultado
                 expresion = partes_linea[1].strip()  # Expresión a la derecha del '='
 
                 # Verificar si la variable de resultado está definida
                 tipo_var_resultado = obtener_tipo_variable(var_resultado, variables)
                 if tipo_var_resultado == "No definido":
-                    errores.append(f"Error in line {linea_num}: The variable '{var_resultado}' is not defined.")
+                    errores.append(f"Error en línea {linea_num}: La variable '{var_resultado}' no está definida.")
                 else:
                     # Extraer todas las variables y operadores utilizando expresiones regulares
                     tokens = re.findall(expresion_variable_valida, expresion)
@@ -1286,7 +1287,7 @@ def f3_semantico():
                     for var in variables_encontradas:
                         tipo_var = obtener_tipo_variable(var, variables)
                         if tipo_var == "No definido":
-                            errores.append(f"Error in line {linea_num}: The variable '{var}' is not defined.")
+                            errores.append(f"Error en línea {linea_num}: La variable '{var}' no está definida.")
                         else:
                             tipos_variables.append(tipo_var)
                             
@@ -1295,7 +1296,7 @@ def f3_semantico():
                     for tipo in tipos_variables:
                         if tipo not in ["int", "float"]:
                             errores.append(
-                                f"Error in line {linea_num}: Mathematical operation not allowed with type '{tipo}' in the expression '{linea.strip()}'.")
+                                f"Error en línea {linea_num}: Operación matemática no permitida con el tipo '{tipo}' en la expresión '{linea.strip()}'.")
                             break
 
                     # Detectar operadores incompatibles y operandos incompatibles
@@ -1310,9 +1311,9 @@ def f3_semantico():
                             # Verificar si la variable de resultado está definida
                             tipo_var_resultado = obtener_tipo_variable(var_resultado, variables)
                             if tipo_var_resultado == "No definido":
-                                errores.append(f"Error in line {linea_num}: The variable '{var_resultado}' is not defined.")
+                                errores.append(f"Error en línea {linea_num}: La variable '{var_resultado}' no está definida.")
                             else:
-                                
+                                print(f"Variable resultado {var_resultado} {tipo_var_resultado}")
                                 # Inicializa un diccionario para los valores de las variables
                                 valores_variables = {}
                                 # Extraer todas las variables y operadores utilizando expresiones regulares
@@ -1324,46 +1325,50 @@ def f3_semantico():
                                 for var in variables_encontradas:
                                     tipo_var = obtener_tipo_variable(var, variables)
                                     if tipo_var == "No definido":
-                                        errores.append(f"Error in line {linea_num}: The variable '{var}' is not defined.")
+                                        errores.append(f"Error en línea {linea_num}: La variable '{var}' no está definida.")
                                     else:
                                         # Almacenar el valor de la variable en el diccionario `valores_variables`
                                         valor_var = variables[var]["valor"]
                                         if tipo_var == "int":
-                                            valores_variables[var] = valor_var # int(valor_var)
+                                            valores_variables[var] = int(valor_var)
                                         elif tipo_var == "float":
-                                            valores_variables[var] = valor_var # float(valor_var)
+                                            valores_variables[var] = float(valor_var)
                                         else:
                                             valores_variables[var] = valor_var  # Otros tipos se almacenan como están
+
+                                literales_float = re.findall(r'\d+\.\d+', expresion)
+                                if literales_float:
+                                    tipos_variables.append("float")
 
                                 # Verificar tipos no permitidos en operaciones matemáticas
                                 for tipo in tipos_variables:
                                     if tipo not in ["int", "float"]:
                                         errores.append(
-                                            f"Error in line {linea_num} Incompatible operands: mathematical operation with type '{tipo}' is not allowed in the expression '{linea.strip()}'.")
+                                            f"Error en línea {linea_num}: Operandos incompatibles: no se permite la operación matemática con el tipo '{tipo}' en la expresión '{linea.strip()}'.")
                                         break
 
                                 # Comprobar si hay cadenas en la expresión
                                 if re.search(r'"[^"]*"', expresion):
-                                    errores.append(f"Error in line {linea_num} Incompatible operands: Cannot perform math operations on strings in expression '{linea.strip()}'.")
+                                    errores.append(f"Error en línea {linea_num}: No se pueden realizar operaciones matemáticas con cadenas en la expresión '{linea.strip()}'.")
 
                                 # Comprobar tipos incompatibles entre los operandos
                                 if len(set(tipos_variables)) > 1 and "int" in tipos_variables and "float" in tipos_variables:
                                     # Si hay una mezcla de 'int' y 'float', es válido solo si el resultado es 'float'
                                     if tipo_var_resultado != "float":
                                         errores.append(
-                                            f"Error in line {linea_num}: Incompatible operands: the variable '{var_resultado}' of type '{tipo_var_resultado}' cannot store the result of an operation with 'int' and 'float'.")
+                                            f"Error en línea {linea_num}: Operandos incompatibles: la variable '{var_resultado}' de tipo '{tipo_var_resultado}' no puede almacenar el resultado de una operación con 'int' y 'float'.")
                                 elif len(set(tipos_variables)) > 1:
                                     # Si hay mezcla de tipos distintos a 'int' y 'float', es un error
                                     errores.append(
-                                        f"Error in line {linea_num} Incompatible operands: in the expression '{linea.strip()}' with types {', '.join(set(tipos_variables))}.")
+                                        f"Error en línea {linea_num}: Operandos incompatibles en la expresión '{linea.strip()}' con tipos {', '.join(set(tipos_variables))}.")
 
                                 # Verificar si el tipo de la variable de resultado es compatible con los operandos
                                 if "float" in tipos_variables and tipo_var_resultado == "int":
                                     errores.append(
-                                        f"Error in line {linea_num}: Incompatible operands: the variable '{var_resultado}' of type 'int' cannot store the result of an operation that includes 'float'.")
+                                        f"Error en línea {linea_num}: Operandos incompatibles: la variable '{var_resultado}' de tipo 'int' no puede almacenar el resultado de una operación que incluye 'float'.")
                                 elif tipo_var_resultado not in ["int", "float"] and len(tipos_variables) > 0:
                                     errores.append(
-                                        f"Error in line {linea_num}: Incompatible operands: the variable '{var_resultado}' of type '{tipo_var_resultado}' cannot store the result of a mathematical operation.")
+                                        f"Error en línea {linea_num}: Operandos incompatibles: la variable '{var_resultado}' de tipo '{tipo_var_resultado}' no puede almacenar el resultado de una operación matemática.")
 
                                 # Si no hay errores, proceder a reemplazar las variables por sus valores
                                 if len(errores) == 0:
@@ -1376,7 +1381,7 @@ def f3_semantico():
                                         resultado = eval(expresion)
                                         resultados_operaciones[var_resultado] = {"operacion": expresion, "tipo": tipo_var_resultado, "valor": resultado, "linea": linea_num}
                                     except Exception as e:
-                                        errores.append(f"Error in line {linea_num}: The expression could not be evaluated '{expresion}' - {str(e)}")
+                                        errores.append(f"Error in line {linea_num}: The expression could not be evaluated '{expresion}'")
 
 
 
