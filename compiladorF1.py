@@ -1755,42 +1755,42 @@ def f4_codInter():
     print(operaciones_cod)
 
     for operacion in operaciones_cod:
-        #Funcion para crear la jerarquia
+        # Funcion para crear la jerarquia
         def agregar_parentesis(operacion):
-            jerarquias=[['*', '/'], ['+', '-']]
+            jerarquias = [['*', '/'], ['+', '-']]
             for x in range(2):
                 i = 0
                 while i < len(operacion):
                     if operacion[i] in jerarquias[x]:
                         j = i - 1
-                        if operacion[j]==')':
-                            cerrar=True
-                            paren=1
+                        if operacion[j] == ')':
+                            cerrar = True
+                            paren = 1
                             while j >= 0 and operacion[j] and cerrar:
                                 j -= 1
-                                if operacion[j]==')':
-                                    paren+=1
-                                elif operacion[j]=='(':
-                                    paren-=1
-                                if paren==0:
-                                    cerrar=False
+                                if operacion[j] == ')':
+                                    paren += 1
+                                elif operacion[j] == '(':
+                                    paren -= 1
+                                if paren == 0:
+                                    cerrar = False
                         else:
                             while j >= 0 and operacion[j] not in ['+', '-', '=', '(', ')', '*', '/']:
                                 j -= 1
                         operacion.insert(j + 1, '(')
 
                         k = i + 2
-                        if operacion[k]=='(':
+                        if operacion[k] == '(':
                             cerrar = True
                             paren = 1
                             while k < len(operacion) and operacion[k] and cerrar:
                                 k += 1
-                                if operacion[k]=='(':
-                                    paren+=1
-                                elif operacion[k]==')':
-                                    paren-=1
-                                if paren==0:
-                                    cerrar=False
+                                if operacion[k] == '(':
+                                    paren += 1
+                                elif operacion[k] == ')':
+                                    paren -= 1
+                                if paren == 0:
+                                    cerrar = False
                         else:
                             while k < len(operacion) and operacion[k] not in ['+', '-', '=', '(', ')', '*', '/']:
                                 k += 1
@@ -1801,17 +1801,45 @@ def f4_codInter():
                         i += 1
             return operacion
 
-
         # Funcion para notacion polaca
         def notacion_polaca(operacion):
-            pila1=[]
-            pila2=[]
-            pilaf=[]
-            operadores=['=', '(', ')', '+', '-', '*', '/']
-            oper=['+', '-', '*', '/']
-            posOpe=[]
+            ventana_np = tk.Toplevel()
+            ventana_np.title("Notacion polaca")
+            ventana_np.geometry("1200x350")
+            canvas = tk.Canvas(ventana_np, width=2500, height=2500, bg="#222222")
+            canvas.grid(row=1, column=0, columnspan=3)
+            x_base_operadores = 50
+            x_base_operandos = 150
+            y_base = 50
 
-            c=0
+            def dibujar_pilas(operandos, operadores, x_base_operadores, x_base_operandos, y_base):
+                espacio_vertical = 30
+                ancho_rect = 50
+                alto_rect = 20
+
+                for i, operador in enumerate(operandos):
+                    canvas.create_rectangle(x_base_operadores, y_base + i * espacio_vertical,
+                                                 x_base_operadores + ancho_rect, y_base + (i + 1) * espacio_vertical,
+                                                 fill="#151515")
+                    canvas.create_text(x_base_operadores + ancho_rect / 2,
+                                            y_base + i * espacio_vertical + alto_rect / 2, text=operador, fill="#6DC559")
+
+                for i, operando in enumerate(operadores):
+                    canvas.create_rectangle(x_base_operandos, y_base + i * espacio_vertical,
+                                                 x_base_operandos + ancho_rect, y_base + (i + 1) * espacio_vertical,
+                                                 fill="#151515")
+                    canvas.create_text(x_base_operandos + ancho_rect / 2,
+                                            y_base + i * espacio_vertical + alto_rect / 2, text=operando, fill="#E56464")
+
+            pila1 = []
+            pila2 = []
+            pilaf = []
+            operadores = ['=', '(', ')', '+', '-', '*', '/']
+            oper = ['+', '-', '*', '/']
+            posOpe = []
+
+            c = 0
+            c1=0
             for i in operacion:
                 if i in operadores:
                     pila2.append(i)
@@ -1820,55 +1848,91 @@ def f4_codInter():
                 else:
                     pila1.append(i)
 
-                if i==')':
-                    if operacion[posOpe[-1]+1] in pila1:
+                if i == ')':
+                    pilaT=""
+                    dibujar_pilas(pila1[::-1], pila2[::-1], x_base_operadores, x_base_operandos, y_base)
+                    if operacion[posOpe[-1] + 1] in pila1:
                         pilaf.append(pila1[-1])
+                        pilaT=pilaT+' '+pila1[-1]
                         pila1.pop()
-                    if operacion[posOpe[-1]-1] in pila1:
+                    if operacion[posOpe[-1] - 1] in pila1:
                         pilaf.append(pila1[-1])
+                        pilaT=pilaT+' '+pila1[-1]
                         pila1.pop()
                     pilaf.append(pila2[-2])
+                    pilaT=pilaT+' '+pila2[-2]
+                    lbl_pila = tk.Label(ventana_np, text=pilaT, font=("Arial", 10), bg="#222222", fg="white")
+                    lbl_pila.place(x=x_base_operadores, y=y_base+200)
                     pila2 = pila2[:-3]
                     posOpe.pop()
-                c+=1
-
+                    c1+=1
+                    x_base_operadores +=300
+                    x_base_operandos +=300
+                    if c1%5==0:
+                        y_base += 300
+                        x_base_operadores = 50
+                        x_base_operandos = 150
+                c += 1
+            dibujar_pilas(pila1[::-1], pila2[::-1], x_base_operadores, x_base_operandos, y_base)
+            lbl_pila = tk.Label(ventana_np, text=operacion[0]+' '+operacion[1], font=("Arial", 10), bg="#222222", fg="white")
+            lbl_pila.place(x=x_base_operadores, y=y_base + 200)
             global pilaP
-            pilaP=pilaf
+            pilaP = pilaf
             pilaf.append(operacion[0])
             pilaf.append(operacion[1])
             print("Notacion polaca:", pilaf)
-
+            pilafS=''
+            for dato in pilaf:
+                pilafS=pilafS+' '+dato
+            lbl_pila = tk.Label(ventana_np, text=pilafS, font=("Arial", 14), bg="#222222", fg="white")
+            lbl_pila.place(x=450, y=5)
 
         # Funcion para codigo p
         def codigo_P(operacion):
+            ventana_np = tk.Toplevel()
+            ventana_np.title("Codigo P")
+            ventana_np.geometry("100x500")
+            ventana_np.config(bg="#222222")
+            y_base=5
+
             global pilaP
             operadores = ['+', '-', '*', '/']
-            codigoP=['lda '+operacion[0]+';']
-            variables=r"^[a-zA-Z_][a-zA-Z0-9_]*$"
+            codigoP = ['lda ' + operacion[0] + ';']
+            lbl_pila = tk.Label(ventana_np, text=codigoP[-1], font=("Arial", 14), bg="#222222", fg="white")
+            lbl_pila.place(x=20, y=y_base)
+            y_base += 40
+            variables = r"^[a-zA-Z_][a-zA-Z0-9_]*$"
 
-            randos=[]
+            randos = []
             for i in pilaP:
                 if i in operadores:
                     for r in reversed(randos):
-                        if re.match(variables,r):
-                            cod='lod '
+                        if re.match(variables, r):
+                            cod = 'lod '
                         else:
-                            cod='ldc '
-                        codigoP.append(cod+r+';')
-                    randos=[]
-                    if i=='+':
+                            cod = 'ldc '
+                        codigoP.append(cod + r + ';')
+                        lbl_pila = tk.Label(ventana_np, text=codigoP[-1], font=("Arial", 14), bg="#222222", fg="white")
+                        lbl_pila.place(x=20, y=y_base)
+                        y_base += 40
+                    randos = []
+                    if i == '+':
                         codigoP.append('adi;')
-                    elif i=='-':
+                    elif i == '-':
                         codigoP.append('sbi;')
-                    elif i=='*':
+                    elif i == '*':
                         codigoP.append('mpi;')
-                    elif i=='/':
+                    elif i == '/':
                         codigoP.append('div;')
+                    lbl_pila = tk.Label(ventana_np, text=codigoP[-1], font=("Arial", 14), bg="#222222", fg="white")
+                    lbl_pila.place(x=20, y=y_base)
+                    y_base+=40
                 else:
                     randos.append(i)
             codigoP.append('sto;')
+            lbl_pila = tk.Label(ventana_np, text='sto;', font=("Arial", 14), bg="#222222", fg="white")
+            lbl_pila.place(x=20, y=y_base)
             print("Codigo P:", codigoP)
-
 
         operacion = agregar_parentesis(operacion)
         print("Operacion con parentesis:", operacion)
@@ -1881,12 +1945,12 @@ def f4_codInter():
         btn_notacion_polaca = tk.Button(nueva_ventana, text="Notación Polaca",
                                         command=lambda: notacion_polaca(operacion))
         btn_codigo_p = tk.Button(nueva_ventana, text="Código P", command=lambda: codigo_P(operacion))
-        #btn_triplos = tk.Button(nueva_ventana, text="Triplos", command=lambda: triplos(operacion))
-        #btn_cuadruplos = tk.Button(nueva_ventana, text="Cuádruplos", command=lambda: cuadruplos(operacion))
+        # btn_triplos = tk.Button(nueva_ventana, text="Triplos", command=lambda: triplos(operacion))
+        # btn_cuadruplos = tk.Button(nueva_ventana, text="Cuádruplos", command=lambda: cuadruplos(operacion))
         btn_notacion_polaca.grid(row=1, column=0, padx=10, pady=10)
         btn_codigo_p.grid(row=1, column=1, padx=10, pady=10)
-        #btn_triplos.grid(row=2, column=0, padx=10, pady=10)
-        #btn_cuadruplos.grid(row=2, column=1, padx=10, pady=10)
+        # btn_triplos.grid(row=2, column=0, padx=10, pady=10)
+        # btn_cuadruplos.grid(row=2, column=1, padx=10, pady=10)
 
         nueva_ventana.wait_window()
 
