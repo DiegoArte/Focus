@@ -831,7 +831,7 @@ def f2_sintatico():
     tokens.append('#')
     print(tokens)
 
-        def lista_a_str(elemento, nombres_variables):
+    def lista_a_str(elemento, nombres_variables):
         if isinstance(elemento, list):
             for nombre, valor in nombres_variables.items():
                 if valor is elemento:
