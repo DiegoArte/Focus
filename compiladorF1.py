@@ -1943,44 +1943,43 @@ def f4_codInter():
         def generar_triplos(operacion):
             triplos = []
             direccion = 0
-            pila = []
-            operacion_actual = operacion.copy()
 
-            while '(' in operacion_actual:
-                # Encuentra el paréntesis más interno
-                for i, char in enumerate(operacion_actual):
-                    if char == '(':
-                        pila.append(i)
-                    elif char == ')':
-                        inicio = pila.pop()
-                        sub_operacion = operacion_actual[inicio+1:i]
-                        resultado_temporal, direccion = procesar_suboperacion(sub_operacion, triplos, direccion)
-                        # Reemplazar la suboperación por su resultado temporal
-                        operacion_actual = operacion_actual[:inicio] + [f'[{resultado_temporal}]'] + operacion_actual[i+1:]
-                        break
+            # Eliminar paréntesis de la operación
+            operacion_sin_parentesis = eliminar_parentesis(operacion)
 
-            # Una vez que no hay más paréntesis, procesar la operación restante
-            if len(operacion_actual) > 1:
-                resultado_final, direccion = procesar_suboperacion(operacion_actual[2:], triplos, direccion)
-                triplos.append([direccion, '=', operacion_actual[0], f'[{resultado_final}]'])
+            # Procesar la operación de izquierda a derecha, con prioridad de operadores
+            resultado_final, direccion = procesar_suboperacion(operacion_sin_parentesis, triplos, direccion)
+
+            # El resultado final se almacena en la tabla de triplos
+            triplos.append([direccion, '=', operacion_sin_parentesis[0], f'[{resultado_final}]'])
 
             mostrar_triplos(triplos)
 
 
+        def eliminar_parentesis(operacion):
+            # Función para eliminar paréntesis
+            return [token for token in operacion if token not in ['(', ')']]
+
+
         def procesar_suboperacion(sub_operacion, triplos, direccion):
-            while any(op in sub_operacion for op in ['*', '/', '+', '-']):
+            # Procesar primero multiplicaciones y divisiones
+            while any(op in sub_operacion for op in ['*', '/']):
                 for i, token in enumerate(sub_operacion):
                     if token in ['*', '/']:
                         triplos.append([direccion, token, sub_operacion[i-1], sub_operacion[i+1]])
                         sub_operacion = sub_operacion[:i-1] + [f'[{direccion}]'] + sub_operacion[i+2:]
                         direccion += 1
                         break
+
+            # Luego procesar sumas y restas
+            while any(op in sub_operacion for op in ['+', '-']):
                 for i, token in enumerate(sub_operacion):
                     if token in ['+', '-']:
                         triplos.append([direccion, token, sub_operacion[i-1], sub_operacion[i+1]])
                         sub_operacion = sub_operacion[:i-1] + [f'[{direccion}]'] + sub_operacion[i+2:]
                         direccion += 1
                         break
+
             return direccion - 1, direccion
 
 
@@ -1998,51 +1997,55 @@ def f4_codInter():
                 tabla.insert("", tk.END, values=triplo)
             
             tabla.pack(padx=10, pady=10)
+
         
         
         def generar_cuadruplos(operacion):
             cuadruplos = []
             auxiliar = 1
-            pila = []
-            operacion_actual = operacion.copy()
+            variable_resultado = operacion[0]  # Guardar la variable que se asignará
+            operacion_actual = eliminar_parentesis(operacion)  # Eliminar paréntesis al inicio
 
-            while '(' in operacion_actual:
-                # Encuentra el paréntesis más interno
-                for i, char in enumerate(operacion_actual):
-                    if char == '(':
-                        pila.append(i)
-                    elif char == ')':
-                        inicio = pila.pop()
-                        sub_operacion = operacion_actual[inicio+1:i]
-                        resultado_temporal, auxiliar = procesar_suboperacion_cuadruplos(sub_operacion, cuadruplos, auxiliar)
-                        # Reemplazar la suboperación por su resultado temporal
-                        operacion_actual = operacion_actual[:inicio] + [f'V{resultado_temporal}'] + operacion_actual[i+1:]
+            print("Operación inicial:", operacion_actual)  # Imprimir operación inicial
+
+            # Procesar multiplicaciones y divisiones
+            while any(op in operacion_actual for op in ['*', '/']):
+                for i, token in enumerate(operacion_actual):
+                    if token in ['*', '/']:
+                        cuadruplos.append([token, operacion_actual[i - 1], operacion_actual[i + 1], f'V{auxiliar}'])
+                        print(f"Cuádruplo generado: {cuadruplos[-1]}")  # Imprimir cuádruplo generado
+                        operacion_actual = operacion_actual[:i - 1] + [f'V{auxiliar}'] + operacion_actual[i + 2:]
+                        auxiliar += 1
+                        print("Operación actualizada:", operacion_actual)  # Imprimir operación actualizada
                         break
+                else:
+                    break  # Salir del bucle si no hay más multiplicaciones o divisiones
 
-            # Una vez que no hay más paréntesis, procesar la operación restante
-            if len(operacion_actual) > 1:
-                resultado_final, auxiliar = procesar_suboperacion_cuadruplos(operacion_actual[2:], cuadruplos, auxiliar)
-                cuadruplos.append(['=', f'V{resultado_final}', '', operacion_actual[0]])
+            # Procesar sumas y restas
+            while any(op in operacion_actual for op in ['+', '-']):
+                for i, token in enumerate(operacion_actual):
+                    if token in ['+', '-']:
+                        cuadruplos.append([token, operacion_actual[i - 1], operacion_actual[i + 1], f'V{auxiliar}'])
+                        print(f"Cuádruplo generado: {cuadruplos[-1]}")  # Imprimir cuádruplo generado
+                        operacion_actual = operacion_actual[:i - 1] + [f'V{auxiliar}'] + operacion_actual[i + 2:]
+                        auxiliar += 1
+                        print("Operación actualizada:", operacion_actual)  # Imprimir operación actualizada
+                        break
+                else:
+                    break  # Salir del bucle si no hay más sumas o restas
 
+            # Agregar cuádruplo final de igualación
+            if len(cuadruplos) > 0:  # Asegurarse de que haya al menos un cuádruplo generado
+                ultimo_auxiliar = f'V{auxiliar - 1}'  # Obtener el último auxiliar generado
+                cuadruplos.append(['=', ultimo_auxiliar, ' ', variable_resultado])  # Agregar igualación a la variable
+                print(f"Cuádruplo final de igualación: {cuadruplos[-1]}")  # Imprimir cuádruplo de igualación
+
+            # Mostrar los cuádruplos en la tabla
             mostrar_cuadruplos(cuadruplos)
 
-
-        def procesar_suboperacion_cuadruplos(sub_operacion, cuadruplos, auxiliar):
-            while any(op in sub_operacion for op in ['*', '/', '+', '-']):
-                for i, token in enumerate(sub_operacion):
-                    if token in ['*', '/']:
-                        cuadruplos.append([token, sub_operacion[i-1], sub_operacion[i+1], f'V{auxiliar}'])
-                        sub_operacion = sub_operacion[:i-1] + [f'V{auxiliar}'] + sub_operacion[i+2:]
-                        auxiliar += 1
-                        break
-                for i, token in enumerate(sub_operacion):
-                    if token in ['+', '-']:
-                        cuadruplos.append([token, sub_operacion[i-1], sub_operacion[i+1], f'V{auxiliar}'])
-                        sub_operacion = sub_operacion[:i-1] + [f'V{auxiliar}'] + sub_operacion[i+2:]
-                        auxiliar += 1
-                        break
-            return auxiliar - 1, auxiliar
-
+        def eliminar_parentesis(operacion):
+            # Función para eliminar paréntesis
+            return [token for token in operacion if token not in ['(', ')']]
 
         def mostrar_cuadruplos(cuadruplos):
             nueva_ventana = tk.Toplevel()
@@ -2055,11 +2058,14 @@ def f4_codInter():
                 tabla.heading(col, text=col)
             
             for cuadruplo in cuadruplos:
-                tabla.insert("", tk.END, values=cuadruplo)
+                # Asegurarse de que el segundo operando sea un espacio si no hay valor
+                operando2 = cuadruplo[2] if cuadruplo[2] else ' '
+                tabla.insert("", tk.END, values=[cuadruplo[0], cuadruplo[1], operando2, cuadruplo[3]])
             
             tabla.pack(padx=10, pady=10)
 
-        
+
+
         
         operacion = agregar_parentesis(operacion)
         print("Operacion con parentesis:", operacion)
