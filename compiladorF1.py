@@ -1934,6 +1934,132 @@ def f4_codInter():
             lbl_pila.place(x=20, y=y_base)
             print("Codigo P:", codigoP)
 
+        
+        
+        #-------------------------------------------------------------------------------------------------
+        
+        
+        def generar_triplos(operacion):
+            triplos = []
+            direccion = 0
+            pila = []
+            operacion_actual = operacion.copy()
+
+            while '(' in operacion_actual:
+                # Encuentra el paréntesis más interno
+                for i, char in enumerate(operacion_actual):
+                    if char == '(':
+                        pila.append(i)
+                    elif char == ')':
+                        inicio = pila.pop()
+                        sub_operacion = operacion_actual[inicio+1:i]
+                        resultado_temporal, direccion = procesar_suboperacion(sub_operacion, triplos, direccion)
+                        # Reemplazar la suboperación por su resultado temporal
+                        operacion_actual = operacion_actual[:inicio] + [f'[{resultado_temporal}]'] + operacion_actual[i+1:]
+                        break
+
+            # Una vez que no hay más paréntesis, procesar la operación restante
+            if len(operacion_actual) > 1:
+                resultado_final, direccion = procesar_suboperacion(operacion_actual[2:], triplos, direccion)
+                triplos.append([direccion, '=', operacion_actual[0], f'[{resultado_final}]'])
+
+            mostrar_triplos(triplos)
+
+
+        def procesar_suboperacion(sub_operacion, triplos, direccion):
+            while any(op in sub_operacion for op in ['*', '/', '+', '-']):
+                for i, token in enumerate(sub_operacion):
+                    if token in ['*', '/']:
+                        triplos.append([direccion, token, sub_operacion[i-1], sub_operacion[i+1]])
+                        sub_operacion = sub_operacion[:i-1] + [f'[{direccion}]'] + sub_operacion[i+2:]
+                        direccion += 1
+                        break
+                for i, token in enumerate(sub_operacion):
+                    if token in ['+', '-']:
+                        triplos.append([direccion, token, sub_operacion[i-1], sub_operacion[i+1]])
+                        sub_operacion = sub_operacion[:i-1] + [f'[{direccion}]'] + sub_operacion[i+2:]
+                        direccion += 1
+                        break
+            return direccion - 1, direccion
+
+
+        def mostrar_triplos(triplos):
+            nueva_ventana = tk.Toplevel()
+            nueva_ventana.title("Tabla de Triplos")
+
+            columnas = ("Direccion", "Operación", "Operando1", "Operando2")
+            tabla = ttk.Treeview(nueva_ventana, columns=columnas, show="headings")
+            
+            for col in columnas:
+                tabla.heading(col, text=col)
+            
+            for triplo in triplos:
+                tabla.insert("", tk.END, values=triplo)
+            
+            tabla.pack(padx=10, pady=10)
+        
+        
+        def generar_cuadruplos(operacion):
+            cuadruplos = []
+            auxiliar = 1
+            pila = []
+            operacion_actual = operacion.copy()
+
+            while '(' in operacion_actual:
+                # Encuentra el paréntesis más interno
+                for i, char in enumerate(operacion_actual):
+                    if char == '(':
+                        pila.append(i)
+                    elif char == ')':
+                        inicio = pila.pop()
+                        sub_operacion = operacion_actual[inicio+1:i]
+                        resultado_temporal, auxiliar = procesar_suboperacion_cuadruplos(sub_operacion, cuadruplos, auxiliar)
+                        # Reemplazar la suboperación por su resultado temporal
+                        operacion_actual = operacion_actual[:inicio] + [f'V{resultado_temporal}'] + operacion_actual[i+1:]
+                        break
+
+            # Una vez que no hay más paréntesis, procesar la operación restante
+            if len(operacion_actual) > 1:
+                resultado_final, auxiliar = procesar_suboperacion_cuadruplos(operacion_actual[2:], cuadruplos, auxiliar)
+                cuadruplos.append(['=', f'V{resultado_final}', '', operacion_actual[0]])
+
+            mostrar_cuadruplos(cuadruplos)
+
+
+        def procesar_suboperacion_cuadruplos(sub_operacion, cuadruplos, auxiliar):
+            while any(op in sub_operacion for op in ['*', '/', '+', '-']):
+                for i, token in enumerate(sub_operacion):
+                    if token in ['*', '/']:
+                        cuadruplos.append([token, sub_operacion[i-1], sub_operacion[i+1], f'V{auxiliar}'])
+                        sub_operacion = sub_operacion[:i-1] + [f'V{auxiliar}'] + sub_operacion[i+2:]
+                        auxiliar += 1
+                        break
+                for i, token in enumerate(sub_operacion):
+                    if token in ['+', '-']:
+                        cuadruplos.append([token, sub_operacion[i-1], sub_operacion[i+1], f'V{auxiliar}'])
+                        sub_operacion = sub_operacion[:i-1] + [f'V{auxiliar}'] + sub_operacion[i+2:]
+                        auxiliar += 1
+                        break
+            return auxiliar - 1, auxiliar
+
+
+        def mostrar_cuadruplos(cuadruplos):
+            nueva_ventana = tk.Toplevel()
+            nueva_ventana.title("Tabla de Cuádruplos")
+
+            columnas = ("Operador", "Operando1", "Operando2", "Auxiliar")
+            tabla = ttk.Treeview(nueva_ventana, columns=columnas, show="headings")
+            
+            for col in columnas:
+                tabla.heading(col, text=col)
+            
+            for cuadruplo in cuadruplos:
+                tabla.insert("", tk.END, values=cuadruplo)
+            
+            tabla.pack(padx=10, pady=10)
+
+        
+        
         operacion = agregar_parentesis(operacion)
         print("Operacion con parentesis:", operacion)
         nueva_ventana = tk.Toplevel()
@@ -1945,12 +2071,12 @@ def f4_codInter():
         btn_notacion_polaca = tk.Button(nueva_ventana, text="Notación Polaca",
                                         command=lambda: notacion_polaca(operacion))
         btn_codigo_p = tk.Button(nueva_ventana, text="Código P", command=lambda: codigo_P(operacion))
-        # btn_triplos = tk.Button(nueva_ventana, text="Triplos", command=lambda: triplos(operacion))
-        # btn_cuadruplos = tk.Button(nueva_ventana, text="Cuádruplos", command=lambda: cuadruplos(operacion))
+        btn_triplos = tk.Button(nueva_ventana, text="Triplos", command=lambda: generar_triplos(operacion))
+        btn_cuadruplos = tk.Button(nueva_ventana, text="Cuádruplos", command=lambda: generar_cuadruplos(operacion))
         btn_notacion_polaca.grid(row=1, column=0, padx=10, pady=10)
         btn_codigo_p.grid(row=1, column=1, padx=10, pady=10)
-        # btn_triplos.grid(row=2, column=0, padx=10, pady=10)
-        # btn_cuadruplos.grid(row=2, column=1, padx=10, pady=10)
+        btn_triplos.grid(row=2, column=0, padx=10, pady=10)
+        btn_cuadruplos.grid(row=2, column=1, padx=10, pady=10)
 
         nueva_ventana.wait_window()
 

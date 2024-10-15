@@ -23,9 +23,18 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	17 [label="Linea
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1 -> 17
-	18 [label=".Exit
+	18 [label="Linea
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1 -> 18
+	19 [label="Linea
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1 -> 19
+	"1a" [label="Linea
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1 -> "1a"
+	"1b" [label=".Exit
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1 -> "1b"
 	121 [label="DeclaraVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	12 -> 121
@@ -38,12 +47,21 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	151 [label="DeclaraVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	15 -> 151
-	161 [label="Operacion
+	161 [label="DeclaraVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	16 -> 161
-	171 [label="Mostrar
+	171 [label="DeclaraVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	17 -> 171
+	181 [label="Operacion
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	18 -> 181
+	191 [label="Operacion
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19 -> 191
+	"1a1" [label="Mostrar
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1a" -> "1a1"
 	1211 [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	121 -> 1211
@@ -98,27 +116,63 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	1612 [label="=
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	161 -> 1612
-	1613 [label="Ope
+	1613 [label="tipo
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	161 -> 1613
 	1614 [label=";
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	161 -> 1614
-	1711 [label="Show
+	1711 [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	171 -> 1711
-	1712 [label="(
+	1712 [label="=
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	171 -> 1712
-	1713 [label="Conct
+	1713 [label="tipo
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	171 -> 1713
-	1714 [label=")
+	1714 [label=";
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	171 -> 1714
-	1715 [label=";
+	1811 [label="nomVar
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	171 -> 1715
+	181 -> 1811
+	1812 [label="=
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	181 -> 1812
+	1813 [label="Ope
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	181 -> 1813
+	1814 [label=";
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	181 -> 1814
+	1911 [label="nomVar
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	191 -> 1911
+	1912 [label="=
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	191 -> 1912
+	1913 [label="Ope
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	191 -> 1913
+	1914 [label=";
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	191 -> 1914
+	"1a11" [label="Show
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1a1" -> "1a11"
+	"1a12" [label="(
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1a1" -> "1a12"
+	"1a13" [label="Conct
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1a1" -> "1a13"
+	"1a14" [label=")
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1a1" -> "1a14"
+	"1a15" [label=";
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1a1" -> "1a15"
 	12111 [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1211 -> 12111
@@ -167,24 +221,63 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	15111 [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1511 -> 15111
-	15131 [label="str
+	15131 [label="int
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1513 -> 15131
 	15132 [label="(
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1513 -> 15132
-	15133 [label=")
+	15133 [label="Vint
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1513 -> 15133
+	15134 [label=")
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1513 -> 15134
 	16111 [label="ER Variables
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1611 -> 16111
-	16131 [label="ER Operaciones
+	16131 [label="int
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1613 -> 16131
-	17131 [label="nomVar
+	16132 [label="(
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1613 -> 16132
+	16133 [label="Vint
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1613 -> 16133
+	16134 [label=")
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1613 -> 16134
+	17111 [label="ER Variables
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1711 -> 17111
+	17131 [label="float
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1713 -> 17131
+	17132 [label="(
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1713 -> 17132
+	17133 [label="Vfloat
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1713 -> 17133
+	17134 [label=")
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1713 -> 17134
+	18111 [label="ER Variables
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1811 -> 18111
+	18131 [label="ER Operaciones
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1813 -> 18131
+	19111 [label="ER Variables
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1911 -> 19111
+	19131 [label="ER Operaciones
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1913 -> 19131
+	"1a131" [label="nomVar
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1a13" -> "1a131"
 	121111 [label="x
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	12111 -> 121111
@@ -200,82 +293,148 @@ valor" fillcolor="#333333" fontcolor=white style=filled]
 	141111 [label="z
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	14111 -> 141111
-	151111 [label="a
+	151111 [label="n1
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	15111 -> 151111
-	161111 [label="z
+	151331 [label="num
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	15133 -> 151331
+	161111 [label="n2
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	16111 -> 161111
-	161311 [label="x
+	161331 [label="num
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> 161311
-	161312 [label="*
+	16133 -> 161331
+	171111 [label="c
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> 161312
-	161313 [label="y
+	17111 -> 171111
+	181111 [label="z
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> 161313
-	161314 [label="+
+	18111 -> 181111
+	181311 [label="x
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> 161314
-	161315 [label="25.3
+	18131 -> 181311
+	181312 [label="*
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> 161315
-	161316 [label="-
+	18131 -> 181312
+	181313 [label="y
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> 161316
-	161317 [label="a
+	18131 -> 181313
+	181314 [label="+
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> 161317
-	161318 [label="+
+	18131 -> 181314
+	181315 [label="25.3
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> 161318
-	161319 [label="14
+	18131 -> 181315
+	181316 [label="-
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> 161319
-	"16131a" [label="/
+	18131 -> 181316
+	181317 [label="14
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> "16131a"
-	"16131b" [label="2
+	18131 -> 181317
+	181318 [label="/
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> "16131b"
-	"16131c" [label="*
+	18131 -> 181318
+	181319 [label="(
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> "16131c"
-	"16131d" [label="3.2
+	18131 -> 181319
+	"18131a" [label="2
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	16131 -> "16131d"
-	171311 [label="ER Variables
+	18131 -> "18131a"
+	"18131b" [label="+
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	17131 -> 171311
+	18131 -> "18131b"
+	"18131c" [label="3.2
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	18131 -> "18131c"
+	"18131d" [label=")
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	18131 -> "18131d"
+	191111 [label="c
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19111 -> 191111
+	191311 [label="n1
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> 191311
+	191312 [label="*
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> 191312
+	191313 [label="n2
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> 191313
+	191314 [label="+
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> 191314
+	191315 [label="15.7
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> 191315
+	191316 [label="*
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> 191316
+	191317 [label="20
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> 191317
+	191318 [label="-
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> 191318
+	191319 [label="45
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> 191319
+	"19131a" [label="/
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> "19131a"
+	"19131b" [label="2.5
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	19131 -> "19131b"
+	"1a1311" [label="ER Variables
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1a131" -> "1a1311"
 	1213311 [label="ER Enteros
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	121331 -> 1213311
 	1313311 [label="ER Enteros
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	131331 -> 1313311
-	1713111 [label="z
+	1513311 [label="ER Enteros
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	171311 -> 1713111
-	1611111 [label="None
+	151331 -> 1513311
+	1613311 [label="ER Enteros
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	161111 -> 1611111
-	1613111 [label="3
+	161331 -> 1613311
+	"1a13111" [label="z
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	161311 -> 1613111
-	1613131 [label="5
+	"1a1311" -> "1a13111"
+	1811111 [label="None
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	161313 -> 1613131
-	1613171 [label="\"hola\"
+	181111 -> 1811111
+	1813111 [label="3
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	161317 -> 1613171
+	181311 -> 1813111
+	1813131 [label="5
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	181313 -> 1813131
+	1911111 [label="None
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	191111 -> 1911111
+	1913111 [label="3
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	191311 -> 1913111
+	1913131 [label="5
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	191313 -> 1913131
 	12133111 [label="3
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1213311 -> 12133111
 	13133111 [label="5
 valor" fillcolor="#333333" fontcolor=white style=filled]
 	1313311 -> 13133111
-	17131111 [label="17.899999999999995
+	15133111 [label="3
 valor" fillcolor="#333333" fontcolor=white style=filled]
-	1713111 -> 17131111
+	1513311 -> 15133111
+	16133111 [label="5
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	1613311 -> 16133111
+	"1a131111" [label="37.607692307692304
+valor" fillcolor="#333333" fontcolor=white style=filled]
+	"1a13111" -> "1a131111"
 }
