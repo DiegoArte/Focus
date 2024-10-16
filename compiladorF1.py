@@ -677,12 +677,12 @@ def f2_sintatico():
     for i in range(1, num_lineas + 1):
         contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
     global tokensl
-    tokensl=[]
+    tokensl = []
     tokens = []
     operadores = ['+', '-', '*', '/']
     opecad = ""
     for linea in contenido:
-        tl=[]
+        tl = []
         if len(linea) > 0 and (linea[0] == "!" and linea[1] == "!"):
             linea = '!!'
         conct = False
@@ -1004,16 +1004,6 @@ def f2_sintatico():
         proceso(est, 4)
 
 
-
-
-
-
-
-
-
-
-
-
 def f3_semantico():
     btnLexico.config(bg="#E74747")
     btnSintactico.config(bg="#E74747")
@@ -1071,7 +1061,7 @@ def f3_semantico():
     VARIABLES DUPLICADAS
 
     - Si no hay errores mostrar TABLA SEMÁNTICA con atributo VALOR
-    
+
     - Mostrar árbol semántico con atributo valor evaluado en cada nivel
       y por prioridad de operadores
     - Mostrar que tipo de error es y la linea donde se presentó (Opcional: Podría agregarse el fragmento de código ERROR)
@@ -1171,9 +1161,10 @@ def f3_semantico():
 
         # Detectar errores en el uso del método 'set'
         if "set" in linea:
-            coincidencia_set_valor = re.match(r"^\s*set\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*;", linea)
+            coincidencia_set_valor = re.match(r"^\s*set\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*;",
+                                              linea)
             coincidencia_set_literal = re.match(r"^\s*set\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+)\s*;", linea)
-            
+
             # Caso 1: Asignación de variable a variable
             if coincidencia_set_valor:
                 var_destino = coincidencia_set_valor.group(1)
@@ -1181,7 +1172,8 @@ def f3_semantico():
 
                 # Verificar si ambas variables están definidas, excepto si son valores literales 'true' o 'false'
                 if var_destino not in variables:
-                    errores.append(f"Error in line {linea_num}: The destination variable '{var_destino}' is not defined.")
+                    errores.append(
+                        f"Error in line {linea_num}: The destination variable '{var_destino}' is not defined.")
                 if var_origen not in variables and var_origen not in ["true", "false"]:
                     errores.append(f"Error in line {linea_num}: The origin variable '{var_origen}' is not defined.")
 
@@ -1202,7 +1194,8 @@ def f3_semantico():
                         resultados_operaciones[var_destino] = {
                             "operacion": f"set {var_destino} = {var_origen};",
                             "tipo": tipo_destino,
-                            "valor": "true" if var_origen == "true" else "false" if var_origen == "false" else variables[var_origen]["valor"],
+                            "valor": "true" if var_origen == "true" else "false" if var_origen == "false" else
+                            variables[var_origen]["valor"],
                             "linea": linea_num
                         }
 
@@ -1213,7 +1206,8 @@ def f3_semantico():
 
                 # Verificar si la variable está definida
                 if var_destino not in variables:
-                    errores.append(f"Error in line {linea_num}: The destination variable '{var_destino}' is not defined.")
+                    errores.append(
+                        f"Error in line {linea_num}: The destination variable '{var_destino}' is not defined.")
                 else:
                     tipo_destino = variables[var_destino]["tipo"]
 
@@ -1232,15 +1226,15 @@ def f3_semantico():
 
                     # Caso especial: convertir una cadena a 'char' si es de longitud 1
                     if tipo_destino == "char" and tipo_valor == "str":
-                        valor_asignado2 = valor_asignado.strip('"').replace(' ','')
+                        valor_asignado2 = valor_asignado.strip('"').replace(' ', '')
                         if len(valor_asignado2) == 1:
                             tipo_valor = "char"
-                    
+
                     if tipo_destino == "float" and tipo_valor == "int":
                         tipo_valor = "float"
                     if tipo_destino == "flag" and tipo_valor == "flag":
                         tipo_valor = "flag"
-                    
+
                     # Si el tipo de valor no coincide con el tipo destino, registrar error
                     if tipo_destino != tipo_valor:
                         errores.append(
@@ -1254,9 +1248,6 @@ def f3_semantico():
                             "valor": valor_asignado,
                             "linea": linea_num
                         }
-
-
-
 
         # Detectar operadores incompatibles y operandos incompatibles
         if re.search(r"[+\-*/]", linea):
@@ -1277,7 +1268,8 @@ def f3_semantico():
                     tokens = re.findall(expresion_variable_valida, expresion)
 
                     # Filtrar las variables de la lista de tokens (sin números)
-                    variables_encontradas = [var for var in tokens if var not in palabras_reservadas and not var.isnumeric()]
+                    variables_encontradas = [var for var in tokens if
+                                             var not in palabras_reservadas and not var.isnumeric()]
 
                     # Comprobar si cada variable encontrada está definida
                     tipos_variables = []
@@ -1287,7 +1279,6 @@ def f3_semantico():
                             errores.append(f"Error en línea {linea_num}: La variable '{var}' no está definida.")
                         else:
                             tipos_variables.append(tipo_var)
-                            
 
                     # Verificar tipos no permitidos en operaciones matemáticas
                     for tipo in tipos_variables:
@@ -1308,7 +1299,8 @@ def f3_semantico():
                             # Verificar si la variable de resultado está definida
                             tipo_var_resultado = obtener_tipo_variable(var_resultado, variables)
                             if tipo_var_resultado == "No definido":
-                                errores.append(f"Error en línea {linea_num}: La variable '{var_resultado}' no está definida.")
+                                errores.append(
+                                    f"Error en línea {linea_num}: La variable '{var_resultado}' no está definida.")
                             else:
                                 print(f"Variable resultado {var_resultado} {tipo_var_resultado}")
                                 # Inicializa un diccionario para los valores de las variables
@@ -1316,13 +1308,15 @@ def f3_semantico():
                                 # Extraer todas las variables y operadores utilizando expresiones regulares
                                 tokens = re.findall(expresion_variable_valida, expresion)
                                 # Filtrar las variables de la lista de tokens
-                                variables_encontradas = [var for var in tokens if var not in palabras_reservadas and not var.isnumeric()]
+                                variables_encontradas = [var for var in tokens if
+                                                         var not in palabras_reservadas and not var.isnumeric()]
 
                                 # Comprobar si cada variable encontrada está definida y añadir sus valores
                                 for var in variables_encontradas:
                                     tipo_var = obtener_tipo_variable(var, variables)
                                     if tipo_var == "No definido":
-                                        errores.append(f"Error en línea {linea_num}: La variable '{var}' no está definida.")
+                                        errores.append(
+                                            f"Error en línea {linea_num}: La variable '{var}' no está definida.")
                                     else:
                                         # Almacenar el valor de la variable en el diccionario `valores_variables`
                                         valor_var = variables[var]["valor"]
@@ -1346,10 +1340,12 @@ def f3_semantico():
 
                                 # Comprobar si hay cadenas en la expresión
                                 if re.search(r'"[^"]*"', expresion):
-                                    errores.append(f"Error en línea {linea_num}: No se pueden realizar operaciones matemáticas con cadenas en la expresión '{linea.strip()}'.")
+                                    errores.append(
+                                        f"Error en línea {linea_num}: No se pueden realizar operaciones matemáticas con cadenas en la expresión '{linea.strip()}'.")
 
                                 # Comprobar tipos incompatibles entre los operandos
-                                if len(set(tipos_variables)) > 1 and "int" in tipos_variables and "float" in tipos_variables:
+                                if len(set(
+                                        tipos_variables)) > 1 and "int" in tipos_variables and "float" in tipos_variables:
                                     # Si hay una mezcla de 'int' y 'float', es válido solo si el resultado es 'float'
                                     if tipo_var_resultado != "float":
                                         errores.append(
@@ -1373,14 +1369,15 @@ def f3_semantico():
                                         # Reemplazar las variables en la expresión por sus valores reales
                                         for var, valor in valores_variables.items():
                                             expresion = expresion.replace(var, str(valor))
-                                        expresion = expresion[:len(expresion)-1]
+                                        expresion = expresion[:len(expresion) - 1]
                                         # Evaluar la expresión con los valores de las variables
                                         resultado = eval(expresion)
-                                        resultados_operaciones[var_resultado] = {"operacion": expresion, "tipo": tipo_var_resultado, "valor": resultado, "linea": linea_num}
+                                        resultados_operaciones[var_resultado] = {"operacion": expresion,
+                                                                                 "tipo": tipo_var_resultado,
+                                                                                 "valor": resultado, "linea": linea_num}
                                     except Exception as e:
-                                        errores.append(f"Error in line {linea_num}: The expression could not be evaluated '{expresion}'")
-
-
+                                        errores.append(
+                                            f"Error in line {linea_num}: The expression could not be evaluated '{expresion}'")
 
         # Detectar concatenaciones inválidas
         if "<<" in linea:
@@ -1445,10 +1442,10 @@ def f3_semantico():
                             resultado_concatenacion = ""
                             for var in variables_encontradas:
                                 if var.startswith('"') or var.startswith("'"):  # Literal
-                                    resultado_concatenacion += var.replace('"','')  # Eliminar comillas
+                                    resultado_concatenacion += var.replace('"', '')  # Eliminar comillas
                                 else:  # Variable
                                     resultado_concatenacion += str(variables[var]["valor"])
-                                    resultado_concatenacion = resultado_concatenacion.replace('"','')
+                                    resultado_concatenacion = resultado_concatenacion.replace('"', '')
                             # Guardar el resultado de la concatenación en el diccionario de resultados
                             variables[var_resultado]["valor"] = resultado_concatenacion
                             resultados_operaciones[var_resultado] = resultado_concatenacion
@@ -1468,15 +1465,13 @@ def f3_semantico():
         cajaConsola.insert("end", f"\nFOCUS-bash> {error}")
     print("\n")
 
-
-
     def generar_tabla():
-        datos=[]
-        cont=0
+        datos = []
+        cont = 0
         for var in vars:
             for v in var:
-                rg='<'+varsC[cont]+'> --> '
-                rs='<'+varsC[cont]+'.valor> --> '
+                rg = '<' + varsC[cont] + '> --> '
+                rs = '<' + varsC[cont] + '.valor> --> '
                 for e in v:
                     if e in varsC:
                         rg = rg + '<' + e + '> '
@@ -1484,17 +1479,18 @@ def f3_semantico():
                     else:
                         rg = rg + e + ' '
                         rs = rs + e + '.valor '
-                dato=[rg, rs]
+                dato = [rg, rs]
                 datos.append(dato)
-            cont+=1
-
+            cont += 1
 
         ventanaTabla = tk.Toplevel(ventana)
         ventanaTabla.geometry("600x400")
         columnas = ("Regla gramatical", "Regla semántica")
         style = ttk.Style()
-        style.configure("Treeview", font=('Source Code Pro', 8), rowheight=25, background='#333333', foreground='white', fieldbackground='#333333')
-        style.configure("Treeview.Heading", font=('Source Code Pro', 9, 'bold'), background='#333333',foreground='#333333', relief='flat')
+        style.configure("Treeview", font=('Source Code Pro', 8), rowheight=25, background='#333333', foreground='white',
+                        fieldbackground='#333333')
+        style.configure("Treeview.Heading", font=('Source Code Pro', 9, 'bold'), background='#333333',
+                        foreground='#333333', relief='flat')
         tabla = ttk.Treeview(ventanaTabla, style="Treeview")
         tabla["show"] = "headings"
         tabla.pack(expand=True, fill=tk.BOTH)
@@ -1508,18 +1504,17 @@ def f3_semantico():
     def gen_arbol():
         def generar_arbol(arbol):
             dot = graphviz.Digraph(comment='Arbol', format='png')
-            dot.node('1', 'F'+"\n"+"valor", style='filled', fillcolor='#333333', fontcolor='white')
+            dot.node('1', 'F' + "\n" + "valor", style='filled', fillcolor='#333333', fontcolor='white')
             for nivel in arbol[1:]:
                 for nodo in nivel:
-                    dot.node(nodo[1], nodo[0]+"\n"+"valor", style='filled', fillcolor='#333333', fontcolor='white')
+                    dot.node(nodo[1], nodo[0] + "\n" + "valor", style='filled', fillcolor='#333333', fontcolor='white')
                     dot.edge(nodo[1][:-1], nodo[1])
 
             dot.view()
 
-
-
         def convert_to_list(input_string):
-            keywords = ['F', 'Linea', 'DeclaraVar', 'tipo', 'Vint', 'Vflag', 'AsignaValor', 'IngresarDato', 'tipoDato', 'Mostrar', 'Dato', 'Operacion',
+            keywords = ['F', 'Linea', 'DeclaraVar', 'tipo', 'Vint', 'Vflag', 'AsignaValor', 'IngresarDato', 'tipoDato',
+                        'Mostrar', 'Dato', 'Operacion',
                         'Ope', 'Concatenar', 'Conct', 'nomVar', 'Vfloat', 'dec', 'num', 'int', 'str', 'char', 'flag',
                         'float',
                         'true', 'false', 'set', 'Show', 'ER Operaciones', 'ER Variables', 'ER Decimales', 'ER Enteros']
@@ -1549,32 +1544,32 @@ def f3_semantico():
 
         global nodos
         nodos = nodos[2]
-        nodos=convert_to_list(nodos)
-        arbol=[]
-        a=[[nodos[0], '1']]
+        nodos = convert_to_list(nodos)
+        arbol = []
+        a = [[nodos[0], '1']]
         arbol.append(a)
         del nodos[0]
-        a=[]
-        lineas=[]
+        a = []
+        lineas = []
         codigoss = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                     'k', 'l', 'm', 'n', 'o', 'p']
-        cn=1
+        cn = 1
         for i in nodos:
             aa = []
-            if i=='.Start' or i=='.Exit':
-                if cn>9:
+            if i == '.Start' or i == '.Exit':
+                if cn > 9:
                     aa = [i, '1' + codigoss[cn]]
                 else:
-                    aa=[i, '1'+str(cn)]
-                cn+=1
-                if i=='.Start':
+                    aa = [i, '1' + str(cn)]
+                cn += 1
+                if i == '.Start':
                     l = []
-                if len(l)>0:
+                if len(l) > 0:
                     lineas.append(l)
-            elif isinstance(i, list) and i[0]=='Linea':
-                if len(l)>0:
+            elif isinstance(i, list) and i[0] == 'Linea':
+                if len(l) > 0:
                     lineas.append(l)
-                l=[]
+                l = []
                 if cn > 9:
                     aa = [i, '1' + codigoss[cn]]
                 else:
@@ -1582,87 +1577,87 @@ def f3_semantico():
                 cn += 1
             else:
                 l.append(i)
-            if len(aa)>0:
+            if len(aa) > 0:
                 a.append(aa)
         arbol.append(a)
 
-
         global tokensl
 
-        newtokensl=[]
+        newtokensl = []
         for linea in tokensl:
-            if len(linea)==0:
+            if len(linea) == 0:
                 varInutil = 0
-            elif linea[0]=='.Start' or linea[0]=='.Exit':
-                varInutil=0
+            elif linea[0] == '.Start' or linea[0] == '.Exit':
+                varInutil = 0
             else:
                 newtokensl.append(linea)
-        cntl=0
-        erEnteros=r"^-?\d+$"
-        erDecimales=r"^-?\d+(\.\d+)?$"
-        erVariables=r"^[a-zA-Z_][a-zA-Z0-9_]*$"
+        cntl = 0
+        erEnteros = r"^-?\d+$"
+        erDecimales = r"^-?\d+(\.\d+)?$"
+        erVariables = r"^[a-zA-Z_][a-zA-Z0-9_]*$"
         erOperaciones = r'^([a-zA-Z0-9]+|\d+(\.\d+)?)([\+\-\*\/]([a-zA-Z0-9]+|\d+(\.\d+)?|\([^\(\)]+\)))*$'
-        noVariables=['int', 'str', 'char', 'flag', 'float', 'true', 'false', 'set', 'Show']
+        noVariables = ['int', 'str', 'char', 'flag', 'float', 'true', 'false', 'set', 'Show']
         for ntl in newtokensl:
             for n in ntl:
-                if (re.match(erEnteros, n) or re.match(erDecimales, n) or re.match(erVariables, n) or re.match(erOperaciones, n)) and (n not in noVariables):
+                if (re.match(erEnteros, n) or re.match(erDecimales, n) or re.match(erVariables, n) or re.match(
+                        erOperaciones, n)) and (n not in noVariables):
                     lineas[cntl].append(n)
-            cntl+=1
+            cntl += 1
         print("lineas", lineas)
         max_iterations = 1000  # Un número límite de iteraciones
         iteration_count = 0
-        tamLineas=True
+        tamLineas = True
 
         global operaciones_cod
         operaciones_cod = []
         while tamLineas and iteration_count < max_iterations:
             iteration_count += 1
-            a=[]
+            a = []
             for i in arbol[-1]:
-                if i[0]=='.Start':
-                    varInutil=0
+                if i[0] == '.Start':
+                    varInutil = 0
                 elif isinstance(i[0], list):
-                    pos =varsC.index(i[0][0])
-                    elements=vars[pos][i[0][1]]
-                    hijos=[]
+                    pos = varsC.index(i[0][0])
+                    elements = vars[pos][i[0][1]]
+                    hijos = []
                     for e in elements:
 
-                        for y in lineas[codigoss.index(i[1][1])-2]:
-                            yy=y
+                        for y in lineas[codigoss.index(i[1][1]) - 2]:
+                            yy = y
                             if isinstance(y, list):
-                                yy=y[0]
-                            if yy==e:
+                                yy = y[0]
+                            if yy == e:
                                 hijos.append(y)
                                 break
                     for elemento in hijos:
-                        if elemento in lineas[codigoss.index(i[1][1])-2]:
-                            lineas[codigoss.index(i[1][1])-2].remove(elemento)
-                    cno=1
+                        if elemento in lineas[codigoss.index(i[1][1]) - 2]:
+                            lineas[codigoss.index(i[1][1]) - 2].remove(elemento)
+                    cno = 1
 
                     for h in hijos:
-                        aa=[h, i[1]+str(cno)]
-                        cno+=1
+                        aa = [h, i[1] + str(cno)]
+                        cno += 1
                         a.append(aa)
-                elif i[0]=='ER Enteros':
-                    for y in lineas[codigoss.index(i[1][1])-2]:
+                elif i[0] == 'ER Enteros':
+                    for y in lineas[codigoss.index(i[1][1]) - 2]:
                         if not isinstance(y, list):
                             if re.match(erEnteros, y):
-                                a.append([y, i[1]+'1'])
-                                lineas[codigoss.index(i[1][1])-2].remove(y)
+                                a.append([y, i[1] + '1'])
+                                lineas[codigoss.index(i[1][1]) - 2].remove(y)
                                 break
-                elif i[0]=='ER Decimales':
-                    for y in lineas[codigoss.index(i[1][1])-2]:
+                elif i[0] == 'ER Decimales':
+                    for y in lineas[codigoss.index(i[1][1]) - 2]:
                         if not isinstance(y, list):
                             if re.match(erDecimales, y):
-                                a.append([y, i[1]+'1'])
-                                lineas[codigoss.index(i[1][1])-2].remove(y)
+                                a.append([y, i[1] + '1'])
+                                lineas[codigoss.index(i[1][1]) - 2].remove(y)
                                 break
-                elif i[0]=='ER Variables':
-                    for y in lineas[codigoss.index(i[1][1])-2]:
-                        if not isinstance(y, list) and y!='true' and y!='false':
+                elif i[0] == 'ER Variables':
+                    for y in lineas[codigoss.index(i[1][1]) - 2]:
+                        if not isinstance(y, list) and y != 'true' and y != 'false':
                             if re.match(erVariables, y):
-                                a.append([y, i[1]+'1'])
-                                lineas[codigoss.index(i[1][1])-2].remove(y)
+                                a.append([y, i[1] + '1'])
+                                lineas[codigoss.index(i[1][1]) - 2].remove(y)
                                 break
                 elif i[0] == 'ER Operaciones':
                     for y in lineas[codigoss.index(i[1][1]) - 2]:
@@ -1673,7 +1668,7 @@ def f3_semantico():
                                 cnn = 1
                                 codigos = ['', '', '', '', '', '', '', '', '', '', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
                                            'h', 'i', 'j', 'k']
-                                op_cod=[]
+                                op_cod = []
                                 cod = i[1] + '1'
                                 cod = cod[:3] + "1" + cod[4:]
                                 for o in ops:
@@ -1685,65 +1680,64 @@ def f3_semantico():
                                     cnn += 1
                                 lineas[codigoss.index(i[1][1]) - 2].remove(y)
                                 for ky in a:
-                                    if ky[1]==cod:
+                                    if ky[1] == cod:
                                         op_cod.insert(0, '=')
                                         op_cod.insert(0, ky[0])
                                 operaciones_cod.append(op_cod)
                                 break
             arbol.append(a)
-            tamLineas=False
+            tamLineas = False
             for lin in lineas:
-                if len(lin)>0:
-                    tamLineas=True
+                if len(lin) > 0:
+                    tamLineas = True
         print("arbol resultante:", arbol)
 
         def simplify_tree_data(data):
-            ci=0
+            ci = 0
             for i in data:
-                ce=0
+                ce = 0
                 for e in i:
-                    cx=0
+                    cx = 0
                     for x in e:
                         if isinstance(x, list):
-                            data[ci][ce][cx]=x[0]
+                            data[ci][ce][cx] = x[0]
                         cx += 1
                     ce += 1
-                ci+=1
+                ci += 1
             return data
 
         arbol = simplify_tree_data(arbol)
         print("arbol simplificado:", arbol)
         arbol.append([])
-        nivel=0
-        declaradas=[]
-        operaciones=[]
-        codOperaciones=[]
+        nivel = 0
+        declaradas = []
+        operaciones = []
+        codOperaciones = []
         for arb in arbol:
             for ar in arb:
-                if ar[0]=='Operacion':
+                if ar[0] == 'Operacion' or ar[0] == 'AsignaValor':
                     codOperaciones.append(ar[1])
                 if ar[0] in operaciones:
                     for var, resultado in resultados_operaciones.items():
-                        if var==ar[0]:
+                        if var == ar[0]:
                             a = [str(resultado['valor']), ar[1] + '1']
                             arbol[nivel + 1].append(a)
                 else:
                     for var, info in variables.items():
-                        if var==ar[0]:
+                        if var == ar[0]:
                             if var in declaradas:
-                                a=[str(info['valor']), ar[1]+'1']
-                                arbol[nivel+1].append(a)
+                                a = [str(info['valor']), ar[1] + '1']
+                                arbol[nivel + 1].append(a)
                             else:
                                 declaradas.append(var)
-                if nivel!=2:
+                if nivel != 2:
                     if ar[1][:3] in codOperaciones and ar[0] in resultados_operaciones:
                         operaciones.append(ar[0])
-            nivel+=1
-
+            nivel += 1
 
         generar_arbol(arbol)
 
-    if len(errores)==0:
+    if len(errores) == 0:
         generar_tabla()
         gen_arbol()
 
@@ -1820,17 +1814,17 @@ def f4_codInter():
 
                 for i, operador in enumerate(operandos):
                     canvas.create_rectangle(x_base_operadores, y_base + i * espacio_vertical,
-                                                 x_base_operadores + ancho_rect, y_base + (i + 1) * espacio_vertical,
-                                                 fill="#151515")
+                                            x_base_operadores + ancho_rect, y_base + (i + 1) * espacio_vertical,
+                                            fill="#151515")
                     canvas.create_text(x_base_operadores + ancho_rect / 2,
-                                            y_base + i * espacio_vertical + alto_rect / 2, text=operador, fill="#6DC559")
+                                       y_base + i * espacio_vertical + alto_rect / 2, text=operador, fill="#6DC559")
 
                 for i, operando in enumerate(operadores):
                     canvas.create_rectangle(x_base_operandos, y_base + i * espacio_vertical,
-                                                 x_base_operandos + ancho_rect, y_base + (i + 1) * espacio_vertical,
-                                                 fill="#151515")
+                                            x_base_operandos + ancho_rect, y_base + (i + 1) * espacio_vertical,
+                                            fill="#151515")
                     canvas.create_text(x_base_operandos + ancho_rect / 2,
-                                            y_base + i * espacio_vertical + alto_rect / 2, text=operando, fill="#E56464")
+                                       y_base + i * espacio_vertical + alto_rect / 2, text=operando, fill="#E56464")
 
             pila1 = []
             pila2 = []
@@ -1840,7 +1834,7 @@ def f4_codInter():
             posOpe = []
 
             c = 0
-            c1=0
+            c1 = 0
             for i in operacion:
                 if i in operadores:
                     pila2.append(i)
@@ -1850,41 +1844,42 @@ def f4_codInter():
                     pila1.append(i)
 
                 if i == ')':
-                    pilaT=""
+                    pilaT = ""
                     dibujar_pilas(pila1[::-1], pila2[::-1], x_base_operadores, x_base_operandos, y_base)
                     if operacion[posOpe[-1] + 1] in pila1:
                         pilaf.append(pila1[-1])
-                        pilaT=pilaT+' '+pila1[-1]
+                        pilaT = pilaT + ' ' + pila1[-1]
                         pila1.pop()
                     if operacion[posOpe[-1] - 1] in pila1:
                         pilaf.append(pila1[-1])
-                        pilaT=pilaT+' '+pila1[-1]
+                        pilaT = pilaT + ' ' + pila1[-1]
                         pila1.pop()
                     pilaf.append(pila2[-2])
-                    pilaT=pilaT+' '+pila2[-2]
+                    pilaT = pilaT + ' ' + pila2[-2]
                     lbl_pila = tk.Label(ventana_np, text=pilaT, font=("Arial", 10), bg="#222222", fg="white")
-                    lbl_pila.place(x=x_base_operadores, y=y_base+200)
+                    lbl_pila.place(x=x_base_operadores, y=y_base + 200)
                     pila2 = pila2[:-3]
                     posOpe.pop()
-                    c1+=1
-                    x_base_operadores +=300
-                    x_base_operandos +=300
-                    if c1%5==0:
+                    c1 += 1
+                    x_base_operadores += 300
+                    x_base_operandos += 300
+                    if c1 % 5 == 0:
                         y_base += 300
                         x_base_operadores = 50
                         x_base_operandos = 150
                 c += 1
             dibujar_pilas(pila1[::-1], pila2[::-1], x_base_operadores, x_base_operandos, y_base)
-            lbl_pila = tk.Label(ventana_np, text=operacion[0]+' '+operacion[1], font=("Arial", 10), bg="#222222", fg="white")
+            lbl_pila = tk.Label(ventana_np, text=operacion[0] + ' ' + operacion[1], font=("Arial", 10), bg="#222222",
+                                fg="white")
             lbl_pila.place(x=x_base_operadores, y=y_base + 200)
             global pilaP
             pilaP = pilaf
             pilaf.append(operacion[0])
             pilaf.append(operacion[1])
             print("Notacion polaca:", pilaf)
-            pilafS=''
+            pilafS = ''
             for dato in pilaf:
-                pilafS=pilafS+' '+dato
+                pilafS = pilafS + ' ' + dato
             lbl_pila = tk.Label(ventana_np, text=pilafS, font=("Arial", 14), bg="#222222", fg="white")
             lbl_pila.place(x=450, y=5)
 
@@ -1894,7 +1889,7 @@ def f4_codInter():
             ventana_np.title("Codigo P")
             ventana_np.geometry("100x500")
             ventana_np.config(bg="#222222")
-            y_base=5
+            y_base = 5
 
             global pilaP
             operadores = ['+', '-', '*', '/']
@@ -1927,7 +1922,7 @@ def f4_codInter():
                         codigoP.append('div;')
                     lbl_pila = tk.Label(ventana_np, text=codigoP[-1], font=("Arial", 14), bg="#222222", fg="white")
                     lbl_pila.place(x=20, y=y_base)
-                    y_base+=40
+                    y_base += 40
                 else:
                     randos.append(i)
             codigoP.append('sto;')
@@ -1935,11 +1930,8 @@ def f4_codInter():
             lbl_pila.place(x=20, y=y_base)
             print("Codigo P:", codigoP)
 
-        
-        
-        #-------------------------------------------------------------------------------------------------
-        
-        
+        # -------------------------------------------------------------------------------------------------
+
         def generar_triplos(operacion):
             triplos = []
             direccion = 0
@@ -1955,19 +1947,17 @@ def f4_codInter():
 
             mostrar_triplos(triplos)
 
-
         def eliminar_parentesis(operacion):
             # Función para eliminar paréntesis
             return [token for token in operacion if token not in ['(', ')']]
-
 
         def procesar_suboperacion(sub_operacion, triplos, direccion):
             # Procesar primero multiplicaciones y divisiones
             while any(op in sub_operacion for op in ['*', '/']):
                 for i, token in enumerate(sub_operacion):
                     if token in ['*', '/']:
-                        triplos.append([direccion, token, sub_operacion[i-1], sub_operacion[i+1]])
-                        sub_operacion = sub_operacion[:i-1] + [f'[{direccion}]'] + sub_operacion[i+2:]
+                        triplos.append([direccion, token, sub_operacion[i - 1], sub_operacion[i + 1]])
+                        sub_operacion = sub_operacion[:i - 1] + [f'[{direccion}]'] + sub_operacion[i + 2:]
                         direccion += 1
                         break
 
@@ -1975,13 +1965,12 @@ def f4_codInter():
             while any(op in sub_operacion for op in ['+', '-']):
                 for i, token in enumerate(sub_operacion):
                     if token in ['+', '-']:
-                        triplos.append([direccion, token, sub_operacion[i-1], sub_operacion[i+1]])
-                        sub_operacion = sub_operacion[:i-1] + [f'[{direccion}]'] + sub_operacion[i+2:]
+                        triplos.append([direccion, token, sub_operacion[i - 1], sub_operacion[i + 1]])
+                        sub_operacion = sub_operacion[:i - 1] + [f'[{direccion}]'] + sub_operacion[i + 2:]
                         direccion += 1
                         break
 
             return direccion - 1, direccion
-
 
         def mostrar_triplos(triplos):
             nueva_ventana = tk.Toplevel()
@@ -1989,17 +1978,15 @@ def f4_codInter():
 
             columnas = ("Direccion", "Operación", "Operando1", "Operando2")
             tabla = ttk.Treeview(nueva_ventana, columns=columnas, show="headings")
-            
+
             for col in columnas:
                 tabla.heading(col, text=col)
-            
+
             for triplo in triplos:
                 tabla.insert("", tk.END, values=triplo)
-            
+
             tabla.pack(padx=10, pady=10)
 
-        
-        
         def generar_cuadruplos(operacion):
             cuadruplos = []
             auxiliar = 1
@@ -2053,20 +2040,17 @@ def f4_codInter():
 
             columnas = ("Operador", "Operando1", "Operando2", "Auxiliar")
             tabla = ttk.Treeview(nueva_ventana, columns=columnas, show="headings")
-            
+
             for col in columnas:
                 tabla.heading(col, text=col)
-            
+
             for cuadruplo in cuadruplos:
                 # Asegurarse de que el segundo operando sea un espacio si no hay valor
                 operando2 = cuadruplo[2] if cuadruplo[2] else ' '
                 tabla.insert("", tk.END, values=[cuadruplo[0], cuadruplo[1], operando2, cuadruplo[3]])
-            
+
             tabla.pack(padx=10, pady=10)
 
-
-
-        
         operacion = agregar_parentesis(operacion)
         print("Operacion con parentesis:", operacion)
         nueva_ventana = tk.Toplevel()
