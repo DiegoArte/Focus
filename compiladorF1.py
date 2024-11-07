@@ -2089,9 +2089,80 @@ def f4_codInter():
 
 
 def f5_Optimiza():
-    pass
+    
+    btnLexico.config(bg="#6DCB5A")
+    btnSintactico.config(bg="#6DCB5A")
+    btnSemant.config(bg="#6DCB5A")
+    btnCodInter.config(bg="#6DCB5A")
+    btnOptimiza.config(bg="#6DCB5A")
+    btnCodObj.config(bg="#E74747")
+    
+    # Comienza a verificar las palabras en el codigo
+    contenido = []
+    # Obtener el número total de líneas en la caja de texto
+    num_lineas = int(cajaCodigo.index('end').split('.')[0])
+    # Iterar sobre cada línea y obtener su contenido
+    for i in range(1, num_lineas + 1):
+        contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
+    
+    # Crear la ventana principal
+    optiWindow = tk.Toplevel()
+    optiWindow.title("Optimization")
+    optiWindow.geometry("1900x1000")
+    optiWindow.config(bg="#222222")
 
+    # Configurar el grid para 4 secciones iguales
+    optiWindow.grid_rowconfigure((0, 1), weight=1, uniform="row")
+    optiWindow.grid_columnconfigure((0, 1), weight=1, uniform="column")
 
+    # Diccionarios para almacenar las cajas de texto y etiquetas
+    text_boxes = {}
+    title_labels = {}
+
+    # Nombres personalizados para los títulos de las secciones
+    titles = {
+        0: "Copy propagation",
+        1: "Null sequence removal",
+        2: "Precalculation of Constant Expressions",
+        3: "Power Reduction"
+    }
+
+    # Crear cuatro secciones
+    for i in range(4):
+        # Crear un frame para cada sección
+        section_frame = tk.Frame(optiWindow, bg="#333333", padx=10, pady=10)
+        section_frame.grid(row=i // 2, column=i % 2, sticky="nsew", padx=5, pady=5)
+        
+        # Pone el título
+        title_label = tk.Label(section_frame, text=titles[i], bg="#333333", fg="white", font=styleBtn2)
+        title_label.pack(anchor="n")
+        
+        # Guarda el título en el diccionario
+        title_labels[f"section_{i+1}"] = title_label
+
+        # Crear la caja de texto con scrollbar
+        text_box = tk.Text(section_frame, width=85, height=30, wrap="word", bg="#222222", fg="white", insertbackground="white")
+        text_box.pack(side="left", fill="both", expand=True)
+        
+        # Guarda la caja de texto en el diccionario
+        text_boxes[f"section_{i+1}"] = text_box
+
+        # Añadir el scrollbar para el texto
+        scrollbar = tk.Scrollbar(section_frame, command=text_box.yview)
+        scrollbar.pack(side="right", fill="y")
+        text_box.config(yscrollcommand=scrollbar.set)
+
+    
+    optiWindow.mainloop()
+    
+    # Ejemplo de cómo acceder a la caja de texto de la Sección A
+    #text_boxes["section_1"].insert("end", "Este es el contenido inicial de la Sección A.")
+
+    # Ejemplo de cómo cambiar el texto de la etiqueta de Sección B
+    #title_labels["section_2"].config(text="Nuevo Título para Sección B")
+
+    
+    
 def f6_codObj():
     pass
 
