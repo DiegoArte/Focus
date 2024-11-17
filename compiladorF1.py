@@ -2088,7 +2088,7 @@ def f5_Optimiza():
     # Iterar sobre cada línea y obtener su contenido
     for i in range(1, num_lineas + 1):
         contenido.append(cajaCodigo.get(f"{i}.0", f"{i}.end"))
-    
+       
     # Crear la ventana principal
     optiWindow = tk.Toplevel()
     optiWindow.title("Optimization")
@@ -2113,6 +2113,7 @@ def f5_Optimiza():
 
     # Crear cuatro secciones
     for i in range(4):
+    
         # Crear un frame para cada sección
         section_frame = tk.Frame(optiWindow, bg="#333333", padx=10, pady=10)
         section_frame.grid(row=i // 2, column=i % 2, sticky="nsew", padx=5, pady=5)
@@ -2125,7 +2126,7 @@ def f5_Optimiza():
         title_labels[f"section_{i+1}"] = title_label
 
         # Crear la caja de texto con scrollbar
-        text_box = tk.Text(section_frame, width=85, height=30, wrap="word", bg="#222222", fg="white", insertbackground="white")
+        text_box = tk.Text(section_frame, width=85, height=30, wrap="word", bg="#222222", fg="white", insertbackground="white", font=('Source Code Pro',12))
         text_box.pack(side="left", fill="both", expand=True)
         
         # Guarda la caja de texto en el diccionario
@@ -2136,6 +2137,183 @@ def f5_Optimiza():
         scrollbar.pack(side="right", fill="y")
         text_box.config(yscrollcommand=scrollbar.set)
 
+
+    # Patrones para identificar variables declaradas en el código extraído
+    patrones = {
+        "int": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*int\s*\((.*?)\)\s*;",
+        "flag": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*flag\s*\((.*?)\)\s*;",
+        "char": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*char\s*\((.*?)\)\s*;",
+        "str": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*str\s*\((.*?)\)\s*;",
+        "float": r"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*float\s*\((.*?)\)\s*;",
+    }
+
+    # Diccionario para almacenar las variables encontradas
+    variables = {}
+    
+    # Recorre las lineas de código para sacar las variables y sus datos
+    for linea_num, linea in enumerate(contenido, start=1):
+        # Ignora líneas con comentarios
+        if linea.strip().startswith("!!") or linea.strip().startswith(".Start") or linea.strip().startswith(".Exit"):
+            continue
+
+        for tipo, patron in patrones.items():
+            coincidencia = re.match(patron, linea)
+            if coincidencia:
+                valor = coincidencia.group(2).strip()
+
+                valor = None if valor == "" or re.match(r".*\.input\(?", valor) else valor
+
+                nombre_variable = coincidencia.group(1)
+
+                # Guardar la variable en el diccionario
+                if nombre_variable not in variables:
+                    variables[nombre_variable] = {
+                        "tipo": tipo,
+                        "linea": linea_num,
+                        "valor": valor
+                    }
+                break
+    '''
+    v = 0
+    for var, info in variables.items():
+        v += 1
+        print(f"Variable {v}: {var}, Linea {info['linea']} Tipo {info['tipo']} Valor {info['valor']} \n")
+    ''' 
+        
+    
+    
+    def opt1_PropCopias(codigo): #======================================================================
+        #print("\n")
+        #for i in codigo:
+            #print(i)
+        lineasValidas = {}        
+        c=0
+        for linea in codigo:
+            if "set" in linea:
+                #print(linea.split())
+                #print(f"Linea {linea}\n")
+                partes_linea = linea.split();
+                if len(partes_linea) == 4:
+                    variableProp = partes_linea[1]
+                    variableValida = partes_linea[3]
+                    #print(f"Variable a valida {variableValida}")
+                    variableValida = variableValida[0:len(variableValida)-1]
+                    #print(f"Variable a eliminar {variableProp}")
+                    #print(f"Variable a valida {variableValida}")
+                    if variableValida in variables:
+                        lineasValidas[c] = {
+                            "eliminar" : variableProp,
+                            "valida" : variableValida,
+                            "numlinea" : c,
+                            "linea": linea
+                        }                            
+            c += 1
+        
+        for line, info in lineasValidas.items():
+            lineaEliminar = info['linea']
+            linea_eliminada = int(info['numlinea'])
+            varRemplazar = info['eliminar']
+            varValida = info['valida']
+            codigo.remove(lineaEliminar)
+            
+            for i in range(linea_eliminada,len(codigo)):                
+                #print(f"{i} ",codigo[i])
+                #print(f"Var a quitar {varRemplazar}")
+                #print(f"Var a poner {varValida}")
+                if varRemplazar in codigo[i]:
+                    lineaModificar = codigo[i]
+                    #print("Linea modificar ",lineaModificar)
+                    lineaModificada = lineaModificar.replace(varRemplazar, varValida)
+                    #print("Linea modificada ",lineaModificada)
+                    codigo[i] = lineaModificada
+        #print("\n")
+        #for i in codigo:
+            #print(i)
+        for linea in codigo:
+            text_boxes["section_1"].insert(tk.END, f"{linea}\n")    
+        
+        return codigo
+        
+    
+    def opt2_DeletSecNull(codigo): #======================================================================
+        
+        return codigo
+    
+    def opt3_Precalc(codigo): #======================================================================
+        
+        return codigo
+    
+    def opt4_ReduPot(codigo): #======================================================================
+        lineas_modificar = {}
+        print("Reduccion de potencias")
+        c=0
+        for linea in codigo:
+            partes_linea = linea.split();
+            if '*' in linea and (len(partes_linea) == 5):
+                print(partes_linea)                
+                print(f"Linea {linea}\n")                
+                
+                if partes_linea[2] in variables:
+                    numero = partes_linea[4]
+                    variable = partes_linea[2]
+                    numero = int(numero[0:len(numero)-1])
+                    #print("Variable ",variable)
+                    #print("Numero veces multiplicar ",numero)
+                else:
+                    numero = int(partes_linea[2])
+                    variable = partes_linea[4]
+                    variable = variable[0:len(variable)-1]
+                    #print("Variable ",variable)
+                    #print("Numero veces multiplicar ",numero)
+                print("PARTES LINEA", partes_linea)
+                
+                del partes_linea[2]
+                print("PARTES LINEA", partes_linea)
+                del partes_linea[2]
+                print("PARTES LINEA", partes_linea)
+                del partes_linea[2]
+                print("PARTES LINEA", partes_linea)        
+                print("Var ",variable)
+                print("Numero ",numero)
+                if numero <= 10:  
+                    for i in range(numero):
+                        partes_linea.append(variable)
+                        if i < numero-1:
+                            partes_linea.append('+')
+                    partes_linea.append(';')
+                    print("PARTES NUEVA LINEA")
+                    print(partes_linea)
+            
+                    nueva_linea = ""
+                    n = 0
+                    for i in partes_linea:
+                        n+=1
+                        nueva_linea += i
+                        if n < len(partes_linea)-1:
+                            nueva_linea += " "
+                    print(f"Nueva linea '{nueva_linea}'")
+                    
+                    lineas_modificar[c] = {
+                        "nuevaLinea": nueva_linea,
+                        "num_linea": c
+                    }                                         
+            c += 1
+        # Reemplaza las lineas del codigo
+        for line, info in lineas_modificar.items():
+            posicion = info["num_linea"]
+            nueva = info["nuevaLinea"]
+            codigo[posicion] = nueva
+        # Agrega el codigo a la caja de texto
+        for linea in codigo:
+            text_boxes["section_4"].insert(tk.END, f"{linea}\n")  
+        
+    
+    # LLamadas a las optimizaciones        
+    codigo2 = opt1_PropCopias(contenido)
+    codigo3 = opt2_DeletSecNull(codigo2)
+    codigo4 = opt3_Precalc(codigo3)
+    opt4_ReduPot(codigo4)
+   
     
     optiWindow.mainloop()
     

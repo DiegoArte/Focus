@@ -1,6 +1,6 @@
 
 *** NOTA: Los tokens deben estar separados por espacios ***
-*** Por ejemplo: "var1 = 2;" y no "var1=2;"
+    - Por ejemplo: "set var1 = 2;" y no "set var1=2;"
 *** No se pueden concatenar mas de dos datos a la vez
 *** No se pueden usar nombres de métodos en variables o mensajes
 *** No se pueden escribir mensajes en la misma linea donde hay código
@@ -41,11 +41,11 @@
 
 6- Palabras reservadas para mandar a pantalla:
     Show()
-    Show("Valor: " << var)
+    Show("Valor: " << var);
 
 7- Palabra reservada para guardar un dato en una variable:
     set
-    set var = var2 
+    set var = var2; 
 
 8- Caracter para comentarios:
     !! Este es un comentario
@@ -59,7 +59,9 @@
 10- Concatenar mensajes con variables
     <<
 
-----------------------------------------------------------
+
+
+--------------------------- EJEMPLO -------------------------------
 !!Inicio del programa
 .Start
 
@@ -68,24 +70,23 @@ var1 = 4;
 var1_V2 = int(4);
 
 var2 = flag();
-var2 = true;
+set var2 = true;
 var2_V2 = flag(true);
 
 var3 = char();
-var3 = "%";
+set var3 = "%";
 var3_V2 = char(%);
 
 var4 = str();
-var4 = "hola";
+set var4 = "hola";
 var4_V2 = str(hola);
 
 var5 = float();
-var5 = 6.96;
+set var5 = 6.96;
 var5_V2 = float(6.96);
 
-
-!! Proceso de una suma con un numero de entrada y otro existente 
 n = int().input("Primer número: ");
+!! Proceso de una suma con un numero de entrada y otro existente 
 suma = float();
 suma = n + var5;
 Show("La suma es: " << suma);
