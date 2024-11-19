@@ -2231,13 +2231,13 @@ def f5_Optimiza():
         print("Eliminacion de secuencias nulas")
         c = 0
         for linea in codigo:
-            if linea!='':
-                ult=linea[-1]
-                linea=linea[:-1]
+            if linea != '':
+                ult = linea[-1]
+                linea = linea[:-1]
                 tokens = linea.split()
-                x=0
-                sec=[0, 0, 0]
-                combs=[
+                x = 0
+                sec = [0, 0, 0]
+                combs = [
                     [RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"), '*', '1'],
                     [RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"), '/', '1'],
                     ['1', '*', RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$")],
@@ -2245,30 +2245,30 @@ def f5_Optimiza():
                     [RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"), '-', '0'],
                     ['0', '+', RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$")]
                 ]
-                y=0
-                ltok=len(tokens)
-                tokens2=[]
-                btok=True
+                y = 0
+                ltok = len(tokens)
+                tokens2 = []
+                btok = True
                 while y < ltok:
                     if btok:
                         tokens2.append(tokens[y])
                     else:
                         btok = True
-                    bb=False
-                    z=0
+                    bb = False
+                    z = 0
                     for comb in combs[:]:
-                        if comb[x]==tokens[y]:
-                            if tokens[y]==RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"):
-                                variablee=tokens[y]
-                            sec[x]=1
-                            bb=True
+                        if comb[x] == tokens[y]:
+                            if tokens[y] == RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"):
+                                variablee = tokens[y]
+                            sec[x] = 1
+                            bb = True
                             z += 1
                         else:
                             combs.pop(z)
-                    if bb==False:
-                        x=0
+                    if bb == False:
+                        x = 0
                         sec = [0, 0, 0]
-                        combs=[
+                        combs = [
                             [RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"), '*', '1'],
                             [RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"), '/', '1'],
                             ['1', '*', RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$")],
@@ -2276,18 +2276,19 @@ def f5_Optimiza():
                             [RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"), '-', '0'],
                             ['0', '+', RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$")]
                         ]
-                        if tokens[y]=='1' or tokens[y]=='0' or tokens[y]==RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"):
-                            y-=1
+                        if tokens[y] == '1' or tokens[y] == '0' or tokens[y] == RegexMatcher(
+                                r"^[a-zA-Z_][a-zA-Z0-9_]*$"):
+                            y -= 1
                             btok = False
                     else:
                         x += 1
-                    if x==3:
-                        tokens2[y-2]=variablee
+                    if x == 3:
+                        tokens2[y - 2] = variablee
                         tokens2.pop(y)
-                        tokens2.pop(y-1)
+                        tokens2.pop(y - 1)
                         x = 0
                         sec = [0, 0, 0]
-                        combs= [
+                        combs = [
                             [RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"), '*', '1'],
                             [RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"), '/', '1'],
                             ['1', '*', RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$")],
@@ -2295,18 +2296,36 @@ def f5_Optimiza():
                             [RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$"), '-', '0'],
                             ['0', '+', RegexMatcher(r"^[a-zA-Z_][a-zA-Z0-9_]*$")]
                         ]
-                    y+=1
-                tokens2=" ".join(tokens2)
-                tokens2=tokens2+ult
-                codigo[c]=tokens2
-            c+=1
+                    y += 1
+                tokens2 = " ".join(tokens2)
+                tokens2 = tokens2 + ult
+                codigo[c] = tokens2
+            c += 1
         print(codigo)
         for linea in codigo:
             text_boxes["section_2"].insert(tk.END, f"{linea}\n")
         return codigo
 
     def opt3_Precalc(codigo):  # ======================================================================
-
+        print("Precalculo de expresiones constantes")
+        c = 0
+        ERoper=r'^[0-9]+(\.[0-9]+)?(\s*[\+\-\*\/]\s*[0-9]+(\.[0-9]+)?)*$'
+        for linea in codigo:
+            if linea != '':
+                ult = linea[-1]
+                linea = linea[:-1]
+                if '=' in linea:
+                    variable= linea.split('=')[0].strip()
+                    operacion = linea.split('=')[1].strip()
+                    if re.match(ERoper, operacion):
+                        print(operacion)
+                        resultado=eval(operacion)
+                        linea=variable+' = '+str(resultado)
+                codigo[c]=linea+ult
+            c+=1
+        print(codigo)
+        for linea in codigo:
+            text_boxes["section_3"].insert(tk.END, f"{linea}\n")
         return codigo
 
     def opt4_ReduPot(codigo):  # ======================================================================
@@ -2363,7 +2382,7 @@ def f5_Optimiza():
                         "nuevaLinea": nueva_linea,
                         "num_linea": c
                     }
-            
+
             elif '*' in partes_linea and (len(partes_linea) != 5):
                 cont = 0
                 for elemento in partes_linea:
@@ -2371,74 +2390,74 @@ def f5_Optimiza():
                         pos = cont
                         numero = ""
                         variable = ""
-                        if partes_linea[pos-1] in variables:
-                            variable = partes_linea[pos-1]
-                            numero = partes_linea[pos+1]
-                        elif partes_linea[pos+1] in variables:
-                            variable = partes_linea[pos-1]
-                            numero = partes_linea[pos+1]
+                        if partes_linea[pos - 1] in variables:
+                            variable = partes_linea[pos - 1]
+                            numero = partes_linea[pos + 1]
+                        elif partes_linea[pos + 1] in variables:
+                            variable = partes_linea[pos - 1]
+                            numero = partes_linea[pos + 1]
                         else:
                             continue
-                        
+
                         if numero != "" and variable != "":
                             puntComaNumero = False
                             puntComaVariable = False
-                            if ";" in variable: 
-                                variable = variable[0:len(variable)-1]
+                            if ";" in variable:
+                                variable = variable[0:len(variable) - 1]
                                 puntComaVariable = True
-                            if ";" in numero: 
-                                numero = numero[0:len(numero)-1]
+                            if ";" in numero:
+                                numero = numero[0:len(numero) - 1]
                                 puntComaNumero = True
-                        
+
                             band = True
                             try:
                                 numero = int(numero)
                             except:
                                 band = False
-                                
+
                             if band:
                                 print(f"Variable {variable}")
                                 print(f"Numero {numero}")
-                                
-                                del partes_linea[pos-1]
-                                del partes_linea[pos-1]
-                                del partes_linea[pos-1]
-                                
+
+                                del partes_linea[pos - 1]
+                                del partes_linea[pos - 1]
+                                del partes_linea[pos - 1]
+
                                 print("PARTES LINEA ELIMINADO")
                                 print(partes_linea)
                                 partesNueva_linea = []
 
-                                for j in range (0,pos-1):
+                                for j in range(0, pos - 1):
                                     partesNueva_linea.append(partes_linea[j])
-                                                                    
+
                                 for k in range(numero):
                                     partesNueva_linea.append(variable)
                                     if k < numero - 1:
                                         partesNueva_linea.append("+")
-                                
-                                for r in range(pos-1, len(partes_linea)):
-                                    partesNueva_linea.append(partes_linea[r]) 
-                                
-                                if puntComaNumero == True or puntComaVariable == True:                        
-                                    if partesNueva_linea[len(partesNueva_linea)-1] == "+":
-                                        del partesNueva_linea[len(partesNueva_linea)-1]
-                                        partesNueva_linea[len(partesNueva_linea)-1] += ";"
+
+                                for r in range(pos - 1, len(partes_linea)):
+                                    partesNueva_linea.append(partes_linea[r])
+
+                                if puntComaNumero == True or puntComaVariable == True:
+                                    if partesNueva_linea[len(partesNueva_linea) - 1] == "+":
+                                        del partesNueva_linea[len(partesNueva_linea) - 1]
+                                        partesNueva_linea[len(partesNueva_linea) - 1] += ";"
                                     else:
-                                        partesNueva_linea[len(partesNueva_linea)-1] += ";"
-                                        
-                                nueva_linea = ""      
-                                print(f"PARTES NUEVA LINEA 2 {partesNueva_linea}")  
-                                
+                                        partesNueva_linea[len(partesNueva_linea) - 1] += ";"
+
+                                nueva_linea = ""
+                                print(f"PARTES NUEVA LINEA 2 {partesNueva_linea}")
+
                                 for parte in partesNueva_linea:
                                     nueva_linea += parte
                                     nueva_linea += " "
-                                nueva_linea = nueva_linea[0:len(nueva_linea)-1]
-                                print(f"NUEVA LINEA 2 ***** '{nueva_linea}'")       
-                                codigo[c] = nueva_linea                           
-                                                                                                            
+                                nueva_linea = nueva_linea[0:len(nueva_linea) - 1]
+                                print(f"NUEVA LINEA 2 ***** '{nueva_linea}'")
+                                codigo[c] = nueva_linea
+
                         break
-                    cont += 1    
-            
+                    cont += 1
+
             c += 1
         # Reemplaza las lineas del codigo
         for line, info in lineas_modificar.items():
@@ -2449,8 +2468,6 @@ def f5_Optimiza():
         for linea in codigo:
             text_boxes["section_4"].insert(tk.END, f"{linea}\n")
 
-    
-    
     # LLamadas a las optimizaciones
     codigo2 = opt1_PropCopias(contenido)
     codigo3 = opt2_DeletSecNull(codigo2)
