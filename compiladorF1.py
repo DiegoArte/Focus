@@ -2363,6 +2363,82 @@ def f5_Optimiza():
                         "nuevaLinea": nueva_linea,
                         "num_linea": c
                     }
+            
+            elif '*' in partes_linea and (len(partes_linea) != 5):
+                cont = 0
+                for elemento in partes_linea:
+                    if elemento == "*":
+                        pos = cont
+                        numero = ""
+                        variable = ""
+                        if partes_linea[pos-1] in variables:
+                            variable = partes_linea[pos-1]
+                            numero = partes_linea[pos+1]
+                        elif partes_linea[pos+1] in variables:
+                            variable = partes_linea[pos-1]
+                            numero = partes_linea[pos+1]
+                        else:
+                            continue
+                        
+                        if numero != "" and variable != "":
+                            puntComaNumero = False
+                            puntComaVariable = False
+                            if ";" in variable: 
+                                variable = variable[0:len(variable)-1]
+                                puntComaVariable = True
+                            if ";" in numero: 
+                                numero = numero[0:len(numero)-1]
+                                puntComaNumero = True
+                        
+                            band = True
+                            try:
+                                numero = int(numero)
+                            except:
+                                band = False
+                                
+                            if band:
+                                print(f"Variable {variable}")
+                                print(f"Numero {numero}")
+                                
+                                del partes_linea[pos-1]
+                                del partes_linea[pos-1]
+                                del partes_linea[pos-1]
+                                
+                                print("PARTES LINEA ELIMINADO")
+                                print(partes_linea)
+                                partesNueva_linea = []
+
+                                for j in range (0,pos-1):
+                                    partesNueva_linea.append(partes_linea[j])
+                                                                    
+                                for k in range(numero):
+                                    partesNueva_linea.append(variable)
+                                    if k < numero - 1:
+                                        partesNueva_linea.append("+")
+                                
+                                for r in range(pos-1, len(partes_linea)):
+                                    partesNueva_linea.append(partes_linea[r]) 
+                                
+                                if puntComaNumero == True or puntComaVariable == True:                        
+                                    if partesNueva_linea[len(partesNueva_linea)-1] == "+":
+                                        del partesNueva_linea[len(partesNueva_linea)-1]
+                                        partesNueva_linea[len(partesNueva_linea)-1] += ";"
+                                    else:
+                                        partesNueva_linea[len(partesNueva_linea)-1] += ";"
+                                        
+                                nueva_linea = ""      
+                                print(f"PARTES NUEVA LINEA 2 {partesNueva_linea}")  
+                                
+                                for parte in partesNueva_linea:
+                                    nueva_linea += parte
+                                    nueva_linea += " "
+                                nueva_linea = nueva_linea[0:len(nueva_linea)-1]
+                                print(f"NUEVA LINEA 2 ***** '{nueva_linea}'")       
+                                codigo[c] = nueva_linea                           
+                                                                                                            
+                        break
+                    cont += 1    
+            
             c += 1
         # Reemplaza las lineas del codigo
         for line, info in lineas_modificar.items():
@@ -2373,8 +2449,9 @@ def f5_Optimiza():
         for linea in codigo:
             text_boxes["section_4"].insert(tk.END, f"{linea}\n")
 
-            # LLamadas a las optimizaciones
-
+    
+    
+    # LLamadas a las optimizaciones
     codigo2 = opt1_PropCopias(contenido)
     codigo3 = opt2_DeletSecNull(codigo2)
     codigo4 = opt3_Precalc(codigo3)

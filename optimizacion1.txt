@@ -5,13 +5,21 @@ b = int();
 c = int();
 z = int();
 y = int();
+x = int();
 
-set z = a + b * 3;
+
 set c = a;
 z = c * 5 - 4;
 
 a = 15 * a;
 b = b * 6;
 
+z = a + b * 3;
+x = x * 2 + 5 * 6;
+
+
 .Exit
+
+
+
 
